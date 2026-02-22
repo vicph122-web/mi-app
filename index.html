@@ -455,6 +455,38 @@
     .documento { position: relative; }
     .exportando-pdf .logo-container { border-color: transparent !important; }
     .exportando-pdf .logo-resize-handle { display: none !important; }
+    
+    /* Forzar diseño correcto en PDF */
+    .exportando-pdf .quote-header,
+    .exportando-pdf .invoice-header {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: space-between !important;
+      align-items: flex-start !important;
+    }
+    .exportando-pdf .quote-right,
+    .exportando-pdf .invoice-meta-wrap {
+      text-align: right !important;
+      align-items: flex-end !important;
+      min-width: 180px !important;
+      width: auto !important;
+    }
+    .exportando-pdf .fila-datos {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr 110px 75px !important;
+    }
+    .exportando-pdf .fila-descripcion-totales {
+      display: flex !important;
+      flex-direction: row !important;
+    }
+    .exportando-pdf .descripcion-proyecto {
+      max-width: 55% !important;
+    }
+    .exportando-pdf .totales-finales,
+    .exportando-pdf .invoice-totales {
+      margin-left: auto !important;
+      width: auto !important;
+    }
     @media print { .logo-container { border-color: transparent !important; } .logo-resize-handle { display: none !important; } }
     
     /* ESTILOS PARA MÓVIL */
@@ -543,16 +575,26 @@
         gap: 12px !important;
       }
       
-      /* Header del quote/invoice en columna */
+      /* Header del quote/invoice con scroll horizontal */
       .quote-header, .invoice-header {
-        flex-direction: column !important;
-        gap: 16px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        white-space: nowrap !important;
+        min-width: 100% !important;
+      }
+      
+      .quote-company, .invoice-company {
+        min-width: 200px !important;
+        flex-shrink: 0 !important;
       }
       
       .quote-right, .invoice-meta-wrap {
-        align-items: flex-start !important;
-        text-align: left !important;
-        width: 100% !important;
+        min-width: 180px !important;
+        flex-shrink: 0 !important;
+        text-align: right !important;
+        align-items: flex-end !important;
       }
       
       /* Totales */
