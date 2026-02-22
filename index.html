@@ -1669,6 +1669,31 @@
       }
     });
 
+    // Sincronizar nombre de compañía con Cheques a nombre de y Atentamente
+    document.getElementById('configNombre').addEventListener('input', function() {
+      const nombre = this.value;
+      const payableToField = document.getElementById('configPayableTo');
+      const sincerelyField = document.getElementById('configSincerely');
+      
+      // Solo llenar si el campo está vacío o tiene el mismo valor que el nombre anterior
+      if (!payableToField.dataset.edited || payableToField.value === payableToField.dataset.lastNombre) {
+        payableToField.value = nombre;
+        payableToField.dataset.lastNombre = nombre;
+      }
+      if (!sincerelyField.dataset.edited || sincerelyField.value === sincerelyField.dataset.lastNombre) {
+        sincerelyField.value = nombre;
+        sincerelyField.dataset.lastNombre = nombre;
+      }
+    });
+
+    // Marcar campos como editados manualmente si el usuario los modifica
+    document.getElementById('configPayableTo').addEventListener('input', function() {
+      this.dataset.edited = 'true';
+    });
+    document.getElementById('configSincerely').addEventListener('input', function() {
+      this.dataset.edited = 'true';
+    });
+
     document.getElementById('btnUploadLogo').addEventListener('click', function() {
       document.getElementById('configLogo').click();
     });
