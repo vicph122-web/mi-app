@@ -456,6 +456,170 @@
     .exportando-pdf .logo-container { border-color: transparent !important; }
     .exportando-pdf .logo-resize-handle { display: none !important; }
     @media print { .logo-container { border-color: transparent !important; } .logo-resize-handle { display: none !important; } }
+    
+    /* ESTILOS PARA MÓVIL */
+    @media screen and (max-width: 768px) {
+      body {
+        font-size: 16px;
+        padding: 4px;
+      }
+      
+      /* Campos de entrada más grandes */
+      .campo input, .campo select, .campo textarea,
+      .tabla-materiales input, .tabla-materiales select,
+      .tabla-materials input, .tabla-materials select,
+      .tabla-items input, .tabla-items select,
+      .invoice-customer input, .invoice-meta input {
+        font-size: 16px !important;
+        padding: 10px 8px !important;
+        min-height: 44px !important;
+        border-radius: 6px !important;
+      }
+      
+      /* Etiquetas más grandes */
+      .campo label {
+        font-size: 14px !important;
+        margin-bottom: 4px !important;
+      }
+      
+      /* Tablas con scroll horizontal */
+      .tabla-materiales, .tabla-materials, .tabla-items {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      /* Celdas de tabla más anchas */
+      .tabla-materiales td, .tabla-materiales th,
+      .tabla-materials td, .tabla-materials th,
+      .tabla-items td, .tabla-items th {
+        padding: 8px 6px !important;
+        min-width: 80px;
+      }
+      
+      .tabla-materiales .col-nombre,
+      .tabla-materials td:first-child {
+        min-width: 120px !important;
+      }
+      
+      /* Inputs en tabla que muestren todo el texto */
+      .tabla-materiales input,
+      .tabla-materials input,
+      .tabla-items input {
+        min-width: 100px !important;
+        width: 100% !important;
+      }
+      
+      /* Precio cell más grande */
+      .precio-cell, .unit-price-cell {
+        min-width: 80px !important;
+        padding: 8px !important;
+      }
+      
+      .precio-cell input, .unit-price-cell input {
+        min-width: 60px !important;
+        font-size: 16px !important;
+      }
+      
+      /* Botones más grandes para tocar fácil */
+      .btn-agregar, .btn-del, .btn-config, .btn-accion {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        font-size: 16px !important;
+        padding: 10px 16px !important;
+      }
+      
+      /* Descripción del proyecto */
+      .descripcion-proyecto textarea {
+        font-size: 16px !important;
+        padding: 12px !important;
+        min-height: 100px !important;
+      }
+      
+      /* Fila de datos en columna */
+      .fila-datos {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      
+      /* Header del quote/invoice en columna */
+      .quote-header, .invoice-header {
+        flex-direction: column !important;
+        gap: 16px !important;
+      }
+      
+      .quote-right, .invoice-meta-wrap {
+        align-items: flex-start !important;
+        text-align: left !important;
+        width: 100% !important;
+      }
+      
+      /* Totales */
+      .fila-descripcion-totales {
+        flex-direction: column !important;
+      }
+      
+      .descripcion-proyecto {
+        max-width: 100% !important;
+        width: 100% !important;
+      }
+      
+      .totales-finales, .invoice-totales {
+        width: 100% !important;
+        margin-left: 0 !important;
+      }
+      
+      /* Modal más grande */
+      .modal {
+        width: 95% !important;
+        max-width: 95% !important;
+        max-height: 90vh !important;
+        padding: 16px !important;
+      }
+      
+      .modal input, .modal select, .modal textarea {
+        font-size: 16px !important;
+        padding: 12px !important;
+        min-height: 44px !important;
+      }
+      
+      /* Evitar zoom en iOS al enfocar inputs */
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+      
+      /* Scroll suave cuando el teclado aparece */
+      input:focus, select:focus, textarea:focus {
+        scroll-margin-top: 100px;
+        scroll-margin-bottom: 100px;
+      }
+    }
+    
+    /* Pantallas muy pequeñas */
+    @media screen and (max-width: 480px) {
+      .tabla-materiales .col-nombre,
+      .tabla-materials td:first-child {
+        min-width: 150px !important;
+      }
+      
+      .tabla-materiales input,
+      .tabla-materials input,
+      .tabla-items input {
+        min-width: 120px !important;
+      }
+      
+      .quote-meta-filas .quote-meta {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+      }
+      
+      .quote-meta-filas .quote-meta label {
+        min-width: auto !important;
+        text-align: left !important;
+      }
+    }
   </style>
 </head>
 <body>
