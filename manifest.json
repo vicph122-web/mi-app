@@ -1,7 +1,7 @@
 {
-  "name": "Presupuesto Materiales",
-  "short_name": "Presupuesto",
-  "description": "Presupuesto de materiales para tapicería",
+  "name": "Quote & Invoices",
+  "short_name": "Quote",
+  "description": "Quote and invoice generator for upholstery",
   "start_url": "index.html",
   "display": "standalone",
   "orientation": "portrait",
