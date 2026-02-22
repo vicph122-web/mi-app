@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a252f"/>
+      <stop offset="100%" stop-color="#2c3e50"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f1c40f"/>
+      <stop offset="50%" stop-color="#f39c12"/>
+      <stop offset="100%" stop-color="#d35400"/>
+    </linearGradient>
+    <linearGradient id="silverGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#ecf0f1"/>
+      <stop offset="100%" stop-color="#bdc3c7"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="512" height="512" rx="90" fill="url(#bgGrad)"/>
+  
+  <rect x="8" y="8" width="496" height="496" rx="82" fill="none" stroke="url(#goldGrad)" stroke-width="3" opacity="0.6"/>
+  
+  <ellipse cx="180" cy="285" rx="70" ry="45" fill="url(#silverGrad)" stroke="url(#goldGrad)" stroke-width="1" opacity="1"/>
+  <ellipse cx="180" cy="285" rx="71" ry="46" fill="none" stroke="url(#goldGrad)" stroke-width="0.5" opacity="0.15"/>
+  <ellipse cx="332" cy="285" rx="70" ry="45" fill="url(#silverGrad)" stroke="url(#goldGrad)" stroke-width="1" opacity="1"/>
+  <ellipse cx="332" cy="285" rx="71" ry="46" fill="none" stroke="url(#goldGrad)" stroke-width="0.5" opacity="0.15"/>
+  
+  <path d="M90 310 Q90 270 130 270 L382 270 Q422 270 422 310 L422 350 Q422 380 392 380 L120 380 Q90 380 90 350 Z" fill="url(#silverGrad)" stroke="url(#goldGrad)" stroke-width="0.5" opacity="1"/>
+  <path d="M88 312 Q88 268 130 268 L382 268 Q424 268 424 312 L424 352 Q424 382 392 382 L120 382 Q88 382 88 352 Z" fill="none" stroke="url(#goldGrad)" stroke-width="0.5" opacity="0.15"/>
+  
+  <path d="M60 265 Q60 245 80 245 L100 245 Q110 245 110 265 L110 370 Q110 390 90 390 L80 390 Q60 390 60 370 Z" fill="url(#silverGrad)" stroke="url(#goldGrad)" stroke-width="0.5" opacity="1"/>
+  <path d="M58 265 Q58 243 80 243 L100 243 Q112 243 112 265 L112 372 Q112 392 90 392 L80 392 Q58 392 58 372 Z" fill="none" stroke="url(#goldGrad)" stroke-width="0.5" opacity="0.15"/>
+  <path d="M402 265 Q402 245 422 245 L432 245 Q452 245 452 265 L452 370 Q452 390 432 390 L422 390 Q402 390 402 370 Z" fill="url(#silverGrad)" stroke="url(#goldGrad)" stroke-width="0.5" opacity="1"/>
+  <path d="M400 265 Q400 243 422 243 L432 243 Q454 243 454 265 L454 372 Q454 392 432 392 L422 392 Q400 392 400 372 Z" fill="none" stroke="url(#goldGrad)" stroke-width="0.5" opacity="0.15"/>
+  
+  <rect x="100" y="390" width="16" height="30" rx="4" fill="url(#goldGrad)"/>
+  <rect x="396" y="390" width="16" height="30" rx="4" fill="url(#goldGrad)"/>
+  
+  <rect x="290" y="70" width="150" height="180" rx="10" fill="#fff"/>
+  <rect x="290" y="70" width="150" height="35" rx="10" fill="url(#goldGrad)"/>
+  <rect x="290" y="95" width="150" height="10" fill="url(#goldGrad)"/>
+  
+  <line x1="305" y1="130" x2="425" y2="130" stroke="#bdc3c7" stroke-width="2"/>
+  <line x1="305" y1="150" x2="400" y2="150" stroke="#bdc3c7" stroke-width="2"/>
+  <line x1="305" y1="170" x2="415" y2="170" stroke="#bdc3c7" stroke-width="2"/>
+  <line x1="305" y1="190" x2="380" y2="190" stroke="#bdc3c7" stroke-width="2"/>
+  
+  <rect x="305" y="210" width="120" height="25" rx="5" fill="url(#goldGrad)" opacity="0.3"/>
+  <text x="365" y="228" font-family="Georgia" font-size="14" font-weight="bold" fill="#2c3e50" text-anchor="middle">TOTAL $</text>
+  
+  <circle cx="120" cy="120" r="55" fill="url(#goldGrad)"/>
+  <circle cx="120" cy="120" r="45" fill="none" stroke="#fff" stroke-width="2" opacity="0.4"/>
+  <text x="120" y="138" font-family="Georgia" font-size="55" font-weight="bold" fill="#fff" text-anchor="middle">$</text>
+  
+  <text x="256" y="465" font-family="Georgia" font-size="20" font-weight="bold" fill="url(#goldGrad)" text-anchor="middle" letter-spacing="2">QUOTE &amp; INVOICES</text>
+</svg>

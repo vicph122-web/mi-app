@@ -1,0 +1,2490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2c3e50">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <title>Presupuesto — Tapicería</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    @page { size: letter portrait; margin: 12mm; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 12px;
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 8px;
+      background: #f5f5f5;
+      color: #333;
+    }
+    .documento {
+      background: white;
+      padding: 10px 14px;
+    }
+    .encabezado {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 2px solid #2c3e50;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+    }
+    .quote-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 2px solid #2c3e50; padding-bottom: 12px; }
+    .quote-company h2 { margin: 0 0 4px 0; font-size: 1.4rem; font-weight: 700; color: #2c3e50; }
+    .quote-company .info { font-size: 12px; color: #555; line-height: 1.5; }
+    .quote-right { text-align: right; min-width: 180px; display: flex; flex-direction: column; align-items: flex-end; }
+    .quote-right h3 { margin: 0 0 8px 0; font-size: 1.5rem; font-weight: 700; color: #2c3e50; letter-spacing: 1px; }
+    .quote-meta-filas { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+    .quote-meta-filas .quote-meta { display: flex; align-items: center; gap: 8px; }
+    .quote-meta-filas .quote-meta label { font-size: 12px; font-weight: 600; color: #555; min-width: 50px; text-align: right; }
+    .quote-meta-filas .quote-meta-inline input { width: 80px !important; max-width: 80px !important; min-width: 80px !important; }
+    .fecha-quote-wrap { position: relative; display: inline-block; }
+    .fecha-quote-wrap input[type="text"] { padding-right: 24px; }
+    .fecha-quote-wrap input[type="date"] { position: absolute; right: 2px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; padding: 0; border: none; background: transparent; cursor: pointer; opacity: 0; z-index: 1; }
+    .encabezado .subtitulo-input {
+      font-size: 0.85rem;
+      color: #7f8c8d;
+      border: none;
+      background: transparent;
+      border-bottom: 1px solid #bdc3c7;
+      padding: 2px 0;
+      margin-top: 2px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .encabezado .subtitulo-input:focus {
+      outline: none;
+      border-bottom-color: #3498db;
+    }
+    .fila-datos {
+      display: grid;
+      grid-template-columns: 1fr 1fr 110px 75px;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .fila-datos .campo { margin-bottom: 0; }
+    .campo label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 1px;
+      display: block;
+    }
+    .campo input, .campo select {
+      padding: 3px 5px;
+      border: 1px solid #bdc3c7;
+      border-radius: 3px;
+      font-size: 12px;
+      width: 100%;
+    }
+    .tabla-materiales {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+    .tabla-materiales th {
+      background: #2c3e50;
+      color: white;
+      padding: 4px 6px;
+      text-align: left;
+      font-weight: 600;
+    }
+    .tabla-materiales td {
+      padding: 3px 5px;
+      border-bottom: 1px solid #eee;
+      vertical-align: middle;
+    }
+    .tabla-materiales tr:nth-child(even) { background: #f9f9f9; }
+    .tabla-materiales input, .tabla-materiales select {
+      padding: 2px 4px;
+      font-size: 12px;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      width: 100%;
+      min-width: 0;
+    }
+    .tabla-materiales .col-nombre { width: 80px; }
+    .tabla-materiales .col-largo { width: 48px; }
+    .tabla-materiales .col-unidad { width: 70px; }
+    .tabla-materiales .col-ancho { width: 48px; }
+    .tabla-materiales .col-rollo { width: 75px; }
+    .tabla-materiales .col-cant { width: 90px; font-weight: 600; font-size: 12px; }
+    .tabla-materiales .td-cantidades { font-size: 12px; }
+    .tabla-materiales .col-precio { width: 55px; }
+    .tabla-materiales .precio-cell { display: inline-flex; align-items: center; border: 1px solid #ccc; border-radius: 2px; padding: 2px 4px; background: white; width: 100%; box-sizing: border-box; font-size: 12px; }
+    .tabla-materiales .precio-cell .precio-simbolo { font-size: 12px; line-height: 1; }
+    .tabla-materiales .precio-cell input { width: 5ch; min-width: 4ch; border: none; background: transparent; padding: 0; font-size: 12px; box-shadow: none; outline: none; flex: 1; max-width: 100%; }
+    .tabla-materiales .col-por { width: 75px; }
+    .tabla-materiales .col-sub { width: 55px; font-weight: 700; color: #1e8449; }
+    .tabla-materiales .td-subtotal { font-size: 12px; }
+    .tabla-materiales .col-del { width: 28px; }
+    .btn-del {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 2px 6px;
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .btn-del:hover { background: #c0392b; }
+    .zonas-materiales { min-height: 20px; }
+    .fila-descripcion-totales {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-top: 8px;
+    }
+    .descripcion-proyecto { flex: 1; min-width: 0; max-width: 55%; }
+    .fila-descripcion-totales .totales-finales { margin-left: auto; }
+    .descripcion-proyecto textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #bdc3c7;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: inherit;
+      resize: vertical;
+    }
+    .btn-agregar {
+      margin: 4px 0 8px 0;
+      padding: 4px 10px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .btn-agregar:hover { background: #2980b9; }
+    .totales-finales {
+      margin-top: 0;
+      padding: 6px 10px;
+      background: rgba(0,0,0,0.03);
+      border-radius: 4px;
+      max-width: 220px;
+    }
+    .totales-finales h3 { margin: 0 0 4px 0; font-size: 0.9rem; color: #333; }
+    .totales-finales .fila {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #333;
+      padding: 2px 0;
+    }
+    .totales-finales .fila span:last-child {
+      text-align: right;
+      min-width: 60px;
+      font-variant-numeric: tabular-nums;
+    }
+    .totales-finales .fila.total {
+      font-size: 1rem;
+      font-weight: 700;
+      border-top: 1px solid rgba(0,0,0,0.1);
+      margin-top: 4px;
+      padding-top: 4px;
+    }
+    .campo-custom { display: none; }
+    .campo-custom.visible { display: table-cell; }
+    .btn-config {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      font-size: 16px;
+      font-weight: 900;
+      background: #ecf0f1;
+      color: #2c3e50;
+      border: 1px solid #bdc3c7;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-config:hover {
+      background: #3498db;
+      color: white;
+      border-color: #3498db;
+    }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.visible { display: flex !important; }
+    .modal { background: white; padding: 20px; border-radius: 8px; max-width: 400px; width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .modal h3 { margin: 0 0 12px 0; font-size: 1rem; }
+    .modal .campo { margin-bottom: 10px; }
+    .modal .btn-guardar { background: #27ae60; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 8px; }
+    .modal .btn-guardar:hover { background: #219a52; }
+    .modal-registro { max-width: 500px; }
+    .lista-registro { max-height: 60vh; overflow-y: auto; margin: 12px 0; }
+    .item-registro {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      background: #fafafa;
+    }
+    .item-registro .info { flex: 1; }
+    .item-registro .cliente { font-weight: 600; }
+    .item-registro .trabajo { font-size: 12px; color: #666; }
+    .item-registro .telefono { font-size: 12px; color: #555; }
+    .item-registro .fecha { font-size: 12px; color: #999; }
+    .buscar-registro { width: 100%; padding: 8px 10px; margin-bottom: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 13px; }
+    .buscar-registro:focus { outline: none; border-color: #3498db; }
+    .item-registro .acciones { display: flex; gap: 6px; }
+    .item-registro .btn-cargar, .item-registro .btn-borrar-item {
+      padding: 4px 10px;
+      font-size: 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .item-registro .btn-cargar { background: #3498db; color: white; }
+    .item-registro .btn-borrar-item { background: #e74c3c; color: white; }
+    .modal-config { max-width: 420px; }
+    .config-seccion { border-top: 1px solid #eee; margin-top: 12px; padding-top: 12px; }
+    .config-seccion:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+    .config-seccion h4 { margin: 0 0 8px 0; font-size: 0.85rem; color: #2c3e50; }
+    .logo-upload-wrap { display: flex; gap: 8px; align-items: center; }
+    .btn-upload-logo { padding: 6px 12px; font-size: 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .btn-upload-logo:hover { background: #2980b9; }
+    .btn-remove-logo { padding: 4px 8px; font-size: 12px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .btn-remove-logo:hover { background: #c0392b; }
+    .btn-servicios { background: #16a085 !important; }
+    .btn-servicios:hover { background: #1abc9c !important; }
+    .modal-servicios { max-width: 500px; max-height: 85vh; display: flex; flex-direction: column; }
+    .servicios-tabs { display: flex; gap: 0; margin-bottom: 12px; border-bottom: 2px solid #eee; }
+    .servicios-tabs .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; font-size: 13px; font-weight: 600; color: #777; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+    .servicios-tabs .tab-btn.active { color: #16a085; border-bottom-color: #16a085; }
+    .servicios-tabs .tab-btn:hover { color: #1abc9c; }
+    .servicios-content { flex: 1; overflow-y: auto; max-height: 50vh; }
+    .lista-servicios { display: flex; flex-direction: column; gap: 8px; }
+    .item-servicio { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1px solid #e0e0e0; border-radius: 6px; background: #fafafa; cursor: pointer; transition: all 0.15s; }
+    .item-servicio:hover { border-color: #16a085; background: #e8f6f3; }
+    .item-servicio .info-servicio { flex: 1; }
+    .item-servicio .nombre-servicio { font-weight: 600; color: #2c3e50; }
+    .item-servicio .desc-servicio { font-size: 11px; color: #777; margin-top: 2px; }
+    .item-servicio .categoria-servicio { font-size: 10px; color: #16a085; background: #e8f6f3; padding: 2px 6px; border-radius: 3px; margin-top: 4px; display: inline-block; }
+    .item-servicio .precio-servicio { font-weight: 700; color: #27ae60; font-size: 14px; margin-left: 12px; }
+    .item-servicio .acciones-servicio { display: flex; gap: 4px; margin-left: 8px; }
+    .item-servicio .btn-edit-servicio, .item-servicio .btn-del-servicio { padding: 4px 8px; font-size: 11px; border: none; border-radius: 3px; cursor: pointer; }
+    .item-servicio .btn-edit-servicio { background: #3498db; color: white; }
+    .item-servicio .btn-del-servicio { background: #e74c3c; color: white; }
+    .servicios-footer { margin-top: 12px; padding-top: 12px; border-top: 1px solid #eee; }
+    body.tema-oscuro .modal-servicios { background: #16213e; }
+    body.tema-oscuro .item-servicio { background: #0f3460; border-color: #3498db; }
+    body.tema-oscuro .item-servicio:hover { background: #1a4a6e; }
+    body.tema-oscuro .item-servicio .nombre-servicio { color: #ecf0f1; }
+    body.tema-oscuro .item-servicio .categoria-servicio { background: #0f3460; color: #1abc9c; }
+    body.tema-oscuro .servicios-tabs { border-bottom-color: #3498db33; }
+    .bloque-invoice, .bloque-quote { transition: opacity 0.2s; }
+    .documento[data-tipo="invoice"] .bloque-quote { display: none !important; }
+    .documento[data-tipo="invoice"] .bloque-invoice { display: block !important; }
+    .documento[data-tipo="quote"] .bloque-invoice { display: none !important; }
+    .documento[data-tipo="quote"] .bloque-quote { display: block !important; }
+    .invoice-wrap { font-size: 12px; }
+    .invoice-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 2px solid #2c3e50; padding-bottom: 12px; }
+    .invoice-company h2 { margin: 0 0 4px 0; font-size: 1.4rem; font-weight: 700; color: #2c3e50; }
+    .invoice-company .info { font-size: 12px; color: #555; line-height: 1.5; }
+    .invoice-right { min-width: 180px; display: flex; flex-direction: column; align-items: flex-end; }
+    .invoice-right h3 { margin: 0 0 8px 0; font-size: 1.3rem; font-weight: 700; text-align: right; }
+    .invoice-right .meta { font-size: 12px; text-align: right; }
+    .invoice-meta-filas { display: flex !important; flex-direction: column !important; gap: 8px; align-items: flex-start; margin-top: 0; }
+    .invoice-meta-filas .invoice-meta { display: flex !important; flex-direction: column !important; align-items: flex-end; text-align: right; min-width: 120px; }
+    .invoice-meta-filas .invoice-meta.invoice-meta-inline { flex-direction: row !important; align-items: center; gap: 6px; min-width: 180px; }
+    .invoice-meta-filas .invoice-meta-inline label { min-width: 72px; flex-shrink: 0; }
+    .invoice-meta-filas .invoice-meta-inline input { width: 80px !important; max-width: 80px; min-width: 80px; flex-shrink: 0; }
+    #numFactura { width: 56px !important; max-width: 56px !important; min-width: 56px !important; }
+    .fecha-inv-wrap { position: relative; display: inline-block; }
+    .fecha-inv-wrap #fechaInv { padding-right: 24px; }
+    .fecha-icono-cal { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 14px; pointer-events: none; user-select: none; z-index: 0; }
+    .fecha-inv-wrap input[type="date"] { position: absolute; right: 2px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; padding: 0; border: none; background: transparent; cursor: pointer; opacity: 0; z-index: 1; }
+    .invoice-meta-filas .invoice-meta label { text-align: right; }
+    .invoice-meta-filas .invoice-meta input { width: 120px !important; max-width: 120px; box-sizing: border-box; flex: none; }
+    .invoice-customer-invoice { margin-bottom: 16px; }
+    .invoice-customer label, .invoice-meta label { font-size: 12px; font-weight: 600; color: #777; display: block; }
+    .invoice-customer input, .invoice-meta input { border: 1px solid #bdc3c7; padding: 4px 6px; font-size: 12px; width: 100%; border-radius: 3px; }
+    .fila-nombre-direccion, .fila-email-telefono { display: flex; gap: 12px; align-items: flex-end; margin-bottom: 6px; }
+    .fila-nombre-direccion input:first-child { flex: 0 0 150px; }
+    .fila-nombre-direccion input:last-child { flex: 1; min-width: 0; }
+    .fila-email-telefono input[type="email"],
+    .fila-email-telefono input[type="tel"] { flex: 1; min-width: 0; }
+    .tabla-materials { border-collapse: collapse; width: 100%; font-size: 12px; margin-bottom: 12px; }
+    .tabla-materials th { background: #90c695; color: #1a3d1a; padding: 5px 6px; text-align: left; font-weight: 600; }
+    .tabla-materials td { padding: 4px 6px; border: 1px solid #ddd; }
+    .tabla-materials input { padding: 2px 4px; font-size: 12px; border: 1px solid #ccc; width: 100%; }
+    .tabla-materials .col-mat { width: 100px; }
+    .tabla-materials .col-desc { min-width: 70px; }
+    .tabla-materials .col-yards { width: 95px; }
+    .tabla-materials .col-yards .yards-cell { display: flex; gap: 2px; }
+    .tabla-materials .col-yards .input-yards { flex: 1; min-width: 0; }
+    .tabla-materials .col-yards select { padding: 2px 2px; font-size: 12px; border: 1px solid #ccc; width: 38px; }
+    .tabla-materials .col-color { width: 120px; }
+    .tabla-materials .col-qty { width: 90px; }
+    .tabla-items { border-collapse: collapse; width: 100%; font-size: 12px; margin-bottom: 12px; }
+    .tabla-items th { background: #95a5a6; color: #2c3e50; padding: 5px 6px; text-align: left; font-weight: 600; }
+    .tabla-items td { padding: 4px 6px; border: 1px solid #ddd; }
+    .tabla-items input { padding: 2px 4px; font-size: 12px; border: 1px solid #ccc; width: 100%; }
+    .tabla-items .col-desc { min-width: 150px; }
+    .tabla-items .col-qty { width: 60px; }
+    .tabla-items .col-unit { width: 90px; }
+    .tabla-items .unit-price-cell { display: flex; align-items: center; border: 1px solid #ccc; border-radius: 2px; padding: 2px 4px; background: white; font-size: 12px; }
+    .tabla-items .unit-price-cell input { flex: 1; min-width: 0; border: none; background: transparent; padding: 0; font-size: 12px; box-shadow: none; outline: none; }
+    .tabla-items .col-total { width: 90px; font-weight: 600; color: #1e8449; }
+    .tabla-items .td-item-total { font-size: 12px; }
+    .invoice-aceptamos { font-size: 12px; color: #555; margin: 8px 0 12px 0; }
+.invoice-totales-wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 16px; }
+    .invoice-totales { max-width: 260px; font-size: 13px; flex-shrink: 0; }
+    .invoice-totales .fila { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; gap: 12px; }
+    .invoice-totales .fila > span:first-child { flex-shrink: 0; }
+    .invoice-totales .fila > span:last-child { flex: 1; min-width: 95px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; font-size: 14px; }
+    .invoice-totales .fila.total { font-weight: 700; font-size: 1.05rem; border-top: 1px solid #333; margin-top: 4px; padding-top: 6px; }
+    .invoice-totales .fila-monto { display: flex; justify-content: flex-end; align-items: center; gap: 0; width: 100%; min-width: 95px; }
+.invoice-pago-sincerely { margin-top: 36px; font-size: 12px; color: #555; }
+.invoice-pago-sender { margin-top: 36px; font-size: 12px; color: #555; }
+    .invoice-totales .monto-prefix { font-size: 14px; font-weight: 600; }
+    .invoice-totales .monto-input { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; min-width: 4ch; text-align: right; padding: 0 1px; border: none; background: transparent; box-shadow: none; outline: none; -moz-appearance: textfield; box-sizing: border-box; }
+    .invoice-totales .monto-input::-webkit-outer-spin-button, .invoice-totales .monto-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .invoice-pago { font-size: 12px; flex: 1; max-width: 280px; }
+    .invoice-pago .aviso-rojo { color: #c0392b; font-size: 12px; }
+    .aviso-card-fee { color: #000; font-size: 12px; }
+    .aviso-card-fee-input-wrap { display: inline-flex; align-items: center; border: 1px solid #000; border-radius: 2px; padding: 1px 4px; background: #fff; }
+    .aviso-card-fee-input-wrap input { width: 28px; padding: 0 1px; font-size: 12px; border: none; background: transparent; color: #000; font-weight: 600; -moz-appearance: textfield; }
+    .aviso-card-fee-input-wrap input::-webkit-outer-spin-button,
+    .aviso-card-fee-input-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .aviso-card-fee-input-wrap .pct-suffix { color: #000; font-weight: 600; margin-left: 0; font-size: 12px; }
+    .invoice-footer { margin-top: 12px; padding-top: 8px; border-top: 1px solid #eee; font-size: 12px; color: #555; text-align: center; }
+.invoice-footer-line { margin: 2px 0; line-height: 1.3; }
+.invoice-footer-thanks { font-size: 12px; color: #777; margin-top: 4px; }
+    .exportando-pdf .btn-agregar, .exportando-pdf .btn-del { display: none !important; }
+    .exportando-pdf .col-del { display: none !important; }
+    .exportando-pdf .fecha-inv-wrap input[type="date"], .exportando-pdf .fecha-icono-cal { display: none !important; }
+    .exportando-pdf .tabla-materiales td, .exportando-pdf .tabla-materiales th,
+    .exportando-pdf .tabla-materials td, .exportando-pdf .tabla-materials th,
+    .exportando-pdf .tabla-items td, .exportando-pdf .tabla-items th { border: none !important; }
+    .exportando-pdf .tabla-materiales tr:nth-child(even) { background: transparent !important; }
+    .exportando-pdf .tabla-materiales input, .exportando-pdf .tabla-materiales select,
+    .exportando-pdf .tabla-materials input, .exportando-pdf .tabla-materials select,
+    .exportando-pdf .tabla-items input { border: none !important; box-shadow: none !important; background: transparent !important; }
+    .exportando-pdf .tabla-materiales .precio-cell, .exportando-pdf .tabla-items .unit-price-cell { border: none !important; background: transparent !important; }
+    .exportando-pdf .campo input, .exportando-pdf .campo select, .exportando-pdf .campo textarea,
+    .exportando-pdf .invoice-customer input, .exportando-pdf .invoice-meta input { border: none !important; background: transparent !important; }
+    .exportando-pdf .invoice-totales select { border: none !important; background: transparent !important; -webkit-appearance: none; appearance: none; }
+    .exportando-pdf .descripcion-proyecto textarea { border: none !important; background: transparent !important; }
+    .exportando-pdf input[readonly], .exportando-pdf .monto-input { border: none !important; background: transparent !important; }
+    .exportando-pdf .aviso-card-fee-input-wrap { border: none !important; background: transparent !important; box-shadow: none !important; outline: none !important; }
+    @media print {
+      body { background: white; padding: 0; }
+      .encabezado { display: none !important; }
+      .documento { box-shadow: none; max-height: none; }
+      .btn-agregar, .btn-del, .btn-config, .btn-accion, .modal-overlay, #modalRegistro, #modalCompartir { display: none !important; }
+      .tabla-materiales .col-del, .tabla-materials .col-del, .tabla-items .col-del { display: none !important; }
+      .fecha-inv-wrap input[type="date"], .fecha-icono-cal { display: none !important; }
+      .tabla-materiales td, .tabla-materiales th, .tabla-materials td, .tabla-materials th, .tabla-items td, .tabla-items th { border: none !important; }
+      .tabla-materiales tr:nth-child(even) { background: transparent !important; }
+      .tabla-materiales input, .tabla-materiales select, .tabla-materials input, .tabla-materials select, .tabla-items input { border: none !important; box-shadow: none !important; background: transparent !important; }
+      .tabla-materiales .precio-cell, .tabla-items .unit-price-cell { border: none !important; background: transparent !important; }
+      .campo input, .campo select, .campo textarea, .invoice-customer input, .invoice-meta input { border: none !important; background: transparent !important; }
+      .invoice-totales select { border: none !important; background: transparent !important; -webkit-appearance: none; appearance: none; }
+      .descripcion-proyecto textarea { border: none !important; background: transparent !important; }
+      input[readonly], .monto-input { border: none !important; background: transparent !important; }
+      .aviso-card-fee-input-wrap { border: none !important; background: transparent !important; box-shadow: none !important; }
+    }
+    .btn-tema { width: 32px; height: 32px; padding: 0; font-size: 18px; background: #ecf0f1; border: 1px solid #bdc3c7; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .btn-tema:hover { background: #3498db; border-color: #3498db; }
+    body.tema-oscuro { background: #1a1a2e; color: #eee; }
+    body.tema-oscuro .documento { background: #16213e; color: #eee; }
+    body.tema-oscuro .encabezado { border-bottom-color: #3498db; }
+    body.tema-oscuro .quote-header, body.tema-oscuro .invoice-header { border-bottom-color: #3498db; }
+    body.tema-oscuro .quote-company h2, body.tema-oscuro .invoice-company h2, body.tema-oscuro .quote-right h3 { color: #ecf0f1; }
+    body.tema-oscuro .quote-company .info, body.tema-oscuro .invoice-company .info { color: #bdc3c7; }
+    body.tema-oscuro .campo label, body.tema-oscuro .invoice-customer label, body.tema-oscuro .invoice-meta label, body.tema-oscuro .quote-meta label { color: #bdc3c7; }
+    body.tema-oscuro .campo input, body.tema-oscuro .campo select, body.tema-oscuro .campo textarea { background: #0f3460; border-color: #3498db; color: #eee; }
+    body.tema-oscuro .tabla-materiales th, body.tema-oscuro .tabla-materials th { background: #0f3460; color: #ecf0f1; }
+    body.tema-oscuro .tabla-materiales td, body.tema-oscuro .tabla-materials td { border-bottom-color: #3498db33; }
+    body.tema-oscuro .tabla-materiales tr:nth-child(even) { background: #16213e; }
+    body.tema-oscuro .tabla-materiales input, body.tema-oscuro .tabla-materiales select, body.tema-oscuro .tabla-materials input, body.tema-oscuro .tabla-materials select { background: #0f3460; border-color: #3498db; color: #eee; }
+    body.tema-oscuro .tabla-items th { background: #0f3460; color: #ecf0f1; }
+    body.tema-oscuro .tabla-items td { border-color: #3498db33; }
+    body.tema-oscuro .tabla-items input { background: #0f3460; border-color: #3498db; color: #eee; }
+    body.tema-oscuro .totales-finales { background: rgba(255,255,255,0.05); }
+    body.tema-oscuro .totales-finales h3, body.tema-oscuro .totales-finales .fila { color: #ecf0f1; }
+    body.tema-oscuro .invoice-totales .fila { color: #ecf0f1; }
+    body.tema-oscuro .modal { background: #16213e; color: #eee; }
+    body.tema-oscuro .modal h3, body.tema-oscuro .modal h4 { color: #ecf0f1; }
+    body.tema-oscuro .modal input, body.tema-oscuro .modal select { background: #0f3460; border-color: #3498db; color: #eee; }
+    body.tema-oscuro .item-registro { background: #0f3460; border-color: #3498db; }
+    body.tema-oscuro .item-registro .cliente { color: #ecf0f1; }
+    body.tema-oscuro .item-registro .trabajo, body.tema-oscuro .item-registro .telefono, body.tema-oscuro .item-registro .fecha { color: #bdc3c7; }
+    body.tema-oscuro .btn-config, body.tema-oscuro .btn-tema { background: #0f3460; border-color: #3498db; color: #ecf0f1; }
+    body.tema-oscuro .precio-cell, body.tema-oscuro .unit-price-cell { background: #0f3460 !important; border-color: #3498db !important; }
+    body.tema-oscuro .precio-cell input, body.tema-oscuro .unit-price-cell input { color: #eee; }
+    body.tema-oscuro .invoice-pago, body.tema-oscuro .invoice-footer { color: #bdc3c7; }
+    body.tema-oscuro .aviso-card-fee, body.tema-oscuro .aviso-card-fee-input-wrap { color: #eee; border-color: #eee; }
+    body.tema-oscuro .aviso-card-fee-input-wrap input, body.tema-oscuro .pct-suffix { color: #eee; }
+    .logo-container { position: absolute; cursor: move; z-index: 10; border: 2px dashed transparent; padding: 4px; }
+    .logo-container:hover { border-color: #3498db; }
+    .logo-container.dragging { border-color: #e74c3c; opacity: 0.8; }
+    .logo-container img { display: block; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
+    .logo-resize-handle { position: absolute; width: 10px; height: 10px; background: #3498db; border-radius: 2px; opacity: 0; z-index: 11; }
+    .logo-container:hover .logo-resize-handle { opacity: 1; }
+    .logo-handle-nw { top: -5px; left: -5px; cursor: nwse-resize; }
+    .logo-handle-ne { top: -5px; right: -5px; cursor: nesw-resize; }
+    .logo-handle-sw { bottom: -5px; left: -5px; cursor: nesw-resize; }
+    .logo-handle-se { bottom: -5px; right: -5px; cursor: nwse-resize; }
+    .logo-handle-n { top: -5px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+    .logo-handle-s { bottom: -5px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+    .logo-handle-w { left: -5px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+    .logo-handle-e { right: -5px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+    .documento { position: relative; }
+    .exportando-pdf .logo-container { border-color: transparent !important; }
+    .exportando-pdf .logo-resize-handle { display: none !important; }
+    @media print { .logo-container { border-color: transparent !important; } .logo-resize-handle { display: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="encabezado">
+    <div class="botones-accion">
+      <button type="button" class="btn-config" id="btnConfig" data-i18n-title="titleConfig" onclick="abrirConfig()">⚙</button>
+      <button type="button" class="btn-accion" id="btnSalvar" data-i18n="salvar" data-i18n-title="titleSalvar">Salvar</button>
+      <button type="button" class="btn-accion" id="btnRegistro" data-i18n="registro" data-i18n-title="titleRegistro">Registro</button>
+      <button type="button" class="btn-accion btn-servicios" id="btnServicios" data-i18n="servicios" data-i18n-title="titleServicios">Servicios</button>
+      <button type="button" class="btn-accion" id="btnCompartir" data-i18n="compartir" data-i18n-title="titleCompartir">Compartir</button>
+      <button type="button" class="btn-accion" id="btnLimpiar" data-i18n="limpiar" data-i18n-title="titleLimpiar">Limpiar</button>
+    </div>
+    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+      <div class="campo" style="margin:0;min-width:120px;">
+        <label data-i18n="idioma">Idioma</label>
+        <select id="idioma">
+          <option value="es">Español</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      <button type="button" class="btn-tema" id="btnTema" title="Cambiar tema">🌙</button>
+    </div>
+  </div>
+
+  <div class="documento" id="documento" data-tipo="quote">
+    <div class="bloque-quote">
+    <div class="logo-container" id="logoContainerQuote" style="display:none;">
+      <img id="quoteCompanyLogo" src="" alt="">
+      <div class="logo-resize-handle logo-handle-nw" data-dir="nw"></div>
+      <div class="logo-resize-handle logo-handle-n" data-dir="n"></div>
+      <div class="logo-resize-handle logo-handle-ne" data-dir="ne"></div>
+      <div class="logo-resize-handle logo-handle-w" data-dir="w"></div>
+      <div class="logo-resize-handle logo-handle-e" data-dir="e"></div>
+      <div class="logo-resize-handle logo-handle-sw" data-dir="sw"></div>
+      <div class="logo-resize-handle logo-handle-s" data-dir="s"></div>
+      <div class="logo-resize-handle logo-handle-se" data-dir="se"></div>
+    </div>
+    <div class="quote-header">
+      <div class="quote-company">
+        <h2 id="quoteCompanyName"></h2>
+        <div class="info" id="quoteCompanyInfo"></div>
+      </div>
+      <div class="quote-right">
+        <h3 id="tituloDocumento" data-i18n="tituloQuote">QUOTE</h3>
+        <div class="quote-meta-filas">
+          <div class="quote-meta quote-meta-inline">
+            <label data-i18n="fecha">Fecha</label>
+            <div class="fecha-quote-wrap">
+              <input type="text" id="fecha" data-i18n-ph="phFecha" placeholder="M/D/YY" maxlength="8">
+              <input type="date" id="fechaQuotePicker" tabindex="-1" title="">
+              <span class="fecha-icono-cal" id="btnCalendarioQuote" role="button" data-i18n-title="titleSelectDate">📅</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fila-datos">
+      <div class="campo campo-cliente-tel">
+        <div class="campo">
+          <label data-i18n="cliente">Cliente</label>
+          <input type="text" id="cliente" data-i18n-ph="nombre">
+        </div>
+        <div class="campo">
+          <input type="text" id="direccionCliente" data-i18n-ph="phAddress" placeholder="">
+        </div>
+        <div class="campo">
+          <input type="email" id="emailCliente" data-i18n-ph="phEmail" placeholder="">
+        </div>
+        <div class="campo">
+          <input type="tel" id="telefonoCliente" data-i18n-ph="phPhone" placeholder="">
+        </div>
+      </div>
+      <div class="campo">
+        <label data-i18n="trabajo">Trabajo</label>
+        <input type="text" id="trabajo" data-i18n-ph="descripcion">
+      </div>
+    </div>
+
+    <table class="tabla-materiales">
+      <thead>
+        <tr>
+          <th class="col-nombre" data-i18n="material">Material</th>
+          <th class="col-largo" data-i18n="largo">Largo</th>
+          <th class="col-unidad" data-i18n="unidad">Unidad</th>
+          <th class="col-ancho" data-i18n="ancho">Ancho</th>
+          <th class="col-rollo" data-i18n="rollo">Rollo</th>
+          <th class="col-cant" data-i18n="cantidad">Cantidad</th>
+          <th class="col-precio" data-i18n="precio">Precio</th>
+          <th class="col-por" data-i18n="por">Por</th>
+          <th class="col-sub" data-i18n="subtotal">Subtotal</th>
+          <th class="col-del"></th>
+        </tr>
+      </thead>
+      <tbody id="zonasMateriales"></tbody>
+    </table>
+
+    <button type="button" class="btn-agregar" id="btnAgregar" data-i18n="agregar" data-i18n-title="titleAgregar">+ Agregar material</button>
+
+    <table class="tabla-items">
+      <thead>
+        <tr>
+          <th class="col-desc" data-i18n="description">Description</th>
+          <th class="col-qty" data-i18n="quantity">Quantity</th>
+          <th class="col-unit" data-i18n="unitPrice">Unit Price</th>
+          <th class="col-total" data-i18n="total">Total</th>
+          <th class="col-del" style="width:28px;"></th>
+        </tr>
+      </thead>
+      <tbody id="zonasItemsQuote"></tbody>
+    </table>
+    <button type="button" class="btn-agregar" id="btnAgregarItemQuote" data-i18n="addRow" data-i18n-title="titleAddRow">+ Add row</button>
+
+    <div class="fila-descripcion-totales">
+      <div class="campo descripcion-proyecto">
+        <label data-i18n="descripcionProyecto">Descripción del proyecto · Colores · Instrucciones</label>
+        <textarea id="descripcionProyecto" rows="4" placeholder="" data-i18n-ph="descripcionProyectoPh"></textarea>
+      </div>
+      <div class="totales-finales">
+      <h3 data-i18n="resumen">Resumen total</h3>
+      <div class="fila">
+        <span data-i18n="subtotal">Subtotal</span>
+        <span id="subtotalGeneral">$0.00</span>
+      </div>
+      <div class="fila">
+        <span data-i18n="tax">Tax (%)</span>
+        <span><input type="number" id="taxPct" value="7" min="0" step="0.1" readonly style="width:42px;padding:2px;font-size:11px;border-radius:2px;border:1px solid #ddd;background:#f5f5f5;"> %</span>
+      </div>
+      <div class="fila">
+        <span>Tax</span>
+        <span id="taxMonto">$0.00</span>
+      </div>
+      <div class="fila total">
+        <span data-i18n="total">TOTAL</span>
+        <span id="totalFinal">$0.00</span>
+      </div>
+    </div>
+    </div>
+    </div>
+
+    <div class="bloque-invoice invoice-wrap" style="display:none;">
+      <div class="logo-container" id="logoContainerInv" style="display:none;">
+        <img id="invCompanyLogo" src="" alt="">
+        <div class="logo-resize-handle logo-handle-nw" data-dir="nw"></div>
+        <div class="logo-resize-handle logo-handle-n" data-dir="n"></div>
+        <div class="logo-resize-handle logo-handle-ne" data-dir="ne"></div>
+        <div class="logo-resize-handle logo-handle-w" data-dir="w"></div>
+        <div class="logo-resize-handle logo-handle-e" data-dir="e"></div>
+        <div class="logo-resize-handle logo-handle-sw" data-dir="sw"></div>
+        <div class="logo-resize-handle logo-handle-s" data-dir="s"></div>
+        <div class="logo-resize-handle logo-handle-se" data-dir="se"></div>
+      </div>
+      <div class="invoice-header">
+        <div class="invoice-company">
+          <h2 id="invCompanyName"></h2>
+          <div class="info" id="invCompanyInfo"></div>
+        </div>
+        <div class="invoice-right">
+          <h3 data-i18n="invoice">INVOICE</h3>
+          <div class="invoice-meta-filas">
+            <div class="invoice-meta invoice-meta-inline">
+              <label data-i18n="fecha">Date</label>
+              <div class="fecha-inv-wrap">
+                <input type="text" id="fechaInv" data-i18n-ph="phFechaInv" placeholder="M/D/YYYY" maxlength="10">
+                <input type="date" id="fechaInvPicker" tabindex="-1" title="">
+                <span class="fecha-icono-cal" id="btnCalendarioInv" role="button" data-i18n-title="titleSelectDate">📅</span>
+              </div>
+            </div>
+            <div class="invoice-meta invoice-meta-inline">
+              <label data-i18n="numFactura">Invoice No.</label>
+              <input type="text" id="numFactura" placeholder="">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="invoice-customer-invoice">
+        <div class="invoice-customer">
+          <label data-i18n="customer">Customer</label>
+          <div class="fila-nombre-direccion">
+            <input type="text" id="clienteInv" data-i18n-ph="phName" placeholder="Name">
+            <input type="text" id="direccionInv" data-i18n-ph="phAddress" placeholder="Address">
+          </div>
+          <div class="fila-email-telefono">
+            <input type="email" id="emailClienteInv" data-i18n-ph="phEmail" placeholder="Email">
+            <input type="tel" id="telefonoClienteInv" data-i18n-ph="phPhone" placeholder="Phone">
+          </div>
+        </div>
+      </div>
+      <table class="tabla-materials">
+        <thead>
+          <tr>
+            <th class="col-mat" data-i18n="materials">Materials</th>
+            <th class="col-desc" data-i18n="description">Description</th>
+            <th class="col-yards" data-i18n="yards">Yards</th>
+            <th class="col-color" data-i18n="color">Color</th>
+            <th class="col-qty" data-i18n="colorNum">Color No</th>
+            <th class="col-del" style="width:28px;"></th>
+          </tr>
+        </thead>
+        <tbody id="zonasMaterials"></tbody>
+      </table>
+      <button type="button" class="btn-agregar" id="btnAgregarMat" data-i18n="addRow">+ Add row</button>
+      <table class="tabla-items">
+        <thead>
+          <tr>
+            <th class="col-desc" data-i18n="description">Description</th>
+            <th class="col-qty" data-i18n="quantity">Quantity</th>
+            <th class="col-unit" data-i18n="unitPrice">Unit Price</th>
+            <th class="col-total" data-i18n="total">Total</th>
+            <th class="col-del" style="width:28px;"></th>
+          </tr>
+        </thead>
+        <tbody id="zonasItems"></tbody>
+      </table>
+      <button type="button" class="btn-agregar" id="btnAgregarItem" data-i18n="addRow" data-i18n-title="titleAddRow">+ Add row</button>
+      <div class="invoice-aceptamos" data-i18n="aceptamos">Aceptamos: cheques, efectivo, tarjetas, zelle, pagos por tel.</div>
+      <div class="invoice-totales-wrap">
+        <div class="invoice-pago">
+          <div data-i18n="checksPayable">Checks payable to:</div>
+          <strong id="invPayableTo"></strong>
+          <div class="aviso-card-fee">
+            <span id="invCardFeeNoticeText">Pagos con tarjeta sujetos a cargo del </span>
+            <span class="aviso-card-fee-input-wrap">
+              <input type="number" id="cardFeePctInv" value="3.5" min="0" step="0.1" placeholder="3.5" data-i18n-title="titleCardFeePct">
+              <span class="pct-suffix">%</span>
+            </span>
+          </div>
+          <div class="invoice-pago-sincerely"><span data-i18n="sincerely">Atentamente,</span> <strong id="invSincerely"></strong></div>
+          <div class="invoice-pago-sender"><span data-i18n="sender">Remitente:</span> <span id="invSender"></span></div>
+        </div>
+        <div class="invoice-totales">
+          <div class="fila"><span data-i18n="subtotal">Subtotal</span><span id="subtotalInv">$0.00</span></div>
+          <div class="fila"><span data-i18n="tax">tax</span> <input type="number" id="taxPctInv" value="7" min="0" step="0.01" readonly style="width:50px;display:inline;padding:2px;font-size:11px;border:1px solid #ddd;background:#f5f5f5;">% <span id="taxMontoInv">$0.00</span></div>
+          <div class="fila total"><span data-i18n="total">Total</span><span id="totalInv">$0.00</span></div>
+          <div class="fila">
+            <span>
+              <select id="tipoDescuentoDeposito" style="padding:3px 6px;font-size:12px;border:1px solid #bdc3c7;border-radius:3px;min-width:90px;">
+                <option value="descuento" data-i18n-opt="discount">Descuento</option>
+                <option value="deposito" data-i18n-opt="deposito">Depósito</option>
+              </select>
+            </span>
+            <span class="fila-monto"><span class="monto-prefix">$</span><input type="text" inputmode="decimal" id="discountInv" class="monto-input" value="0.00" placeholder="0.00"></span>
+          </div>
+          <div class="fila">
+            <span>
+              <select id="tipoPagadoBalance" style="padding:3px 6px;font-size:12px;border:1px solid #bdc3c7;border-radius:3px;min-width:120px;">
+                <option value="pagado" data-i18n-opt="paidInFull">Pagado</option>
+                <option value="balance" data-i18n-opt="balance">Balance</option>
+                <option value="balancePagado" data-i18n-opt="balancePagado">Balance pagado</option>
+              </select>
+            </span>
+            <span class="fila-monto"><span class="monto-prefix">$</span><input type="text" inputmode="decimal" id="paidInv" class="monto-input" value="0.00" placeholder="0.00"></span>
+          </div>
+        </div>
+      </div>
+      <div class="invoice-footer">
+        <div class="invoice-footer-line invoice-footer-thanks" id="invThankYou"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalRegistro" onclick="if(event.target.id==='modalRegistro') cerrarRegistro()">
+    <div class="modal modal-registro">
+      <h3 data-i18n="registroTitulo">Registro de presupuestos</h3>
+      <input type="text" id="buscarRegistro" class="buscar-registro" data-i18n-ph="buscarRegistro" placeholder="Buscar por nombre o teléfono...">
+      <div class="filtro-fecha-wrap">
+        <label data-i18n="filtroDesde">Desde:</label>
+        <input type="date" id="filtroFechaDesde">
+        <label data-i18n="filtroHasta">Hasta:</label>
+        <input type="date" id="filtroFechaHasta">
+        <button type="button" class="btn-limpiar-filtro" id="btnLimpiarFiltroFecha" data-i18n="limpiarFiltro">✕</button>
+      </div>
+      <div id="listaRegistro" class="lista-registro"></div>
+      <div class="registro-acciones">
+        <button type="button" class="btn-exportar" id="btnExportarDatos" data-i18n="exportarDatos">Exportar datos</button>
+        <button type="button" class="btn-importar" id="btnImportarDatos" data-i18n="importarDatos">Importar datos</button>
+        <input type="file" id="inputImportarDatos" accept=".json" style="display:none;">
+        <button type="button" class="btn-guardar" onclick="cerrarRegistro()" data-i18n="cerrar" data-i18n-title="titleCerrar">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalConfig" onclick="if(event.target.id==='modalConfig') cerrarConfig()">
+    <div class="modal modal-config" id="formConfig" style="max-width:440px; max-height:90vh; overflow-y:auto;">
+      <h3 data-i18n="configTitulo">Configuración</h3>
+      <div class="config-seccion">
+        <h4 data-i18n="tipoDocumento">Tipo de documento</h4>
+        <div class="campo">
+          <select id="configTipoDocumento">
+            <option value="quote" data-i18n-opt="tipoQuote">Presupuesto (Quote)</option>
+            <option value="invoice" data-i18n-opt="tipoInvoice">Factura (Invoice)</option>
+          </select>
+        </div>
+      </div>
+      <div class="config-seccion">
+        <h4 data-i18n="configEmpresa">Datos de la empresa</h4>
+        <div class="campo">
+          <label data-i18n="configNombre">Nombre / Company</label>
+          <input type="text" id="configNombre" data-i18n-ph="phConfigNombre" placeholder="">
+        </div>
+        <div class="campo">
+          <label data-i18n="configLogo">Logo de empresa / Company logo</label>
+          <div class="logo-upload-wrap">
+            <input type="file" id="configLogo" accept="image/*" style="display:none;">
+            <button type="button" class="btn-upload-logo" id="btnUploadLogo" data-i18n="seleccionarLogo">Seleccionar imagen</button>
+            <button type="button" class="btn-remove-logo" id="btnRemoveLogo" data-i18n="eliminarLogo" style="display:none;">✕</button>
+          </div>
+          <div class="logo-preview-wrap">
+            <img id="logoPreview" src="" alt="Logo" style="display:none; max-width:150px; max-height:80px; margin-top:8px; border:1px solid #ddd; border-radius:4px;">
+          </div>
+        </div>
+        <div class="campo">
+          <label data-i18n="configDireccion">Dirección / Address</label>
+          <input type="text" id="configDireccion" placeholder="">
+        </div>
+        <div class="campo">
+          <label data-i18n="configTelefono">Teléfono / Phone</label>
+          <input type="text" id="configTelefono" placeholder="">
+        </div>
+        <div class="campo">
+          <label data-i18n="configEmail">Email</label>
+          <input type="email" id="configEmail" placeholder="">
+        </div>
+        <div class="campo">
+          <label data-i18n="configPayableTo">Cheques a nombre de / Checks payable to</label>
+          <input type="text" id="configPayableTo" placeholder="">
+        </div>
+        <div class="campo">
+          <label data-i18n="configSincerely">Atentamente / Sincerely</label>
+          <input type="text" id="configSincerely" placeholder="">
+        </div>
+        <div class="campo">
+          <label data-i18n="configSender">Nombre del remitente / Sender</label>
+          <input type="text" id="configSender" data-i18n-ph="phConfigSender" placeholder="">
+        </div>
+        <div class="campo">
+          <label data-i18n="configTaxPct">% Impuestos por defecto / Default tax %</label>
+          <input type="number" id="configTaxPct" placeholder="7" min="0" step="0.01" style="width:80px;">
+        </div>
+        <div class="campo">
+          <label data-i18n="configCardFeePct">% Cargo tarjetas / Card fee %</label>
+          <input type="number" id="configCardFeePct" placeholder="3.5" min="0" step="0.01" style="width:80px;">
+        </div>
+        <div class="campo">
+          <label data-i18n="configCardFeeNotice">Aviso pagos tarjeta / Card payment notice</label>
+          <input type="text" id="configCardFeeNotice" placeholder="" style="width:100%;">
+        </div>
+        <div class="campo">
+          <label data-i18n="configThankYou">Mensaje agradecimiento / Thank you message</label>
+          <input type="text" id="configThankYou" placeholder="" style="width:100%;">
+        </div>
+      </div>
+      <button type="button" class="btn-guardar" id="btnGuardarConfig" data-i18n="guardarConfig" data-i18n-title="titleGuardarConfig">Guardar datos</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalCompartir" onclick="if(event.target.id==='modalCompartir') cerrarModalCompartir()">
+    <div class="modal modal-compartir" onclick="event.stopPropagation()">
+      <h3 data-i18n="compartir">Compartir</h3>
+      <div class="campo">
+        <label data-i18n="formatoSalida">Formato de salida</label>
+        <select id="formatoCompartir">
+          <option value="texto" data-i18n-opt="formatoTexto">Texto</option>
+          <option value="pdf" data-i18n-opt="formatoPdf">PDF</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px;">
+        <button type="button" class="btn-guardar" id="btnCompartirContinuar" data-i18n="continuar">Continuar</button>
+        <button type="button" class="btn-accion" onclick="cerrarModalCompartir()" data-i18n="cerrar">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalServicios" onclick="if(event.target.id==='modalServicios') cerrarServicios()">
+    <div class="modal modal-servicios">
+      <h3 data-i18n="serviciosTitulo">Lista de Servicios / Trabajos</h3>
+      <div class="servicios-tabs">
+        <button type="button" class="tab-btn active" id="tabListaServicios" data-i18n="listaServicios">Lista</button>
+        <button type="button" class="tab-btn" id="tabAgregarServicio" data-i18n="agregarServicio">+ Agregar</button>
+      </div>
+      <div class="servicios-content" id="serviciosLista">
+        <input type="text" id="buscarServicio" class="buscar-registro" data-i18n-ph="buscarServicioPh" placeholder="Buscar servicio...">
+        <div id="listaServicios" class="lista-servicios"></div>
+      </div>
+      <div class="servicios-content" id="serviciosAgregar" style="display:none;">
+        <div class="campo">
+          <label data-i18n="nombreServicio">Nombre del servicio</label>
+          <input type="text" id="nuevoServicioNombre" placeholder="">
+        </div>
+        <div class="campo">
+          <label data-i18n="descripcionServicio">Descripción (opcional)</label>
+          <input type="text" id="nuevoServicioDesc" placeholder="">
+        </div>
+        <div class="campo">
+          <label data-i18n="precioServicio">Precio</label>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span>$</span>
+            <input type="text" inputmode="decimal" id="nuevoServicioPrecio" placeholder="0.00" style="width:100px;">
+          </div>
+        </div>
+        <div class="campo">
+          <label data-i18n="categoriaServicio">Categoría (opcional)</label>
+          <input type="text" id="nuevoServicioCategoria" placeholder="" list="listaCategorias">
+          <datalist id="listaCategorias"></datalist>
+        </div>
+        <button type="button" class="btn-guardar" id="btnGuardarServicio" data-i18n="guardarServicio">Guardar servicio</button>
+      </div>
+      <div class="servicios-footer">
+        <button type="button" class="btn-accion" onclick="cerrarServicios()" data-i18n="cerrar">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <template id="templateFilaMaterial">
+    <tr class="fila-material-inv">
+      <td><input type="text" class="input-mat" data-i18n-ph="phMat" placeholder="Materiales"></td>
+      <td><input type="text" class="input-desc" placeholder=""></td>
+      <td class="col-yards"><div class="yards-cell"><input type="text" class="input-yards" data-i18n-ph="phYards" placeholder="0"><select class="input-yards-unit"><option value="yds">yds</option><option value="ft">ft</option><option value="in">in</option></select></div></td>
+      <td><input type="text" class="input-color" data-i18n-ph="phColor" placeholder="Dark gray"></td>
+      <td><input type="text" class="input-qty-mat" placeholder="0"></td>
+      <td class="col-del"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
+    </tr>
+  </template>
+  <template id="templateFilaItem">
+    <tr class="fila-item-inv">
+      <td><input type="text" class="input-item-desc" data-i18n-ph="phItemDesc" placeholder="Custom boat cover"></td>
+      <td><input type="number" class="input-item-qty" placeholder="0" min="0" step="1"></td>
+      <td class="col-unit"><span class="unit-price-cell">$<input type="text" inputmode="decimal" class="input-item-unit" placeholder="0.00" min="0"></span></td>
+      <td class="td-item-total">$0.00</td>
+      <td class="col-del" style="width:28px;"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
+    </tr>
+  </template>
+  <template id="templateFilaItemQuote">
+    <tr class="fila-item-quote">
+      <td><input type="text" class="input-item-desc" data-i18n-ph="phItemDesc" placeholder="Custom boat cover"></td>
+      <td><input type="number" class="input-item-qty" placeholder="0" min="0" step="1"></td>
+      <td class="col-unit"><span class="unit-price-cell">$<input type="text" inputmode="decimal" class="input-item-unit" placeholder="0.00" min="0"></span></td>
+      <td class="td-item-total">$0.00</td>
+      <td class="col-del" style="width:28px;"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
+    </tr>
+  </template>
+  <template id="templateFila">
+    <tr class="fila-material">
+      <td class="col-nombre"><input type="text" class="input-nombre" data-i18n-ph="materialPh"></td>
+      <td class="col-largo"><input type="number" class="input-largo" step="0.01" min="0" placeholder="0"></td>
+      <td class="col-unidad">
+        <select class="input-unidad">
+          <option value="pulgadas" selected>in</option>
+          <option value="pies">ft</option>
+          <option value="yardas">yd</option>
+        </select>
+      </td>
+      <td class="col-ancho"><input type="number" class="input-ancho" step="0.01" min="0" placeholder="0"></td>
+      <td class="col-rollo">
+        <select class="input-anchoRollo">
+          <option value="12">12 in</option>
+          <option value="24">24 in</option>
+          <option value="36">36 in</option>
+          <option value="44">44 in</option>
+          <option value="54" selected>54 in</option>
+          <option value="60">60 in</option>
+          <option value="72">72 in</option>
+          <option value="102">102 in</option>
+          <option value="custom" data-i18n="custom">Custom</option>
+        </select>
+      </td>
+      <td class="col-cant td-cantidades">—</td>
+      <td class="col-precio"><span class="precio-cell"><span class="precio-simbolo">$</span><input type="text" inputmode="decimal" class="input-precio" placeholder="0"></span></td>
+      <td class="col-por">
+        <select class="input-unidadPrecio">
+          <option value="in_lineal" selected>in</option>
+          <option value="ft_lineal">ft</option>
+          <option value="yd_lineal">yd</option>
+          <option value="in_cuadrada">in²</option>
+          <option value="ft_cuadrado">ft²</option>
+          <option value="yd_cuadrada">yd²</option>
+        </select>
+      </td>
+      <td class="col-sub td-subtotal">$0.00</td>
+      <td class="col-del"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
+    </tr>
+  </template>
+
+  <script>
+    const aPulg = { pulgadas: 1, pies: 12, yardas: 36 };
+    let contadorId = 0;
+    let idioma = localStorage.getItem('presupuesto_idioma') || 'es';
+
+    const T = {
+      es: {
+        titulo: 'Presupuesto',
+        tituloQuote: 'PRESUPUESTO',
+        tituloInvoice: 'Factura',
+        subtitulo: 'Tapicería — Vinyl, Tela, Carpetas, Pisos',
+        idioma: 'Idioma',
+        tipoDoc: 'Tipo',
+        tipoQuote: 'Presupuesto',
+        tipoInvoice: 'Factura',
+        cliente: 'Cliente',
+        nombre: 'Nombre',
+        trabajo: 'Trabajo',
+        descripcion: 'Descripción',
+        fecha: 'Fecha',
+        material: 'Material',
+        largo: 'Largo',
+        unidad: 'Unidad',
+        ancho: 'Ancho',
+        rollo: 'Rollo',
+        cantidad: 'Cantidad',
+        precio: 'Precio',
+        por: 'Por',
+        subtotal: 'Subtotal',
+        agregar: '+ Agregar material',
+        resumen: 'Resumen total',
+        tax: 'Tax (%)',
+        taxMonto: 'Tax',
+        total: 'TOTAL',
+        custom: 'Personalizado',
+        materialPh: 'Materiales',
+        configurar: '⚙ Configurar',
+        titleConfig: 'Configurar',
+        titleSalvar: 'Guardar presupuesto o factura',
+        titleRegistro: 'Ver registro de presupuestos',
+        titleCompartir: 'Compartir o copiar al portapapeles',
+        titleLimpiar: 'Borrar todo el contenido',
+        titleAgregar: 'Agregar nueva fila de material',
+        titleAddRow: 'Agregar fila',
+        titleEliminar: 'Eliminar fila',
+        titleCargar: 'Cargar este presupuesto',
+        titleSelectDate: 'Seleccionar fecha',
+        titleCardFeePct: '% cargo por uso de tarjeta',
+        titleBorrar: 'Borrar del registro',
+        configTitulo: 'Configuración',
+        configEmpresa: 'Datos de la empresa',
+        configLogo: 'Logo de empresa',
+        seleccionarLogo: 'Seleccionar imagen',
+        eliminarLogo: 'Eliminar',
+        configNombre: 'Nombre de la empresa',
+        configDireccion: 'Dirección',
+        configTelefono: 'Teléfono',
+        configEmail: 'Email',
+        configPayableTo: 'Cheques a nombre de',
+        configSincerely: 'Atentamente (nombre)',
+        configSender: 'Remitente / Sender',
+        configTaxPct: '% Impuestos por defecto',
+        configCardFeePct: '% Cargo tarjetas',
+        configCardFeeNotice: 'Aviso pagos con tarjeta',
+        configThankYou: 'Mensaje de agradecimiento',
+        tipoDocumento: 'Tipo de documento',
+        guardarConfig: 'Guardar datos',
+        invoice: 'FACTURA',
+        customer: 'Cliente',
+        materials: 'Materiales',
+        description: 'Descripción',
+        yards: 'Cantidad',
+        color: 'Color',
+        quantity: 'Cantidad',
+        colorNum: 'Color No',
+        unitPrice: 'P. unit.',
+        discount: 'Descuento',
+        paidInFull: 'Pagado',
+        balancePagado: 'Balance pagado',
+        checksPayable: 'Cheques a nombre de:',
+        cardFeeNotice: 'Pagos con tarjeta sujetos a cargo del 3.5%',
+        sincerely: 'Atentamente,',
+        sender: 'Remitente:',
+        thankYou: 'Gracias por su negocio, es un placer trabajar con usted',
+        aceptamos: 'Aceptamos: cheques, efectivo, tarjetas, zelle, pagos por tel.',
+        addRow: '+ Agregar fila',
+        notasQuote: 'Notas',
+        notasQuotePh: 'Notas adicionales...',
+        descripcionProyecto: 'Descripción del proyecto · Colores · Instrucciones',
+        descripcionProyectoPh: 'Describe el trabajo, colores, instrucciones...',
+        direccionCliente: 'Dirección',
+        emailCliente: 'E-mail',
+        telefonoCliente: 'Tel. cliente',
+        buscarRegistro: 'Buscar por nombre o teléfono...',
+        filtroDesde: 'Desde:',
+        filtroHasta: 'Hasta:',
+        limpiarFiltro: 'Limpiar',
+        exportarDatos: 'Exportar datos',
+        importarDatos: 'Importar datos',
+        exportExito: 'Datos exportados correctamente',
+        importExito: 'Datos importados correctamente',
+        importError: 'Error al importar datos',
+        servicios: 'Servicios',
+        titleServicios: 'Lista de trabajos y servicios',
+        serviciosTitulo: 'Lista de Servicios / Trabajos',
+        listaServicios: 'Lista',
+        agregarServicio: '+ Agregar',
+        buscarServicioPh: 'Buscar servicio...',
+        nombreServicio: 'Nombre del servicio',
+        descripcionServicio: 'Descripción (opcional)',
+        precioServicio: 'Precio',
+        categoriaServicio: 'Categoría (opcional)',
+        guardarServicio: 'Guardar servicio',
+        editarServicio: 'Editar',
+        eliminarServicio: 'Eliminar',
+        servicioGuardado: 'Servicio guardado',
+        servicioEliminado: 'Servicio eliminado',
+        confirmarEliminarServicio: '¿Eliminar este servicio?',
+        sinServicios: 'No hay servicios registrados',
+        seleccionarServicio: 'Seleccionar servicio para agregar',
+        registro: 'Registro',
+        registroTitulo: 'Registro de presupuestos',
+        cerrar: 'Cerrar',
+        cargar: 'Cargar',
+        borrar: 'Borrar',
+        salvar: 'Salvar',
+        compartir: 'Compartir',
+        formatoSalida: 'Formato de salida',
+        formatoTexto: 'Texto',
+        formatoPdf: 'PDF',
+        continuar: 'Continuar',
+        limpiar: 'Limpiar',
+        msgGuardado: 'Presupuesto guardado',
+        msgCopiado: 'Copiado al portapapeles',
+        msgConfirmarLimpiar: '¿Borrar todo el contenido?',
+        numFactura: 'Nº factura',
+        phName: 'Nombre',
+        phAddress: 'Dirección',
+        phEmail: 'ejemplo@email.com',
+        phPhone: 'Teléfono',
+        phFecha: 'D/M/AA',
+        phFechaInv: 'D/M/AAAA',
+        phConfigNombre: '',
+        phConfigEmail: 'Email',
+        phConfigSender: 'Remitente',
+        phMat: 'Materiales',
+        phYards: '0',
+        phColor: 'Color',
+        phItemDesc: 'Descripción del trabajo',
+        phTelefonoCliente: 'Teléfono'
+      },
+      en: {
+        titulo: 'Quote',
+        tituloQuote: 'QUOTE',
+        tituloInvoice: 'Invoice',
+        infoTapiceria: 'Business info',
+        idioma: 'Language',
+        tipoDoc: 'Type',
+        tipoQuote: 'Quote',
+        tipoInvoice: 'Invoice',
+        cliente: 'Customer',
+        nombre: 'Name',
+        trabajo: 'Job',
+        descripcion: 'Description',
+        fecha: 'Date',
+        material: 'Material',
+        largo: 'Length',
+        unidad: 'Unit',
+        ancho: 'Width',
+        rollo: 'Roll',
+        cantidad: 'Qty',
+        precio: 'Price',
+        por: 'Per',
+        subtotal: 'Subtotal',
+        agregar: '+ Add material',
+        resumen: 'Total summary',
+        tax: 'Tax (%)',
+        taxMonto: 'Tax',
+        total: 'TOTAL',
+        custom: 'Custom',
+        materialPh: 'Materials',
+        configurar: '⚙ Configure',
+        titleConfig: 'Configure',
+        titleSalvar: 'Save quote or invoice',
+        titleRegistro: 'View quote registry',
+        titleCompartir: 'Share or copy to clipboard',
+        titleLimpiar: 'Clear all content',
+        titleAgregar: 'Add new material row',
+        titleAddRow: 'Add row',
+        titleEliminar: 'Remove row',
+        titleCerrar: 'Close window',
+        titleGuardarConfig: 'Save configuration',
+        titleCargar: 'Load this quote',
+        titleSelectDate: 'Select date',
+        titleCardFeePct: 'Card fee %',
+        titleBorrar: 'Delete from registry',
+        configTitulo: 'Configuration',
+        configEmpresa: 'Company data',
+        configLogo: 'Company logo',
+        seleccionarLogo: 'Select image',
+        eliminarLogo: 'Remove',
+        configNombre: 'Business name',
+        configDireccion: 'Address',
+        configTelefono: 'Phone',
+        configEmail: 'Email',
+        configPayableTo: 'Checks payable to',
+        configSincerely: 'Sincerely (name)',
+        configSender: 'Sender',
+        configTaxPct: 'Default tax %',
+        configCardFeePct: 'Card fee %',
+        configCardFeeNotice: 'Card payment notice',
+        configThankYou: 'Thank you message',
+        tipoDocumento: 'Document type',
+        guardarConfig: 'Save data',
+        invoice: 'INVOICE',
+        customer: 'Customer',
+        materials: 'Materials',
+        description: 'Description',
+        yards: 'Quantity',
+        color: 'Color',
+        quantity: 'Quantity',
+        colorNum: 'Color No',
+        unitPrice: 'Unit Price',
+        discount: 'Discount',
+        deposito: 'Deposit',
+        paidInFull: 'Paid in full',
+        balance: 'Balance',
+        balancePagado: 'Balance paid',
+        checksPayable: 'Checks payable to:',
+        cardFeeNotice: 'Card payments subject to a charge of 3.5%',
+        sincerely: 'Sincerely,',
+        sender: 'Sender:',
+        thankYou: 'Thank you for your business, It\'s a pleasure to work with you',
+        aceptamos: 'We accept: checks, cash, cards, Zelle, phone payments.',
+        addRow: '+ Add row',
+        notasQuote: 'Notes',
+        notasQuotePh: 'Additional notes...',
+        descripcionProyecto: 'Project description · Colors · Instructions',
+        descripcionProyectoPh: 'Describe the work, colors, instructions...',
+        direccionCliente: 'Address',
+        emailCliente: 'Email',
+        telefonoCliente: 'Customer phone',
+        buscarRegistro: 'Search by name or phone...',
+        filtroDesde: 'From:',
+        filtroHasta: 'To:',
+        limpiarFiltro: 'Clear',
+        salvar: 'Save',
+        registro: 'Registry',
+        servicios: 'Services',
+        titleServicios: 'Job and service list',
+        serviciosTitulo: 'Services / Jobs List',
+        listaServicios: 'List',
+        agregarServicio: '+ Add',
+        buscarServicioPh: 'Search service...',
+        nombreServicio: 'Service name',
+        descripcionServicio: 'Description (optional)',
+        precioServicio: 'Price',
+        categoriaServicio: 'Category (optional)',
+        guardarServicio: 'Save service',
+        editarServicio: 'Edit',
+        eliminarServicio: 'Delete',
+        servicioGuardado: 'Service saved',
+        servicioEliminado: 'Service deleted',
+        confirmarEliminarServicio: 'Delete this service?',
+        sinServicios: 'No services registered',
+        seleccionarServicio: 'Select service to add',
+        compartir: 'Share',
+        formatoSalida: 'Output format',
+        formatoTexto: 'Text',
+        formatoPdf: 'PDF',
+        continuar: 'Continue',
+        limpiar: 'Clear',
+        registroTitulo: 'Quote registry',
+        cerrar: 'Close',
+        cargar: 'Load',
+        borrar: 'Delete',
+        msgGuardado: 'Quote saved',
+        msgCopiado: 'Copied to clipboard',
+        msgConfirmarLimpiar: 'Clear all content?',
+        numFactura: 'Invoice No.',
+        phName: 'Name',
+        phAddress: 'Address',
+        phEmail: 'email@example.com',
+        phPhone: 'Phone',
+        phFecha: 'M/D/YY',
+        phFechaInv: 'M/D/YYYY',
+        phConfigNombre: '',
+        phConfigEmail: 'Email',
+        phConfigSender: 'Sender',
+        phMat: 'Materials',
+        phYards: '0',
+        phColor: 'Color',
+        phItemDesc: 'Work description',
+        phTelefonoCliente: 'Phone'
+      }
+    };
+
+    function aplicarTooltipsEn(el) {
+      const t = T[idioma] || T.es;
+      const root = el || document;
+      root.querySelectorAll('[data-i18n-title]').forEach(e => {
+        const k = e.getAttribute('data-i18n-title');
+        if (t[k]) e.title = t[k];
+      });
+      root.querySelectorAll('[data-i18n-ph]').forEach(e => {
+        const k = e.getAttribute('data-i18n-ph');
+        if (t[k]) e.placeholder = t[k];
+      });
+    }
+    function aplicarIdioma() {
+      const t = T[idioma] || T.es;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (t[k]) el.textContent = t[k];
+      });
+      document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const k = el.getAttribute('data-i18n-title');
+        if (t[k]) el.title = t[k];
+      });
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const k = el.getAttribute('data-i18n-ph');
+        if (t[k]) el.placeholder = t[k];
+      });
+      document.querySelectorAll('option[value="custom"]').forEach(el => {
+        if (t.custom) el.textContent = t.custom;
+      });
+      const template = document.getElementById('templateFila');
+      if (template && template.content) {
+        const opt = template.content.querySelector('option[value="custom"]');
+        if (opt && t.custom) opt.textContent = t.custom;
+      }
+      document.querySelectorAll('[data-i18n-opt]').forEach(el => {
+        const k = el.getAttribute('data-i18n-opt');
+        if (t[k]) el.textContent = t[k];
+      });
+      actualizarTituloDocumento();
+      document.documentElement.lang = idioma === 'es' ? 'es' : 'en';
+    }
+
+    function actualizarTituloDocumento() {
+      const el = document.getElementById('tituloDocumento');
+      const sel = document.getElementById('configTipoDocumento');
+      if (!el) return;
+      const tipo = sel ? sel.value : 'quote';
+      const t = T[idioma] || T.es;
+      el.textContent = tipo === 'invoice' ? t.tituloInvoice : t.tituloQuote;
+    }
+
+    function aplicarTipoDocumento() {
+      try {
+        const d = JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}');
+        const tipo = d.tipoDocumento || 'quote';
+        const doc = document.getElementById('documento');
+        if (doc) doc.setAttribute('data-tipo', tipo);
+        document.getElementById('configTipoDocumento').value = tipo;
+        actualizarTituloDocumento();
+        actualizarDisplayInvoice(d);
+      } catch (e) {}
+    }
+
+    function actualizarDisplayInvoice(d) {
+      const nombre = d.nombre || '';
+      const partes = [d.direccion, d.telefono, d.email].filter(Boolean);
+      document.getElementById('invCompanyName').textContent = nombre;
+      document.getElementById('invCompanyInfo').innerHTML = partes.join('<br>') || '';
+      document.getElementById('quoteCompanyName').textContent = nombre;
+      document.getElementById('quoteCompanyInfo').innerHTML = partes.join('<br>') || '';
+      const invLogo = document.getElementById('invCompanyLogo');
+      const quoteLogo = document.getElementById('quoteCompanyLogo');
+      const invContainer = document.getElementById('logoContainerInv');
+      const quoteContainer = document.getElementById('logoContainerQuote');
+      if (d.logo) {
+        invLogo.src = d.logo;
+        quoteLogo.src = d.logo;
+        invContainer.style.display = 'block';
+        quoteContainer.style.display = 'block';
+        if (d.logoPos) {
+          if (d.logoPos.quote) {
+            quoteContainer.style.left = d.logoPos.quote.x + 'px';
+            quoteContainer.style.top = d.logoPos.quote.y + 'px';
+            quoteContainer.style.width = d.logoPos.quote.w + 'px';
+            if (d.logoPos.quote.h) quoteContainer.style.height = d.logoPos.quote.h + 'px';
+          }
+          if (d.logoPos.invoice) {
+            invContainer.style.left = d.logoPos.invoice.x + 'px';
+            invContainer.style.top = d.logoPos.invoice.y + 'px';
+            invContainer.style.width = d.logoPos.invoice.w + 'px';
+            if (d.logoPos.invoice.h) invContainer.style.height = d.logoPos.invoice.h + 'px';
+          }
+        }
+      } else {
+        invContainer.style.display = 'none';
+        quoteContainer.style.display = 'none';
+      }
+      const payableTo = (d.payableTo && d.payableTo.trim()) ? d.payableTo.trim() : nombre;
+      const sincerely = (d.sincerely && d.sincerely.trim()) ? d.sincerely.trim() : nombre;
+      document.getElementById('invPayableTo').textContent = payableTo;
+      document.getElementById('invSincerely').textContent = sincerely;
+      document.getElementById('invSender').textContent = d.sender || '';
+      const t = T[idioma] || T.es;
+      const cardPct = d.cardFeePct || '3.5';
+      document.getElementById('invCardFeeNoticeText').textContent = idioma === 'es' ? 'Pagos con tarjeta sujetos a cargo del ' : 'Card payments subject to a charge of ';
+      const inp = document.getElementById('cardFeePctInv');
+      if (inp) inp.value = cardPct;
+      document.getElementById('invThankYou').textContent = (d.thankYou && d.thankYou.trim()) ? d.thankYou.trim() : (t.thankYou || 'Gracias por su negocio');
+    }
+
+    async function traducirTexto(texto, desde, hasta) {
+      if (!texto || !texto.trim()) return texto;
+      const par = (desde === 'es' ? 'es' : 'en') + '|' + (hasta === 'es' ? 'es' : 'en');
+      const apiUrl = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(texto) + '&langpair=' + par;
+      const proxies = [
+        'https://api.allorigins.win/raw?url=',
+        'https://corsproxy.io/?'
+      ];
+      for (const proxy of proxies) {
+        try {
+          const url = proxy === proxies[1] ? proxy + encodeURIComponent(apiUrl) : proxy + encodeURIComponent(apiUrl);
+          const r = await fetch(url);
+          const j = await r.json();
+          if (j.responseStatus === 200 && j.responseData && j.responseData.translatedText) {
+            return j.responseData.translatedText;
+          }
+        } catch (e) {}
+      }
+      try {
+        const r = await fetch(apiUrl);
+        const j = await r.json();
+        if (j.responseStatus === 200 && j.responseData && j.responseData.translatedText) {
+          return j.responseData.translatedText;
+        }
+      } catch (e) {}
+      return texto;
+    }
+
+    async function traducirContenidoUsuario(desde, hasta) {
+      const campos = ['cliente', 'direccionCliente', 'emailCliente', 'trabajo', 'descripcionProyecto'];
+      for (const id of campos) {
+        const el = document.getElementById(id);
+        if (el && el.value && el.value.trim()) {
+          el.value = await traducirTexto(el.value, desde, hasta);
+        }
+      }
+      for (const fila of document.querySelectorAll('.fila-material')) {
+        const input = fila.querySelector('.input-nombre');
+        if (input && input.value && input.value.trim()) {
+          input.value = await traducirTexto(input.value, desde, hasta);
+        }
+      }
+    }
+
+    const TAPICERIA_KEY = 'presupuesto_tapiceria';
+
+    function abrirConfig() {
+      document.getElementById('modalConfig').classList.add('visible');
+      try {
+        const d = JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}');
+        document.getElementById('configNombre').value = d.nombre || '';
+        document.getElementById('configDireccion').value = d.direccion || '';
+        document.getElementById('configTelefono').value = d.telefono || '';
+        document.getElementById('configEmail').value = d.email || '';
+        document.getElementById('configPayableTo').value = d.payableTo || '';
+        document.getElementById('configSincerely').value = d.sincerely || '';
+        document.getElementById('configSender').value = d.sender || '';
+        document.getElementById('configTipoDocumento').value = d.tipoDocumento || 'quote';
+        document.getElementById('configTaxPct').value = d.taxPct !== undefined && d.taxPct !== '' ? d.taxPct : '';
+        document.getElementById('configCardFeePct').value = d.cardFeePct !== undefined && d.cardFeePct !== '' ? d.cardFeePct : '';
+        document.getElementById('configCardFeeNotice').value = d.cardFeeNotice || '';
+        document.getElementById('configThankYou').value = d.thankYou || '';
+        const logoPreview = document.getElementById('logoPreview');
+        const btnRemove = document.getElementById('btnRemoveLogo');
+        if (d.logo) {
+          logoPreview.src = d.logo;
+          logoPreview.style.display = 'block';
+          btnRemove.style.display = 'inline-block';
+        } else {
+          logoPreview.style.display = 'none';
+          btnRemove.style.display = 'none';
+        }
+      } catch (e) {}
+    }
+
+    function cerrarConfig() {
+      document.getElementById('modalConfig').classList.remove('visible');
+    }
+
+    function cargarDatosTapiceria() {
+      try {
+        const d = JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}');
+        document.getElementById('configNombre').value = d.nombre || '';
+        document.getElementById('configDireccion').value = d.direccion || '';
+        document.getElementById('configTelefono').value = d.telefono || '';
+        document.getElementById('configEmail').value = d.email || '';
+        document.getElementById('configPayableTo').value = d.payableTo || '';
+        document.getElementById('configSincerely').value = d.sincerely || '';
+        document.getElementById('configSender').value = d.sender || '';
+        document.getElementById('configTipoDocumento').value = d.tipoDocumento || 'quote';
+        document.getElementById('configTaxPct').value = d.taxPct !== undefined && d.taxPct !== '' ? d.taxPct : '';
+        document.getElementById('configCardFeePct').value = d.cardFeePct !== undefined && d.cardFeePct !== '' ? d.cardFeePct : '';
+        document.getElementById('configCardFeeNotice').value = d.cardFeeNotice || '';
+        document.getElementById('configThankYou').value = d.thankYou || '';
+        const logoPreview = document.getElementById('logoPreview');
+        const btnRemove = document.getElementById('btnRemoveLogo');
+        if (d.logo) {
+          logoPreview.src = d.logo;
+          logoPreview.style.display = 'block';
+          btnRemove.style.display = 'inline-block';
+        } else {
+          logoPreview.style.display = 'none';
+          btnRemove.style.display = 'none';
+        }
+        if (d.taxPct) {
+          document.getElementById('taxPct').value = d.taxPct;
+          document.getElementById('taxPctInv').value = d.taxPct;
+        }
+        actualizarDisplayTapiceria(d);
+        aplicarTipoDocumento();
+      } catch (e) {}
+    }
+
+    function actualizarDisplayTapiceria(d) {
+      const disp = document.getElementById('datosTapiceriaDisplay');
+      if (disp) {
+        const parts = [d.nombre, d.direccion, d.telefono, d.email].filter(Boolean);
+        disp.textContent = parts.join(' · ') || '';
+        disp.style.color = parts.length ? '#2c3e50' : '#7f8c8d';
+      }
+    }
+
+    function guardarConfiguracion() {
+      const logoPreview = document.getElementById('logoPreview');
+      const logoData = logoPreview.style.display !== 'none' ? logoPreview.src : '';
+      const d = {
+        nombre: document.getElementById('configNombre').value.trim(),
+        direccion: document.getElementById('configDireccion').value.trim(),
+        telefono: document.getElementById('configTelefono').value.trim(),
+        email: document.getElementById('configEmail').value.trim(),
+        logo: logoData,
+        payableTo: document.getElementById('configPayableTo').value.trim(),
+        sincerely: document.getElementById('configSincerely').value.trim(),
+        sender: document.getElementById('configSender').value.trim(),
+        tipoDocumento: document.getElementById('configTipoDocumento').value || 'quote',
+        taxPct: document.getElementById('configTaxPct').value.trim(),
+        cardFeePct: document.getElementById('configCardFeePct').value.trim(),
+        cardFeeNotice: document.getElementById('configCardFeeNotice').value.trim(),
+        thankYou: document.getElementById('configThankYou').value.trim()
+      };
+      localStorage.setItem(TAPICERIA_KEY, JSON.stringify(d));
+      actualizarDisplayTapiceria(d);
+      actualizarDisplayInvoice(d);
+      if (d.taxPct) {
+        document.getElementById('taxPct').value = d.taxPct;
+        document.getElementById('taxPctInv').value = d.taxPct;
+        if (document.getElementById('documento').getAttribute('data-tipo') === 'invoice') actualizarInvoice();
+        else actualizar();
+      }
+      aplicarTipoDocumento();
+      cerrarConfig();
+    }
+    document.getElementById('btnGuardarConfig').addEventListener('click', guardarConfiguracion);
+    document.getElementById('formConfig').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        guardarConfiguracion();
+      }
+    });
+
+    document.getElementById('btnUploadLogo').addEventListener('click', function() {
+      document.getElementById('configLogo').click();
+    });
+    document.getElementById('configLogo').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (file.size > 500000) {
+        alert(idioma === 'es' ? 'La imagen es muy grande. Máximo 500KB.' : 'Image too large. Max 500KB.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const logoPreview = document.getElementById('logoPreview');
+        logoPreview.src = ev.target.result;
+        logoPreview.style.display = 'block';
+        document.getElementById('btnRemoveLogo').style.display = 'inline-block';
+      };
+      reader.readAsDataURL(file);
+    });
+    document.getElementById('btnRemoveLogo').addEventListener('click', function() {
+      document.getElementById('logoPreview').src = '';
+      document.getElementById('logoPreview').style.display = 'none';
+      document.getElementById('btnRemoveLogo').style.display = 'none';
+      document.getElementById('configLogo').value = '';
+    });
+
+    const DB_NAME = 'PresupuestoDB';
+    const DB_STORE = 'presupuestos';
+    let db = null;
+
+    function abrirDB() {
+      return new Promise((res, rej) => {
+        if (db) return res(db);
+        const r = indexedDB.open(DB_NAME, 1);
+        r.onerror = () => rej(r.error);
+        r.onsuccess = () => { db = r.result; res(db); };
+        r.onupgradeneeded = (e) => e.target.result.createObjectStore(DB_STORE, { keyPath: 'id', autoIncrement: true });
+      });
+    }
+
+    function guardarEnDB(datos) {
+      return abrirDB().then(d => {
+        return new Promise((res, rej) => {
+          const t = d.transaction(DB_STORE, 'readwrite');
+          t.objectStore(DB_STORE).add(datos);
+          t.oncomplete = () => res();
+          t.onerror = () => rej(t.error);
+        });
+      });
+    }
+
+    function obtenerTodos() {
+      return abrirDB().then(d => {
+        return new Promise((res, rej) => {
+          const r = d.transaction(DB_STORE).objectStore(DB_STORE).getAll();
+          r.onsuccess = () => res(r.result || []);
+          r.onerror = () => rej(r.error);
+        });
+      });
+    }
+
+    function borrarDeDB(id) {
+      return abrirDB().then(d => {
+        return new Promise((res, rej) => {
+          const t = d.transaction(DB_STORE, 'readwrite');
+          t.objectStore(DB_STORE).delete(id);
+          t.oncomplete = () => res();
+          t.onerror = () => rej(t.error);
+        });
+      });
+    }
+
+    function salvarPresupuesto() {
+      const tipo = document.getElementById('configTipoDocumento').value;
+      const t = T[idioma] || T.es;
+      let camposFaltantes = [];
+      if (tipo === 'invoice') {
+        if (!document.getElementById('clienteInv').value.trim()) camposFaltantes.push(t.customer || 'Cliente');
+        if (!document.getElementById('fechaInv').value.trim()) camposFaltantes.push(t.fecha || 'Fecha');
+      } else {
+        if (!document.getElementById('cliente').value.trim()) camposFaltantes.push(t.cliente || 'Cliente');
+        if (!document.getElementById('fecha').value.trim()) camposFaltantes.push(t.fecha || 'Fecha');
+      }
+      if (camposFaltantes.length > 0) {
+        const msg = idioma === 'es' ? 'Campos obligatorios faltantes:\n' : 'Required fields missing:\n';
+        alert(msg + camposFaltantes.join('\n'));
+        return;
+      }
+      const datos = { fechaGuardado: new Date().toISOString(), tipoDocumento: tipo };
+      if (tipo === 'invoice') {
+        datos.cliente = document.getElementById('clienteInv').value;
+        datos.direccionCliente = document.getElementById('direccionInv').value;
+        datos.emailCliente = document.getElementById('emailClienteInv').value;
+        datos.telefonoCliente = document.getElementById('telefonoClienteInv').value;
+        datos.fecha = document.getElementById('fechaInv').value;
+        datos.numFactura = document.getElementById('numFactura').value;
+        datos.cardFeePct = document.getElementById('cardFeePctInv').value || '3.5';
+        datos.taxPct = document.getElementById('taxPctInv').value;
+        datos.tipoDescuentoDeposito = document.getElementById('tipoDescuentoDeposito').value;
+        datos.discount = document.getElementById('discountInv').value;
+        datos.tipoPagadoBalance = document.getElementById('tipoPagadoBalance').value;
+        datos.paid = document.getElementById('paidInv').value;
+        datos.materials = [];
+        datos.items = [];
+        document.querySelectorAll('.fila-material-inv').forEach(f => {
+          const u = f.querySelector('.input-yards-unit');
+          datos.materials.push({
+            mat: f.querySelector('.input-mat').value,
+            desc: f.querySelector('.input-desc').value,
+            yards: f.querySelector('.input-yards').value,
+            yardsUnit: u ? u.value : 'yds',
+            color: f.querySelector('.input-color').value,
+            qty: f.querySelector('.input-qty-mat').value
+          });
+        });
+        document.querySelectorAll('.fila-item-inv').forEach(f => {
+          datos.items.push({
+            desc: f.querySelector('.input-item-desc').value,
+            qty: f.querySelector('.input-item-qty').value,
+            unit: f.querySelector('.input-item-unit').value
+          });
+        });
+      } else {
+        datos.cliente = document.getElementById('cliente').value;
+        datos.direccionCliente = document.getElementById('direccionCliente').value;
+        datos.emailCliente = document.getElementById('emailCliente').value;
+        datos.trabajo = document.getElementById('trabajo').value;
+        datos.telefonoCliente = document.getElementById('telefonoCliente').value;
+        datos.fecha = document.getElementById('fecha').value;
+        datos.descripcionProyecto = document.getElementById('descripcionProyecto').value;
+        datos.itemsQuote = [];
+        document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(f => {
+          datos.itemsQuote.push({
+            desc: f.querySelector('.input-item-desc').value,
+            qty: f.querySelector('.input-item-qty').value,
+            unit: f.querySelector('.input-item-unit').value
+          });
+        });
+        datos.taxPct = document.getElementById('taxPct').value;
+        datos.filas = [];
+        document.querySelectorAll('.fila-material').forEach(f => {
+          datos.filas.push({
+            nombre: f.querySelector('.input-nombre').value,
+            largo: f.querySelector('.input-largo').value,
+            unidad: f.querySelector('.input-unidad').value,
+            ancho: f.querySelector('.input-ancho').value,
+            anchoRollo: f.querySelector('.input-anchoRollo').value,
+            precio: f.querySelector('.input-precio').value,
+            unidadPrecio: f.querySelector('.input-unidadPrecio').value
+          });
+        });
+      }
+      guardarEnDB(datos).then(() => alert((T[idioma] || T.es).msgGuardado)).catch(() => alert('Error al guardar'));
+    }
+
+    function abrirRegistro() {
+      document.getElementById('modalRegistro').classList.add('visible');
+      obtenerTodos().then(lista => {
+        const t = T[idioma] || T.es;
+        const div = document.getElementById('listaRegistro');
+        div.innerHTML = '';
+        if (lista.length === 0) {
+          div.innerHTML = '<p style="color:#666;text-align:center;">' + (idioma === 'es' ? 'No hay presupuestos guardados' : 'No saved quotes') + '</p>';
+          return;
+        }
+        const listaOrdenada = lista.reverse();
+        function renderizarLista(filtro) {
+          div.innerHTML = '';
+          const q = (filtro || '').toLowerCase().trim();
+          listaOrdenada.forEach(item => {
+            const c = (item.cliente || '').toLowerCase();
+            const em = (item.emailCliente || '').toLowerCase();
+            const tel = (item.telefonoCliente || '').replace(/\D/g, '');
+            const qNum = q.replace(/\D/g, '');
+            if (q && !c.includes(q) && !em.includes(q) && !(item.telefonoCliente || '').toLowerCase().includes(q) && !tel.includes(qNum)) return;
+            const el = document.createElement('div');
+            el.className = 'item-registro';
+            const f = new Date(item.fechaGuardado);
+            const fechaStr = f.getDate() + '/' + (f.getMonth() + 1) + '/' + f.getFullYear();
+            const telStr = item.telefonoCliente ? '<div class="telefono">' + item.telefonoCliente + '</div>' : '';
+            const trabajoStr = item.tipoDocumento === 'invoice' ? (item.numFactura ? 'Inv #' + item.numFactura : '-') : (item.trabajo || '-');
+            el.innerHTML = '<div class="info"><div class="cliente">' + (item.cliente || '-') + '</div><div class="trabajo">' + trabajoStr + '</div>' + telStr + '<div class="fecha">' + fechaStr + '</div></div><div class="acciones"><button class="btn-cargar" data-i18n-title="titleCargar">' + t.cargar + '</button><button class="btn-borrar-item" data-i18n-title="titleBorrar">' + t.borrar + '</button></div>';
+            el.querySelector('.btn-cargar').onclick = () => cargarPresupuesto(item);
+            el.querySelector('.btn-borrar-item').onclick = () => { borrarDeDB(item.id).then(() => abrirRegistro()); };
+            aplicarTooltipsEn(el);
+            div.appendChild(el);
+          });
+        }
+        renderizarLista();
+        const busq = document.getElementById('buscarRegistro');
+        if (busq) {
+          busq.value = '';
+          busq.oninput = () => renderizarLista(busq.value);
+        }
+      });
+    }
+
+    function cerrarRegistro() {
+      document.getElementById('modalRegistro').classList.remove('visible');
+    }
+
+    function cargarPresupuesto(item) {
+      document.getElementById('configTipoDocumento').value = item.tipoDocumento || 'quote';
+      document.getElementById('documento').setAttribute('data-tipo', item.tipoDocumento || 'quote');
+      actualizarTituloDocumento();
+      try {
+        const d = JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}');
+        actualizarDisplayInvoice(d);
+      } catch (e) {}
+      if (item.tipoDocumento === 'invoice') {
+        document.getElementById('clienteInv').value = item.cliente || '';
+        document.getElementById('direccionInv').value = item.direccionCliente || '';
+        document.getElementById('emailClienteInv').value = item.emailCliente || '';
+        document.getElementById('telefonoClienteInv').value = item.telefonoCliente || '';
+        document.getElementById('fechaInv').value = item.fecha || '';
+        document.getElementById('fechaInv').dispatchEvent(new Event('input'));
+        document.getElementById('numFactura').value = item.numFactura || '';
+        document.getElementById('cardFeePctInv').value = item.cardFeePct || '3.5';
+        document.getElementById('taxPctInv').value = item.taxPct || '7';
+        document.getElementById('tipoDescuentoDeposito').value = item.tipoDescuentoDeposito || 'descuento';
+        document.getElementById('discountInv').value = (parseFloat(item.discount) || 0).toFixed(2);
+        document.getElementById('tipoPagadoBalance').value = item.tipoPagadoBalance || 'pagado';
+        document.getElementById('paidInv').value = (parseFloat(item.paid) || 0).toFixed(2);
+        document.querySelectorAll('.fila-material-inv').forEach(f => f.remove());
+        document.querySelectorAll('.fila-item-inv').forEach(f => f.remove());
+        (item.materials || []).forEach(m => { crearFilaMaterial(); const last = document.querySelector('.fila-material-inv:last-child'); if (last) { last.querySelector('.input-mat').value = m.mat || ''; last.querySelector('.input-desc').value = m.desc || ''; last.querySelector('.input-yards').value = m.yards || ''; const su = last.querySelector('.input-yards-unit'); if (su) su.value = m.yardsUnit || 'yds'; last.querySelector('.input-color').value = m.color || ''; last.querySelector('.input-qty-mat').value = m.qty || ''; } });
+        if (!(item.materials || []).length) for (let i = 0; i < 2; i++) crearFilaMaterial();
+        (item.items || []).forEach(it => { crearFilaItem(); const last = document.querySelector('.fila-item-inv:last-child'); if (last) { last.querySelector('.input-item-desc').value = it.desc || ''; last.querySelector('.input-item-qty').value = it.qty || ''; last.querySelector('.input-item-unit').value = (parseFloat(it.unit) || 0).toFixed(2); } });
+        if (!(item.items || []).length) for (let i = 0; i < 2; i++) crearFilaItem();
+        actualizarInvoice();
+      } else {
+        document.getElementById('cliente').value = item.cliente || '';
+        document.getElementById('direccionCliente').value = item.direccionCliente || '';
+        document.getElementById('emailCliente').value = item.emailCliente || '';
+        document.getElementById('trabajo').value = item.trabajo || '';
+        document.getElementById('telefonoCliente').value = item.telefonoCliente || '';
+        document.getElementById('fecha').value = item.fecha || '';
+        document.getElementById('descripcionProyecto').value = item.descripcionProyecto || '';
+        document.getElementById('taxPct').value = item.taxPct || '7';
+        document.querySelectorAll('.fila-material').forEach(f => f.remove());
+        document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(f => f.remove());
+        (item.itemsQuote || []).forEach(it => { crearFilaItemQuote(); const rows = document.querySelectorAll('#zonasItemsQuote .fila-item-quote'); const last = rows[rows.length - 1]; if (last) { last.querySelector('.input-item-desc').value = it.desc || ''; last.querySelector('.input-item-qty').value = it.qty || ''; last.querySelector('.input-item-unit').value = (parseFloat(it.unit) || 0).toFixed(2); } });
+        if (!(item.itemsQuote || []).length) for (let i = 0; i < 2; i++) crearFilaItemQuote();
+        (item.filas || []).forEach(fila => {
+        crearSeccion();
+        const ultima = document.querySelector('.fila-material:last-child');
+        if (ultima) {
+          ultima.querySelector('.input-nombre').value = fila.nombre || '';
+          ultima.querySelector('.input-largo').value = fila.largo || '';
+          ultima.querySelector('.input-unidad').value = fila.unidad || 'pulgadas';
+          ultima.querySelector('.input-ancho').value = fila.ancho || '';
+          ultima.querySelector('.input-anchoRollo').value = fila.anchoRollo || '54';
+          ultima.querySelector('.input-precio').value = fila.precio || '';
+          ultima.querySelector('.input-unidadPrecio').value = fila.unidadPrecio || 'in_lineal';
+        }
+      });
+        if (!(item.filas || []).length) for (let i = 0; i < 2; i++) crearSeccion();
+        actualizar();
+      }
+      cerrarRegistro();
+    }
+
+    document.getElementById('btnRegistro').addEventListener('click', abrirRegistro);
+    document.getElementById('btnServicios').addEventListener('click', abrirServicios);
+    document.getElementById('tabListaServicios').addEventListener('click', () => mostrarTabServicios('lista'));
+    document.getElementById('tabAgregarServicio').addEventListener('click', () => mostrarTabServicios('agregar'));
+    document.getElementById('btnGuardarServicio').addEventListener('click', guardarNuevoServicio);
+    document.getElementById('buscarServicio').addEventListener('input', e => renderizarServicios(e.target.value));
+
+    function abrirModalCompartir() {
+      document.getElementById('modalCompartir').classList.add('visible');
+      aplicarIdioma();
+    }
+    function cerrarModalCompartir() {
+      document.getElementById('modalCompartir').classList.remove('visible');
+    }
+
+    const SERVICIOS_KEY = 'servicios_tapiceria';
+    function cargarServicios() {
+      try { return JSON.parse(localStorage.getItem(SERVICIOS_KEY)) || []; } catch { return []; }
+    }
+    function guardarServicios(lista) {
+      localStorage.setItem(SERVICIOS_KEY, JSON.stringify(lista));
+    }
+    function abrirServicios() {
+      document.getElementById('modalServicios').classList.add('visible');
+      mostrarTabServicios('lista');
+      renderizarServicios();
+    }
+    function cerrarServicios() {
+      document.getElementById('modalServicios').classList.remove('visible');
+    }
+    function mostrarTabServicios(tab) {
+      const lista = document.getElementById('serviciosLista');
+      const agregar = document.getElementById('serviciosAgregar');
+      const btnLista = document.getElementById('tabListaServicios');
+      const btnAgregar = document.getElementById('tabAgregarServicio');
+      if (tab === 'lista') {
+        lista.style.display = 'block';
+        agregar.style.display = 'none';
+        btnLista.classList.add('active');
+        btnAgregar.classList.remove('active');
+      } else {
+        lista.style.display = 'none';
+        agregar.style.display = 'block';
+        btnLista.classList.remove('active');
+        btnAgregar.classList.add('active');
+        limpiarFormServicio();
+      }
+    }
+    function limpiarFormServicio() {
+      document.getElementById('nuevoServicioNombre').value = '';
+      document.getElementById('nuevoServicioDesc').value = '';
+      document.getElementById('nuevoServicioPrecio').value = '';
+      document.getElementById('nuevoServicioCategoria').value = '';
+      delete document.getElementById('btnGuardarServicio').dataset.editId;
+    }
+    function renderizarServicios(filtro = '') {
+      const t = T[idioma] || T.es;
+      const contenedor = document.getElementById('listaServicios');
+      const servicios = cargarServicios();
+      const categorias = [...new Set(servicios.map(s => s.categoria).filter(Boolean))];
+      const datalist = document.getElementById('listaCategorias');
+      datalist.innerHTML = categorias.map(c => `<option value="${c}">`).join('');
+      const filtrados = servicios.filter(s => {
+        const texto = `${s.nombre} ${s.descripcion || ''} ${s.categoria || ''}`.toLowerCase();
+        return texto.includes(filtro.toLowerCase());
+      });
+      if (filtrados.length === 0) {
+        contenedor.innerHTML = `<div style="text-align:center;color:#888;padding:20px;">${t.sinServicios}</div>`;
+        return;
+      }
+      contenedor.innerHTML = filtrados.map((s, idx) => {
+        const precio = parseFloat(s.precio) || 0;
+        return `<div class="item-servicio" data-id="${s.id}">
+          <div class="info-servicio" onclick="seleccionarServicio('${s.id}')">
+            <div class="nombre-servicio">${s.nombre}</div>
+            ${s.descripcion ? `<div class="desc-servicio">${s.descripcion}</div>` : ''}
+            ${s.categoria ? `<div class="categoria-servicio">${s.categoria}</div>` : ''}
+          </div>
+          <div class="precio-servicio">$${precio.toFixed(2)}</div>
+          <div class="acciones-servicio">
+            <button type="button" class="btn-edit-servicio" onclick="editarServicio('${s.id}')">${t.editarServicio}</button>
+            <button type="button" class="btn-del-servicio" onclick="eliminarServicio('${s.id}')">${t.eliminarServicio}</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+    function guardarNuevoServicio() {
+      const t = T[idioma] || T.es;
+      const nombre = document.getElementById('nuevoServicioNombre').value.trim();
+      const desc = document.getElementById('nuevoServicioDesc').value.trim();
+      const precio = document.getElementById('nuevoServicioPrecio').value.trim();
+      const categoria = document.getElementById('nuevoServicioCategoria').value.trim();
+      if (!nombre) { alert(t.nombreServicio + ' es requerido'); return; }
+      const servicios = cargarServicios();
+      const editId = document.getElementById('btnGuardarServicio').dataset.editId;
+      if (editId) {
+        const idx = servicios.findIndex(s => s.id === editId);
+        if (idx >= 0) {
+          servicios[idx] = { ...servicios[idx], nombre, descripcion: desc, precio, categoria };
+        }
+      } else {
+        const id = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        servicios.push({ id, nombre, descripcion: desc, precio, categoria });
+      }
+      guardarServicios(servicios);
+      alert(t.servicioGuardado);
+      mostrarTabServicios('lista');
+      renderizarServicios();
+    }
+    function editarServicio(id) {
+      const servicios = cargarServicios();
+      const s = servicios.find(x => x.id === id);
+      if (!s) return;
+      document.getElementById('nuevoServicioNombre').value = s.nombre || '';
+      document.getElementById('nuevoServicioDesc').value = s.descripcion || '';
+      document.getElementById('nuevoServicioPrecio').value = s.precio || '';
+      document.getElementById('nuevoServicioCategoria').value = s.categoria || '';
+      document.getElementById('btnGuardarServicio').dataset.editId = id;
+      mostrarTabServicios('agregar');
+    }
+    function eliminarServicio(id) {
+      const t = T[idioma] || T.es;
+      if (!confirm(t.confirmarEliminarServicio)) return;
+      let servicios = cargarServicios();
+      servicios = servicios.filter(s => s.id !== id);
+      guardarServicios(servicios);
+      renderizarServicios(document.getElementById('buscarServicio').value);
+    }
+    function seleccionarServicio(id) {
+      const servicios = cargarServicios();
+      const s = servicios.find(x => x.id === id);
+      if (!s) return;
+      const doc = document.getElementById('documento');
+      const esInvoice = doc.dataset.tipo === 'invoice';
+      const tabla = esInvoice ? document.getElementById('tablaItems') : document.getElementById('tablaItems');
+      const tbody = tabla.querySelector('tbody');
+      const filas = tbody.querySelectorAll('tr');
+      let filaVacia = null;
+      filas.forEach(fila => {
+        const inputDesc = fila.querySelector('.input-item-desc');
+        const inputQty = fila.querySelector('.input-item-qty');
+        const inputUnit = fila.querySelector('.input-item-unit');
+        if (inputDesc && !inputDesc.value.trim() && !filaVacia) {
+          filaVacia = fila;
+        }
+      });
+      if (!filaVacia) {
+        document.getElementById('btnAgregarItemInv').click();
+        setTimeout(() => insertarServicioEnFila(s), 50);
+      } else {
+        insertarServicioEnFilaRef(s, filaVacia);
+      }
+      cerrarServicios();
+    }
+    function insertarServicioEnFila(s) {
+      const tabla = document.getElementById('tablaItems');
+      const tbody = tabla.querySelector('tbody');
+      const filas = tbody.querySelectorAll('tr');
+      const ultimaFila = filas[filas.length - 1];
+      if (ultimaFila) insertarServicioEnFilaRef(s, ultimaFila);
+    }
+    function insertarServicioEnFilaRef(s, fila) {
+      const inputDesc = fila.querySelector('.input-item-desc');
+      const inputQty = fila.querySelector('.input-item-qty');
+      const inputUnit = fila.querySelector('.input-item-unit');
+      if (inputDesc) inputDesc.value = s.nombre + (s.descripcion ? ' - ' + s.descripcion : '');
+      if (inputQty) inputQty.value = '1';
+      if (inputUnit) inputUnit.value = s.precio || '0';
+      inputUnit && inputUnit.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    function exportarPdf() {
+      const el = document.getElementById('documento');
+      const tipo = document.getElementById('configTipoDocumento').value;
+      const t = T[idioma] || T.es;
+      const nombreArchivo = (tipo === 'invoice' ? t.tituloInvoice : t.tituloQuote).replace(/\s+/g, '_') + '.pdf';
+      el.classList.add('exportando-pdf');
+      const opt = { margin: 10, filename: nombreArchivo, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } };
+      if (typeof html2pdf !== 'undefined') {
+        html2pdf().set(opt).from(el).save().then(() => { el.classList.remove('exportando-pdf'); }).catch(() => { el.classList.remove('exportando-pdf'); });
+      } else {
+        window.print();
+        el.classList.remove('exportando-pdf');
+      }
+    }
+
+    function compartirPresupuesto() {
+      const tipo = document.getElementById('configTipoDocumento').value;
+      const t = T[idioma] || T.es;
+      const tituloDoc = tipo === 'invoice' ? t.tituloInvoice : t.tituloQuote;
+      let txt = tituloDoc + '\n\n';
+      if (tipo === 'invoice') {
+        txt += document.getElementById('clienteInv').value + '\n' + document.getElementById('direccionInv').value + '\n' + document.getElementById('emailClienteInv').value + '\n' + document.getElementById('telefonoClienteInv').value + '\n\n';
+        txt += '$' + document.getElementById('totalInv').textContent;
+      } else {
+        const tel = document.getElementById('telefonoCliente').value;
+        const dir = document.getElementById('direccionCliente').value;
+        const em = document.getElementById('emailCliente').value;
+        const desc = document.getElementById('descripcionProyecto').value;
+        txt += document.getElementById('cliente').value + '\n' + document.getElementById('trabajo').value + (dir ? '\n' + dir : '') + (em ? '\n' + em : '') + (tel ? '\n' + tel : '') + (desc ? '\n' + desc : '') + '\n\n' + document.getElementById('totalFinal').textContent;
+      }
+      const msgOk = (T[idioma] || T.es).msgCopiado;
+      function copiarAlPortapapeles() {
+        const ta = document.createElement('textarea');
+        ta.value = txt;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+          alert(msgOk);
+        } catch (e) {}
+        document.body.removeChild(ta);
+      }
+      if (navigator.share && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        navigator.share({
+          title: tituloDoc,
+          text: txt
+        }).then(() => {}).catch(() => copiarAlPortapapeles());
+      } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(() => alert(msgOk)).catch(() => copiarAlPortapapeles());
+      } else {
+        copiarAlPortapapeles();
+      }
+    }
+
+    function limpiarTodo() {
+      if (!confirm((T[idioma] || T.es).msgConfirmarLimpiar)) return;
+      const tipo = document.getElementById('configTipoDocumento').value;
+      let configData = {};
+      try { configData = JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}'); } catch (e) {}
+      const taxDef = configData.taxPct || '7';
+      const d = new Date();
+      const fd = (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
+      const fd2 = (d.getMonth()+1) + '/' + d.getDate() + '/' + String(d.getFullYear()).slice(-2);
+      if (tipo === 'invoice') {
+        document.getElementById('clienteInv').value = '';
+        document.getElementById('direccionInv').value = '';
+        document.getElementById('emailClienteInv').value = '';
+        document.getElementById('telefonoClienteInv').value = '';
+        document.getElementById('fechaInv').value = fd;
+        document.getElementById('numFactura').value = '';
+        document.getElementById('cardFeePctInv').value = configData.cardFeePct || '3.5';
+        document.getElementById('taxPctInv').value = taxDef;
+        document.getElementById('tipoDescuentoDeposito').value = 'descuento';
+        document.getElementById('discountInv').value = '0.00';
+        document.getElementById('tipoPagadoBalance').value = 'pagado';
+        document.getElementById('paidInv').value = '0.00';
+        document.querySelectorAll('.fila-material-inv').forEach(f => f.remove());
+        document.querySelectorAll('.fila-item-inv').forEach(f => f.remove());
+        for (let i = 0; i < 2; i++) crearFilaMaterial();
+        for (let i = 0; i < 2; i++) crearFilaItem();
+        actualizarInvoice();
+      } else {
+        document.getElementById('cliente').value = '';
+        document.getElementById('direccionCliente').value = '';
+        document.getElementById('emailCliente').value = '';
+        document.getElementById('trabajo').value = '';
+        document.getElementById('telefonoCliente').value = '';
+        document.getElementById('descripcionProyecto').value = '';
+        document.getElementById('taxPct').value = taxDef;
+        document.getElementById('fecha').value = fd2;
+        document.querySelectorAll('.fila-material').forEach(f => f.remove());
+        document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(f => f.remove());
+        for (let i = 0; i < 2; i++) crearFilaItemQuote();
+        for (let i = 0; i < 2; i++) crearSeccion();
+        actualizar();
+      }
+    }
+
+    document.getElementById('btnSalvar').addEventListener('click', salvarPresupuesto);
+    document.getElementById('btnCompartir').addEventListener('click', abrirModalCompartir);
+    document.getElementById('btnCompartirContinuar').addEventListener('click', function() {
+      const formato = document.getElementById('formatoCompartir').value;
+      cerrarModalCompartir();
+      if (formato === 'pdf') {
+        exportarPdf();
+      } else {
+        compartirPresupuesto();
+      }
+    });
+    document.getElementById('btnLimpiar').addEventListener('click', limpiarTodo);
+
+    function crearSeccion() {
+      const template = document.getElementById('templateFila');
+      const clone = template.content.cloneNode(true);
+      const fila = clone.querySelector('tr');
+
+      fila.querySelector('.btn-del').addEventListener('click', () => {
+        fila.remove();
+        actualizar();
+      });
+
+      const rollo = fila.querySelector('.input-anchoRollo');
+      rollo.addEventListener('change', () => actualizar());
+
+      const unidadMedida = fila.querySelector('.input-unidad');
+      const unidadPrecio = fila.querySelector('.input-unidadPrecio');
+
+      unidadMedida.addEventListener('change', () => {
+        const largo = parseFloat(fila.querySelector('.input-largo').value) || 0;
+        const ancho = parseFloat(fila.querySelector('.input-ancho').value) || 0;
+        const unidadAnt = unidadPrecio.value.startsWith('in_') ? 'pulgadas' : unidadPrecio.value.startsWith('ft_') ? 'pies' : 'yardas';
+        const largoPulg = largo * (aPulg[unidadAnt] || 1);
+        const anchoPulg = ancho * (aPulg[unidadAnt] || 1);
+        const lineal = unidadPrecio.value.includes('_lineal');
+        if (unidadMedida.value === 'pulgadas') {
+          unidadPrecio.value = lineal ? 'in_lineal' : 'in_cuadrada';
+          fila.querySelector('.input-largo').value = largoPulg;
+          fila.querySelector('.input-ancho').value = anchoPulg;
+        } else if (unidadMedida.value === 'pies') {
+          unidadPrecio.value = lineal ? 'ft_lineal' : 'ft_cuadrado';
+          fila.querySelector('.input-largo').value = largoPulg ? (largoPulg / 12).toFixed(2) : '';
+          fila.querySelector('.input-ancho').value = anchoPulg ? (anchoPulg / 12).toFixed(2) : '';
+        } else if (unidadMedida.value === 'yardas') {
+          unidadPrecio.value = lineal ? 'yd_lineal' : 'yd_cuadrada';
+          fila.querySelector('.input-largo').value = largoPulg ? (largoPulg / 36).toFixed(2) : '';
+          fila.querySelector('.input-ancho').value = anchoPulg ? (anchoPulg / 36).toFixed(2) : '';
+        }
+        actualizar();
+      });
+
+      unidadPrecio.addEventListener('change', () => {
+        const v = unidadPrecio.value;
+        const unidadAnt = unidadMedida.value;
+        const largo = parseFloat(fila.querySelector('.input-largo').value) || 0;
+        const ancho = parseFloat(fila.querySelector('.input-ancho').value) || 0;
+        const largoPulg = largo * (aPulg[unidadAnt] || 1);
+        const anchoPulg = ancho * (aPulg[unidadAnt] || 1);
+        if (v.startsWith('in_')) {
+          unidadMedida.value = 'pulgadas';
+          fila.querySelector('.input-largo').value = largoPulg ? largoPulg : '';
+          fila.querySelector('.input-ancho').value = anchoPulg ? anchoPulg : '';
+        } else if (v.startsWith('ft_')) {
+          unidadMedida.value = 'pies';
+          fila.querySelector('.input-largo').value = largoPulg ? (largoPulg / 12).toFixed(2) : '';
+          fila.querySelector('.input-ancho').value = anchoPulg ? (anchoPulg / 12).toFixed(2) : '';
+        } else if (v.startsWith('yd_')) {
+          unidadMedida.value = 'yardas';
+          fila.querySelector('.input-largo').value = largoPulg ? (largoPulg / 36).toFixed(2) : '';
+          fila.querySelector('.input-ancho').value = anchoPulg ? (anchoPulg / 36).toFixed(2) : '';
+        }
+        actualizar();
+      });
+
+      fila.querySelectorAll('input, select').forEach(el => {
+        if (el !== unidadMedida && el !== unidadPrecio) {
+          el.addEventListener('input', actualizar);
+          el.addEventListener('change', actualizar);
+        }
+      });
+      unidadMedida.addEventListener('input', actualizar);
+      unidadPrecio.addEventListener('input', actualizar);
+
+      document.getElementById('zonasMateriales').appendChild(clone);
+      aplicarTooltipsEn(fila);
+      actualizar();
+    }
+
+    function calcSeccion(fila) {
+      const largo = parseFloat(fila.querySelector('.input-largo').value) || 0;
+      const ancho = parseFloat(fila.querySelector('.input-ancho').value) || 0;
+      const unidad = fila.querySelector('.input-unidad').value;
+
+      const rolloSel = fila.querySelector('.input-anchoRollo').value;
+      let anchoRollo = parseInt(rolloSel, 10);
+      if (isNaN(anchoRollo) || rolloSel === 'custom') {
+        anchoRollo = 54;
+      }
+
+      const largoPulg = largo * (aPulg[unidad] || 1);
+      const anchoPulg = ancho * (aPulg[unidad] || 1);
+      const areaPulg2 = largoPulg * anchoPulg;
+      const areaPies2 = areaPulg2 / 144;
+      const areaYardas2 = areaPulg2 / 1296;
+
+      const materialPulg = anchoRollo > 0 ? areaPulg2 / anchoRollo : 0;
+      const materialPies = materialPulg / 12;
+      const materialYardas = materialPulg / 36;
+
+      const precio = parseFloat(fila.querySelector('.input-precio').value) || 0;
+      const unidadPrecio = fila.querySelector('.input-unidadPrecio').value;
+
+      let total = 0;
+      if (precio > 0) {
+        if (unidadPrecio === 'yd_lineal') total = materialYardas * precio;
+        else if (unidadPrecio === 'ft_lineal') total = materialPies * precio;
+        else if (unidadPrecio === 'in_lineal') total = materialPulg * precio;
+        else if (unidadPrecio === 'yd_cuadrada') total = areaYardas2 * precio;
+        else if (unidadPrecio === 'ft_cuadrado') total = areaPies2 * precio;
+        else if (unidadPrecio === 'in_cuadrada') total = areaPulg2 * precio;
+      }
+
+      return { materialPulg, materialPies, materialYardas, areaPulg2, areaPies2, areaYardas2, total };
+    }
+
+    function actualizar() {
+      const filas = document.querySelectorAll('.fila-material');
+      let subtotalGeneral = 0;
+
+      filas.forEach(fila => {
+        const r = calcSeccion(fila);
+        const unidadPrecio = fila.querySelector('.input-unidadPrecio').value;
+        let qtyText = '—';
+        if (unidadPrecio === 'yd_lineal' && r.materialYardas > 0) qtyText = r.materialYardas.toFixed(1) + ' yd';
+        else if (unidadPrecio === 'ft_lineal' && r.materialPies > 0) qtyText = r.materialPies.toFixed(1) + ' ft';
+        else if (unidadPrecio === 'in_lineal' && r.materialPulg > 0) qtyText = r.materialPulg.toFixed(0) + ' in';
+        else if (unidadPrecio === 'yd_cuadrada' && r.areaYardas2 > 0) qtyText = r.areaYardas2.toFixed(2) + ' yd²';
+        else if (unidadPrecio === 'ft_cuadrado' && r.areaPies2 > 0) qtyText = r.areaPies2.toFixed(2) + ' ft²';
+        else if (unidadPrecio === 'in_cuadrada' && r.areaPulg2 > 0) qtyText = r.areaPulg2.toFixed(0) + ' in²';
+        fila.querySelector('.td-cantidades').textContent = qtyText;
+
+        fila.querySelector('.td-subtotal').textContent = `$${r.total.toFixed(2)}`;
+        subtotalGeneral += r.total;
+      });
+
+      document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(tr => {
+        const qty = parseFloat(tr.querySelector('.input-item-qty').value) || 0;
+        const unit = parseFloat(tr.querySelector('.input-item-unit').value) || 0;
+        const total = qty * unit;
+        tr.querySelector('.td-item-total').textContent = '$' + total.toFixed(2);
+        subtotalGeneral += total;
+      });
+
+      const taxPct = parseFloat(document.getElementById('taxPct').value) || 0;
+      const taxMonto = subtotalGeneral * (taxPct / 100);
+      const totalFinal = subtotalGeneral + taxMonto;
+
+      document.getElementById('subtotalGeneral').textContent = `$${subtotalGeneral.toFixed(2)}`;
+      document.getElementById('taxMonto').textContent = `$${taxMonto.toFixed(2)}`;
+      document.getElementById('totalFinal').textContent = `$${totalFinal.toFixed(2)}`;
+    }
+
+    function crearFilaItemQuote() {
+      const t = document.getElementById('templateFilaItemQuote');
+      const clone = t.content.cloneNode(true);
+      const tr = clone.querySelector('tr');
+      tr.querySelector('.btn-del').onclick = () => { tr.remove(); actualizar(); };
+      tr.querySelectorAll('input').forEach(inp => {
+        inp.oninput = actualizar;
+        inp.onchange = actualizar;
+      });
+      document.getElementById('zonasItemsQuote').appendChild(clone);
+      aplicarTooltipsEn(tr);
+      actualizar();
+    }
+    function crearFilaMaterial() {
+      const t = document.getElementById('templateFilaMaterial');
+      const clone = t.content.cloneNode(true);
+      const tr = clone.querySelector('tr');
+      tr.querySelector('.btn-del').onclick = () => { tr.remove(); };
+      const selectZeroOnFocus = (inp) => {
+        inp.addEventListener('focus', function() { if (this.value === '0') this.select(); });
+      };
+      selectZeroOnFocus(tr.querySelector('.input-yards'));
+      selectZeroOnFocus(tr.querySelector('.input-qty-mat'));
+      document.getElementById('zonasMaterials').appendChild(clone);
+      aplicarTooltipsEn(tr);
+    }
+
+    function crearFilaItem() {
+      const t = document.getElementById('templateFilaItem');
+      const clone = t.content.cloneNode(true);
+      const tr = clone.querySelector('tr');
+      tr.querySelector('.btn-del').onclick = () => { tr.remove(); actualizarInvoice(); };
+      tr.querySelectorAll('input').forEach(inp => {
+        inp.oninput = actualizarInvoice;
+        inp.onchange = actualizarInvoice;
+      });
+      document.getElementById('zonasItems').appendChild(clone);
+      aplicarTooltipsEn(tr);
+      actualizarInvoice();
+    }
+
+    function actualizarInvoice() {
+      let subtotal = 0;
+      document.querySelectorAll('.fila-item-inv').forEach(tr => {
+        const qty = parseFloat(tr.querySelector('.input-item-qty').value) || 0;
+        const unit = parseFloat(tr.querySelector('.input-item-unit').value) || 0;
+        const total = qty * unit;
+        tr.querySelector('.td-item-total').textContent = '$' + total.toFixed(2);
+        subtotal += total;
+      });
+      const taxPct = parseFloat(document.getElementById('taxPctInv').value) || 0;
+      const taxMonto = subtotal * (taxPct / 100);
+      const total = subtotal + taxMonto;
+      const discount = parseFloat(document.getElementById('discountInv').value) || 0;
+      const tipoPB = document.getElementById('tipoPagadoBalance').value;
+      const paidInput = document.getElementById('paidInv');
+      document.getElementById('subtotalInv').textContent = '$' + subtotal.toFixed(2);
+      document.getElementById('taxMontoInv').textContent = '$' + taxMonto.toFixed(2);
+      document.getElementById('totalInv').textContent = '$' + total.toFixed(2);
+      if (tipoPB === 'balance' || tipoPB === 'balancePagado') {
+        const balance = Math.max(0, total - discount);
+        paidInput.value = balance.toFixed(2);
+        paidInput.readOnly = true;
+        paidInput.type = 'text';
+      } else {
+        paidInput.readOnly = false;
+        paidInput.type = 'text';
+      }
+      if (typeof ajustarAnchoMonto === 'function') { ajustarAnchoMonto(document.getElementById('discountInv')); ajustarAnchoMonto(paidInput); }
+    }
+
+    document.getElementById('btnAgregarMat').addEventListener('click', crearFilaMaterial);
+    document.getElementById('btnAgregarItem').addEventListener('click', crearFilaItem);
+    document.getElementById('taxPctInv').addEventListener('input', actualizarInvoice);
+    document.getElementById('taxPctInv').addEventListener('change', actualizarInvoice);
+    function ajustarAnchoMonto(inp) {
+      if (!inp) return;
+      const len = Math.max(4, (inp.value || '0.00').replace(/[^0-9.]/g, '').length || 4);
+      inp.style.width = len + 'ch';
+    }
+    ajustarAnchoMonto(document.getElementById('discountInv'));
+    ajustarAnchoMonto(document.getElementById('paidInv'));
+    function formatearMonto(inp) {
+      const v = parseFloat(String(inp.value || '0').replace(/[^0-9.]/g, '')) || 0;
+      inp.value = v.toFixed(2);
+      if (inp.classList && inp.classList.contains('monto-input')) ajustarAnchoMonto(inp);
+    }
+    document.getElementById('discountInv').addEventListener('input', function() { ajustarAnchoMonto(this); actualizarInvoice(); });
+    document.getElementById('discountInv').addEventListener('blur', function() { formatearMonto(this); actualizarInvoice(); });
+    document.getElementById('paidInv').addEventListener('input', function() { ajustarAnchoMonto(this); actualizarInvoice(); });
+    document.getElementById('paidInv').addEventListener('blur', function() { formatearMonto(this); actualizarInvoice(); });
+    document.getElementById('zonasItems').addEventListener('blur', function(e) {
+      if (e.target.classList.contains('input-item-unit')) { formatearMonto(e.target); actualizarInvoice(); }
+    }, true);
+    document.getElementById('zonasItemsQuote').addEventListener('blur', function(e) {
+      if (e.target.classList.contains('input-item-unit')) { formatearMonto(e.target); actualizar(); }
+    }, true);
+    document.getElementById('tipoPagadoBalance').addEventListener('change', actualizarInvoice);
+    document.getElementById('tipoDescuentoDeposito').addEventListener('change', function() {
+      if (this.value === 'deposito') {
+        document.getElementById('tipoPagadoBalance').value = 'balance';
+      }
+      actualizarInvoice();
+    });
+
+    (function() {
+      const d = new Date();
+      const m = d.getMonth() + 1;
+      const day = d.getDate();
+      const y = String(d.getFullYear()).slice(-2);
+      document.getElementById('fecha').value = m + '/' + day + '/' + y;
+    })();
+    document.getElementById('btnAgregar').addEventListener('click', crearSeccion);
+    document.getElementById('btnAgregarItemQuote').addEventListener('click', crearFilaItemQuote);
+    document.getElementById('taxPct').addEventListener('input', actualizar);
+
+    document.getElementById('idioma').value = idioma;
+    document.getElementById('idioma').addEventListener('change', async function() {
+      const idiomaAnterior = idioma;
+      idioma = this.value;
+      localStorage.setItem('presupuesto_idioma', idioma);
+      if (idiomaAnterior !== idioma && navigator.onLine) {
+        await traducirContenidoUsuario(idiomaAnterior, idioma);
+      }
+      aplicarIdioma();
+      try {
+        const d = JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}');
+        actualizarDisplayInvoice(d);
+      } catch (e) {}
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+    for (let i = 0; i < 2; i++) crearSeccion();
+    for (let i = 0; i < 2; i++) crearFilaItemQuote();
+    for (let i = 0; i < 2; i++) crearFilaMaterial();
+    for (let i = 0; i < 2; i++) crearFilaItem();
+    (function() {
+      const d = new Date();
+      const fechaHoy = (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
+      document.getElementById('fechaInv').value = fechaHoy;
+      document.getElementById('fecha').value = (d.getMonth()+1) + '/' + d.getDate() + '/' + (d.getFullYear() % 100);
+    })();
+    function setupDatePicker(txtId, pickerId) {
+      const txt = document.getElementById(txtId);
+      const picker = document.getElementById(pickerId);
+      if (!txt || !picker) return;
+      function toYMD(s) {
+        if (!s || !s.trim()) return '';
+        const p = s.trim().split('/');
+        if (p.length !== 3) return '';
+        let m = parseInt(p[0], 10), d = parseInt(p[1], 10), y = parseInt(p[2], 10);
+        if (y < 100) y += 2000;
+        if (isNaN(m) || isNaN(d) || isNaN(y) || m < 1 || m > 12 || d < 1 || d > 31) return '';
+        return y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+      }
+      function toMDY(ymd, short) {
+        if (!ymd) return '';
+        const p = ymd.split('-');
+        if (p.length !== 3) return '';
+        const y = short ? String(parseInt(p[0], 10) % 100) : p[0];
+        return parseInt(p[1], 10) + '/' + parseInt(p[2], 10) + '/' + y;
+      }
+      function syncPickerFromTxt() {
+        const d = new Date();
+        const defYmd = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+        picker.value = toYMD(txt.value) || defYmd;
+      }
+      const isShortYear = txtId === 'fecha';
+      syncPickerFromTxt();
+      txt.addEventListener('input', syncPickerFromTxt);
+      txt.addEventListener('blur', syncPickerFromTxt);
+      picker.addEventListener('change', function() {
+        txt.value = toMDY(picker.value, isShortYear);
+      });
+    }
+    setupDatePicker('fechaInv', 'fechaInvPicker');
+    setupDatePicker('fecha', 'fechaQuotePicker');
+
+    function setupLogoDrag(containerId, tipo) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      let isDragging = false;
+      let isResizing = false;
+      let resizeDir = '';
+      let startX, startY, startLeft, startTop, startWidth, startHeight;
+      const handles = container.querySelectorAll('.logo-resize-handle');
+
+      container.addEventListener('mousedown', function(e) {
+        if (e.target.classList.contains('logo-resize-handle')) return;
+        isDragging = true;
+        container.classList.add('dragging');
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = container.offsetLeft;
+        startTop = container.offsetTop;
+        e.preventDefault();
+      });
+
+      handles.forEach(function(handle) {
+        handle.addEventListener('mousedown', function(e) {
+          isResizing = true;
+          resizeDir = handle.getAttribute('data-dir');
+          startX = e.clientX;
+          startY = e.clientY;
+          startLeft = container.offsetLeft;
+          startTop = container.offsetTop;
+          startWidth = container.offsetWidth;
+          startHeight = container.offsetHeight;
+          e.preventDefault();
+          e.stopPropagation();
+        });
+      });
+
+      document.addEventListener('mousemove', function(e) {
+        if (isDragging) {
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          container.style.left = (startLeft + dx) + 'px';
+          container.style.top = (startTop + dy) + 'px';
+        }
+        if (isResizing) {
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          let newW = startWidth, newH = startHeight, newL = startLeft, newT = startTop;
+          if (resizeDir.includes('e')) newW = Math.max(40, startWidth + dx);
+          if (resizeDir.includes('w')) { newW = Math.max(40, startWidth - dx); newL = startLeft + dx; }
+          if (resizeDir.includes('s')) newH = Math.max(30, startHeight + dy);
+          if (resizeDir.includes('n')) { newH = Math.max(30, startHeight - dy); newT = startTop + dy; }
+          container.style.width = newW + 'px';
+          container.style.height = newH + 'px';
+          container.style.left = newL + 'px';
+          container.style.top = newT + 'px';
+        }
+      });
+
+      document.addEventListener('mouseup', function() {
+        if (isDragging || isResizing) {
+          isDragging = false;
+          isResizing = false;
+          resizeDir = '';
+          container.classList.remove('dragging');
+          guardarPosicionLogo();
+        }
+      });
+    }
+
+    function guardarPosicionLogo() {
+      try {
+        const d = JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}');
+        const quoteC = document.getElementById('logoContainerQuote');
+        const invC = document.getElementById('logoContainerInv');
+        d.logoPos = {
+          quote: { x: quoteC.offsetLeft, y: quoteC.offsetTop, w: quoteC.offsetWidth, h: quoteC.offsetHeight },
+          invoice: { x: invC.offsetLeft, y: invC.offsetTop, w: invC.offsetWidth, h: invC.offsetHeight }
+        };
+        localStorage.setItem(TAPICERIA_KEY, JSON.stringify(d));
+      } catch (e) {}
+    }
+
+    setupLogoDrag('logoContainerQuote', 'quote');
+    setupLogoDrag('logoContainerInv', 'invoice');
+
+    function aplicarTema(oscuro) {
+      if (oscuro) {
+        document.body.classList.add('tema-oscuro');
+        document.getElementById('btnTema').textContent = '☀️';
+      } else {
+        document.body.classList.remove('tema-oscuro');
+        document.getElementById('btnTema').textContent = '🌙';
+      }
+      localStorage.setItem('presupuesto_tema', oscuro ? 'oscuro' : 'claro');
+    }
+    document.getElementById('btnTema').addEventListener('click', function() {
+      const esOscuro = document.body.classList.contains('tema-oscuro');
+      aplicarTema(!esOscuro);
+    });
+    const temaGuardado = localStorage.getItem('presupuesto_tema');
+    if (temaGuardado === 'oscuro') aplicarTema(true);
+    aplicarIdioma();
+    cargarDatosTapiceria();
+    actualizar();
+    actualizarInvoice();
+  </script>
+</body>
+</html>
