@@ -139,6 +139,10 @@
       gap: 16px;
       align-items: flex-start;
       margin-top: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px;
+      background: #fafafa;
     }
     .descripcion-proyecto { flex: 1; min-width: 0; max-width: 55%; }
     .fila-descripcion-totales .totales-finales { margin-left: auto; }
@@ -424,6 +428,7 @@
     body.tema-oscuro .tabla-items td { border-color: #3498db33; }
     body.tema-oscuro .tabla-items input { background: #0f3460; border-color: #3498db; color: #eee; }
     body.tema-oscuro .totales-finales { background: rgba(255,255,255,0.05); }
+    body.tema-oscuro .fila-descripcion-totales { background: rgba(255,255,255,0.03); border-color: #3498db33; }
     body.tema-oscuro .totales-finales h3, body.tema-oscuro .totales-finales .fila { color: #ecf0f1; }
     body.tema-oscuro .invoice-totales .fila { color: #ecf0f1; }
     body.tema-oscuro .modal { background: #16213e; color: #eee; }
@@ -478,6 +483,10 @@
     .exportando-pdf .fila-descripcion-totales {
       display: flex !important;
       flex-direction: row !important;
+      border: 1px solid #ccc !important;
+      border-radius: 4px !important;
+      padding: 10px !important;
+      background: #fafafa !important;
     }
     .exportando-pdf .descripcion-proyecto {
       max-width: 55% !important;
@@ -597,19 +606,28 @@
         align-items: flex-end !important;
       }
       
-      /* Totales */
+      /* Totales con scroll horizontal */
       .fila-descripcion-totales {
-        flex-direction: column !important;
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        white-space: nowrap !important;
       }
       
       .descripcion-proyecto {
-        max-width: 100% !important;
-        width: 100% !important;
+        min-width: 250px !important;
+        flex-shrink: 0 !important;
+      }
+      
+      .descripcion-proyecto textarea {
+        white-space: pre-wrap !important;
       }
       
       .totales-finales, .invoice-totales {
-        width: 100% !important;
-        margin-left: 0 !important;
+        min-width: 200px !important;
+        flex-shrink: 0 !important;
+        margin-left: auto !important;
       }
       
       /* Modal más grande */
