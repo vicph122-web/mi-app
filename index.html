@@ -23,7 +23,7 @@
     }
     .documento {
       background: white;
-      padding: 10px 14px;
+      padding: 40px 14px 10px 14px;
       border: 1px solid #bbb;
     }
     .encabezado {
@@ -34,21 +34,28 @@
       padding-bottom: 6px;
       margin-bottom: 8px;
     }
-    .quote-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 2px solid #2c3e50; padding-bottom: 12px; }
+    .quote-header { position: relative; margin-bottom: 16px; border-bottom: 2px solid #2c3e50; padding-bottom: 12px; min-height: 100px; }
+    .quote-header.header-area { display: block; }
     .quote-logo-company { display: flex; align-items: flex-start; gap: 15px; }
-    .logo-space { width: 100px; height: 100px; border: 1px dashed #ccc; position: relative; background: #fafafa; overflow: visible; }
-    .logo-wrapper { position: absolute; cursor: move; z-index: 0; }
+    .header-area { position: relative; min-height: 100px; width: 100%; }
+    .draggable-element { position: absolute; cursor: move; }
+    .draggable-element:hover { outline: 1px dashed #3498db; }
+    .draggable-element .drag-handle { position: absolute; width: 8px; height: 8px; background: #3498db; border-radius: 2px; opacity: 0; z-index: 11; }
+    .draggable-element:hover .drag-handle { opacity: 1; }
+    .draggable-element .drag-handle-nw { top: -4px; left: -4px; cursor: nwse-resize; }
+    .draggable-element .drag-handle-n { top: -4px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+    .draggable-element .drag-handle-ne { top: -4px; right: -4px; cursor: nesw-resize; }
+    .draggable-element .drag-handle-w { top: 50%; left: -4px; transform: translateY(-50%); cursor: ew-resize; }
+    .draggable-element .drag-handle-e { top: 50%; right: -4px; transform: translateY(-50%); cursor: ew-resize; }
+    .draggable-element .drag-handle-sw { bottom: -4px; left: -4px; cursor: nesw-resize; }
+    .draggable-element .drag-handle-s { bottom: -4px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+    .draggable-element .drag-handle-se { bottom: -4px; right: -4px; cursor: nwse-resize; }
+    .logo-space { display: none; }
+    .logo-wrapper { position: absolute; cursor: move; z-index: 1; }
     .logo-wrapper img { display: block; width: 100%; height: 100%; }
-    .logo-wrapper .logo-resize-handle { position: absolute; width: 8px; height: 8px; background: #3498db; border-radius: 2px; opacity: 0; z-index: 11; }
-    .logo-wrapper:hover .logo-resize-handle { opacity: 1; }
-    .logo-wrapper .logo-handle-nw { top: -4px; left: -4px; cursor: nwse-resize; }
-    .logo-wrapper .logo-handle-n { top: -4px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
-    .logo-wrapper .logo-handle-ne { top: -4px; right: -4px; cursor: nesw-resize; }
-    .logo-wrapper .logo-handle-w { top: 50%; left: -4px; transform: translateY(-50%); cursor: ew-resize; }
-    .logo-wrapper .logo-handle-e { top: 50%; right: -4px; transform: translateY(-50%); cursor: ew-resize; }
-    .logo-wrapper .logo-handle-sw { bottom: -4px; left: -4px; cursor: nesw-resize; }
-    .logo-wrapper .logo-handle-s { bottom: -4px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
-    .logo-wrapper .logo-handle-se { bottom: -4px; right: -4px; cursor: nwse-resize; }
+    .company-info-wrapper { position: absolute; cursor: move; z-index: 2; background: rgba(255,255,255,0.9); padding: 5px; }
+    .company-info-wrapper h2 { margin: 0 0 4px 0; font-size: 1.4rem; font-weight: 700; color: #2c3e50; }
+    .company-info-wrapper .info { font-size: 12px; color: #555; line-height: 1.5; }
     .quote-company { position: relative; z-index: 5; }
     .quote-company h2 { margin: 0 0 4px 0; font-size: 1.4rem; font-weight: 700; color: #2c3e50; }
     .quote-company .info { font-size: 12px; color: #555; line-height: 1.5; }
@@ -332,7 +339,9 @@
     .documento[data-tipo="quote"] .bloque-invoice { display: none !important; }
     .documento[data-tipo="quote"] .bloque-quote { display: block !important; }
     .invoice-wrap { font-size: 12px; }
-    .invoice-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 2px solid #2c3e50; padding-bottom: 12px; }
+    .invoice-header { position: relative; margin-bottom: 16px; border-bottom: 2px solid #2c3e50; padding-bottom: 50px; min-height: 120px; }
+    .invoice-header.header-area { display: block; }
+    .invoice-header-spacer { height: 32px; min-height: 32px; }
     .invoice-logo-company { display: flex; align-items: flex-start; gap: 15px; }
     .invoice-company { position: relative; z-index: 5; }
     .invoice-company h2 { margin: 0 0 4px 0; font-size: 1.4rem; font-weight: 700; color: #2c3e50; }
@@ -499,7 +508,9 @@
     .logo-handle-e { right: -5px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
     .documento { position: relative; }
     .exportando-pdf .logo-container { border-color: transparent !important; }
-    .exportando-pdf .logo-resize-handle { display: none !important; }
+    .exportando-pdf .logo-resize-handle, .exportando-pdf .drag-handle { display: none !important; }
+    .exportando-pdf .draggable-element:hover { outline: none !important; }
+    .exportando-pdf .company-info-wrapper { background: transparent !important; }
     
     /* Forzar diseño correcto en PDF */
     .exportando-pdf .quote-header,
@@ -757,27 +768,34 @@
       <div class="logo-resize-handle logo-handle-s" data-dir="s"></div>
       <div class="logo-resize-handle logo-handle-se" data-dir="se"></div>
     </div>
-    <div class="quote-header">
-      <div class="quote-logo-company">
-        <div class="logo-space" id="logoSpaceQuote">
-          <div class="logo-wrapper" id="logoWrapperQuote" style="display:none; width:80px; height:60px; top:10px; left:10px;">
-            <img id="quoteCompanyLogoInline" src="" alt="">
-            <div class="logo-resize-handle logo-handle-nw" data-dir="nw"></div>
-            <div class="logo-resize-handle logo-handle-n" data-dir="n"></div>
-            <div class="logo-resize-handle logo-handle-ne" data-dir="ne"></div>
-            <div class="logo-resize-handle logo-handle-w" data-dir="w"></div>
-            <div class="logo-resize-handle logo-handle-e" data-dir="e"></div>
-            <div class="logo-resize-handle logo-handle-sw" data-dir="sw"></div>
-            <div class="logo-resize-handle logo-handle-s" data-dir="s"></div>
-            <div class="logo-resize-handle logo-handle-se" data-dir="se"></div>
-          </div>
-        </div>
-        <div class="quote-company">
-          <h2 id="quoteCompanyName"></h2>
-          <div class="info" id="quoteCompanyInfo"></div>
-        </div>
+    <div class="quote-header header-area" id="quoteHeaderArea">
+      <!-- Logo arrastrable -->
+      <div class="draggable-element logo-wrapper" id="logoWrapperQuote" style="display:none; width:80px; height:60px; top:10px; left:10px;">
+        <img id="quoteCompanyLogoInline" src="" alt="">
+        <div class="drag-handle drag-handle-nw" data-dir="nw"></div>
+        <div class="drag-handle drag-handle-n" data-dir="n"></div>
+        <div class="drag-handle drag-handle-ne" data-dir="ne"></div>
+        <div class="drag-handle drag-handle-w" data-dir="w"></div>
+        <div class="drag-handle drag-handle-e" data-dir="e"></div>
+        <div class="drag-handle drag-handle-sw" data-dir="sw"></div>
+        <div class="drag-handle drag-handle-s" data-dir="s"></div>
+        <div class="drag-handle drag-handle-se" data-dir="se"></div>
       </div>
-      <div class="quote-right">
+      <!-- Información de empresa arrastrable -->
+      <div class="draggable-element company-info-wrapper" id="companyInfoQuote" style="top:10px; left:50%; transform:translateX(-50%); width:auto;">
+        <h2 id="quoteCompanyName"></h2>
+        <div class="info" id="quoteCompanyInfo"></div>
+        <div class="drag-handle drag-handle-nw" data-dir="nw"></div>
+        <div class="drag-handle drag-handle-n" data-dir="n"></div>
+        <div class="drag-handle drag-handle-ne" data-dir="ne"></div>
+        <div class="drag-handle drag-handle-w" data-dir="w"></div>
+        <div class="drag-handle drag-handle-e" data-dir="e"></div>
+        <div class="drag-handle drag-handle-sw" data-dir="sw"></div>
+        <div class="drag-handle drag-handle-s" data-dir="s"></div>
+        <div class="drag-handle drag-handle-se" data-dir="se"></div>
+      </div>
+      <!-- QUOTE título y fecha -->
+      <div class="quote-right" style="position:absolute; right:10px; top:5px;">
         <h3 id="tituloDocumento" data-i18n="tituloQuote">QUOTE</h3>
         <div class="quote-meta-filas">
           <div class="quote-meta quote-meta-inline">
@@ -813,6 +831,8 @@
       </div>
     </div>
 
+    <div style="height: 20px;"></div>
+
     <table class="tabla-materiales">
       <thead>
         <tr>
@@ -831,7 +851,7 @@
       <tbody id="zonasMateriales"></tbody>
     </table>
 
-    <button type="button" class="btn-agregar" id="btnAgregar" data-i18n="agregar" data-i18n-title="titleAgregar">+ Agregar material</button>
+    <button type="button" class="btn-agregar" id="btnAgregar" data-i18n="addRow" data-i18n-title="titleAddRow">+ Add row</button>
 
     <table class="tabla-items">
       <thead>
@@ -872,6 +892,10 @@
       </div>
     </div>
     </div>
+    
+    <div class="quote-footer" style="margin-top: 15px; text-align: center;">
+      <span style="color: red; font-size: 14px;" data-i18n="quoteValidez">Quote valid for 90 days</span>
+    </div>
     </div>
 
     <div class="bloque-invoice invoice-wrap" style="display:none;">
@@ -886,27 +910,34 @@
         <div class="logo-resize-handle logo-handle-s" data-dir="s"></div>
         <div class="logo-resize-handle logo-handle-se" data-dir="se"></div>
       </div>
-      <div class="invoice-header">
-        <div class="invoice-logo-company">
-          <div class="logo-space" id="logoSpaceInvoice">
-            <div class="logo-wrapper" id="logoWrapperInvoice" style="display:none; width:80px; height:60px; top:10px; left:10px;">
-              <img id="invCompanyLogoInline" src="" alt="">
-              <div class="logo-resize-handle logo-handle-nw" data-dir="nw"></div>
-              <div class="logo-resize-handle logo-handle-n" data-dir="n"></div>
-              <div class="logo-resize-handle logo-handle-ne" data-dir="ne"></div>
-              <div class="logo-resize-handle logo-handle-w" data-dir="w"></div>
-              <div class="logo-resize-handle logo-handle-e" data-dir="e"></div>
-              <div class="logo-resize-handle logo-handle-sw" data-dir="sw"></div>
-              <div class="logo-resize-handle logo-handle-s" data-dir="s"></div>
-              <div class="logo-resize-handle logo-handle-se" data-dir="se"></div>
-            </div>
-          </div>
-          <div class="invoice-company">
-            <h2 id="invCompanyName"></h2>
-            <div class="info" id="invCompanyInfo"></div>
-          </div>
+      <div class="invoice-header header-area" id="invoiceHeaderArea">
+        <!-- Logo arrastrable -->
+        <div class="draggable-element logo-wrapper" id="logoWrapperInvoice" style="display:none; width:80px; height:60px; top:10px; left:10px;">
+          <img id="invCompanyLogoInline" src="" alt="">
+          <div class="drag-handle drag-handle-nw" data-dir="nw"></div>
+          <div class="drag-handle drag-handle-n" data-dir="n"></div>
+          <div class="drag-handle drag-handle-ne" data-dir="ne"></div>
+          <div class="drag-handle drag-handle-w" data-dir="w"></div>
+          <div class="drag-handle drag-handle-e" data-dir="e"></div>
+          <div class="drag-handle drag-handle-sw" data-dir="sw"></div>
+          <div class="drag-handle drag-handle-s" data-dir="s"></div>
+          <div class="drag-handle drag-handle-se" data-dir="se"></div>
         </div>
-        <div class="invoice-right">
+        <!-- Información de empresa arrastrable -->
+        <div class="draggable-element company-info-wrapper" id="companyInfoInvoice" style="top:10px; left:50%; transform:translateX(-50%); width:auto;">
+          <h2 id="invCompanyName"></h2>
+          <div class="info" id="invCompanyInfo"></div>
+          <div class="drag-handle drag-handle-nw" data-dir="nw"></div>
+          <div class="drag-handle drag-handle-n" data-dir="n"></div>
+          <div class="drag-handle drag-handle-ne" data-dir="ne"></div>
+          <div class="drag-handle drag-handle-w" data-dir="w"></div>
+          <div class="drag-handle drag-handle-e" data-dir="e"></div>
+          <div class="drag-handle drag-handle-sw" data-dir="sw"></div>
+          <div class="drag-handle drag-handle-s" data-dir="s"></div>
+          <div class="drag-handle drag-handle-se" data-dir="se"></div>
+        </div>
+        <!-- INVOICE título y fecha -->
+        <div class="invoice-right" style="position:absolute; right:10px; top:5px;">
           <h3 data-i18n="invoice">INVOICE</h3>
           <div class="invoice-meta-filas">
             <div class="invoice-meta invoice-meta-inline">
@@ -923,6 +954,7 @@
             </div>
           </div>
         </div>
+        <div class="invoice-header-spacer" aria-hidden="true"></div>
       </div>
       <div class="invoice-customer-invoice">
         <div class="invoice-customer">
@@ -1318,6 +1350,7 @@
         sincerely: 'Atentamente,',
         sender: 'Remitente:',
         thankYou: 'Gracias por su negocio, es un placer trabajar con usted',
+        quoteValidez: 'Presupuesto válido por 90 días',
         aceptamos: 'Aceptamos: cheques, efectivo, tarjetas, zelle, pagos por tel.',
         addRow: '+ Agregar fila',
         notasQuote: 'Notas',
@@ -1467,6 +1500,7 @@
         sincerely: 'Sincerely,',
         sender: 'Sender:',
         thankYou: 'Thank you for your business, It\'s a pleasure to work with you',
+        quoteValidez: 'Quote valid for 90 days',
         aceptamos: 'We accept: checks, cash, cards, Zelle, phone payments.',
         addRow: '+ Add row',
         notasQuote: 'Notes',
@@ -1595,70 +1629,59 @@
     }
 
     function actualizarDisplayInvoice(d) {
-      const nombre = d.nombre || '';
-      const partes = [d.direccion, d.telefono, d.email].filter(Boolean);
-      document.getElementById('invCompanyName').textContent = nombre;
-      document.getElementById('invCompanyInfo').innerHTML = partes.join('<br>') || '';
-      document.getElementById('quoteCompanyName').textContent = nombre;
-      document.getElementById('quoteCompanyInfo').innerHTML = partes.join('<br>') || '';
-      const invLogo = document.getElementById('invCompanyLogo');
-      const quoteLogo = document.getElementById('quoteCompanyLogo');
-      const invContainer = document.getElementById('logoContainerInv');
-      const quoteContainer = document.getElementById('logoContainerQuote');
-      const quoteLogoInline = document.getElementById('quoteCompanyLogoInline');
-      const invLogoInline = document.getElementById('invCompanyLogoInline');
-      const logoWrapperQuote = document.getElementById('logoWrapperQuote');
-      const logoWrapperInvoice = document.getElementById('logoWrapperInvoice');
-      const logoSpaceQuote = document.getElementById('logoSpaceQuote');
-      const logoSpaceInvoice = document.getElementById('logoSpaceInvoice');
-      if (d.logo) {
-        invLogo.src = d.logo;
-        quoteLogo.src = d.logo;
-        invContainer.style.display = 'none';
-        quoteContainer.style.display = 'none';
-        quoteLogoInline.src = d.logo;
-        invLogoInline.src = d.logo;
-        logoWrapperQuote.style.display = 'block';
-        logoWrapperInvoice.style.display = 'block';
-        logoSpaceQuote.style.borderStyle = 'none';
-        logoSpaceQuote.style.background = 'transparent';
-        logoSpaceInvoice.style.borderStyle = 'none';
-        logoSpaceInvoice.style.background = 'transparent';
-        if (d.logoPos) {
-          if (d.logoPos.quote) {
-            quoteContainer.style.left = d.logoPos.quote.x + 'px';
-            quoteContainer.style.top = d.logoPos.quote.y + 'px';
-            quoteContainer.style.width = d.logoPos.quote.w + 'px';
-            if (d.logoPos.quote.h) quoteContainer.style.height = d.logoPos.quote.h + 'px';
-          }
-          if (d.logoPos.invoice) {
-            invContainer.style.left = d.logoPos.invoice.x + 'px';
-            invContainer.style.top = d.logoPos.invoice.y + 'px';
-            invContainer.style.width = d.logoPos.invoice.w + 'px';
-            if (d.logoPos.invoice.h) invContainer.style.height = d.logoPos.invoice.h + 'px';
-          }
+      try {
+        if (!d || typeof d !== 'object') d = {};
+        const t = (typeof T !== 'undefined' && T[idioma]) ? T[idioma] : (typeof T !== 'undefined' ? T.es : { thankYou: 'Gracias por su negocio' });
+        const nombre = d.nombre || '';
+        const partes = [d.direccion, d.telefono, d.email].filter(Boolean);
+        const placeholderNombre = idioma === 'es' ? 'Nombre de la empresa (Configuración)' : 'Company name (Configuration)';
+        const invName = document.getElementById('invCompanyName');
+        const quoteName = document.getElementById('quoteCompanyName');
+        const invInfo = document.getElementById('invCompanyInfo');
+        const quoteInfo = document.getElementById('quoteCompanyInfo');
+        if (invName) invName.textContent = nombre || placeholderNombre;
+        if (invInfo) invInfo.innerHTML = partes.join('<br>') || '';
+        if (quoteName) quoteName.textContent = nombre || placeholderNombre;
+        if (quoteInfo) quoteInfo.innerHTML = partes.join('<br>') || '';
+        const invLogo = document.getElementById('invCompanyLogo');
+        const quoteLogo = document.getElementById('quoteCompanyLogo');
+        const invContainer = document.getElementById('logoContainerInv');
+        const quoteContainer = document.getElementById('logoContainerQuote');
+        const quoteLogoInline = document.getElementById('quoteCompanyLogoInline');
+        const invLogoInline = document.getElementById('invCompanyLogoInline');
+        const logoWrapperQuote = document.getElementById('logoWrapperQuote');
+        const logoWrapperInvoice = document.getElementById('logoWrapperInvoice');
+        if (d.logo) {
+          if (invLogo) invLogo.src = d.logo;
+          if (quoteLogo) quoteLogo.src = d.logo;
+          if (invContainer) invContainer.style.display = 'none';
+          if (quoteContainer) quoteContainer.style.display = 'none';
+          if (quoteLogoInline) quoteLogoInline.src = d.logo;
+          if (invLogoInline) invLogoInline.src = d.logo;
+          if (logoWrapperQuote) logoWrapperQuote.style.display = 'block';
+          if (logoWrapperInvoice) logoWrapperInvoice.style.display = 'block';
+        } else {
+          if (invContainer) invContainer.style.display = 'none';
+          if (quoteContainer) quoteContainer.style.display = 'none';
+          if (logoWrapperQuote) logoWrapperQuote.style.display = 'none';
+          if (logoWrapperInvoice) logoWrapperInvoice.style.display = 'none';
         }
-      } else {
-        invContainer.style.display = 'none';
-        quoteContainer.style.display = 'none';
-        logoWrapperQuote.style.display = 'none';
-        logoWrapperInvoice.style.display = 'none';
-        logoSpaceQuote.style.borderStyle = 'dashed';
-        logoSpaceQuote.style.background = '#fafafa';
-        logoSpaceInvoice.style.borderStyle = 'dashed';
-        logoSpaceInvoice.style.background = '#fafafa';
-      }
-      const payableTo = (d.payableTo && d.payableTo.trim()) ? d.payableTo.trim() : nombre;
-      const sincerely = (d.sincerely && d.sincerely.trim()) ? d.sincerely.trim() : nombre;
-      document.getElementById('invPayableTo').textContent = payableTo;
-      document.getElementById('invSincerely').textContent = sincerely;
-      document.getElementById('invSender').textContent = d.sender || '';
-      const t = T[idioma] || T.es;
-      const cardPct = d.cardFeePct || '3.5';
-      document.getElementById('invCardFeeNoticeText').textContent = idioma === 'es' ? 'Pagos con tarjeta sujetos a cargo del ' : 'Card payments subject to a charge of ';
-      const inp = document.getElementById('cardFeePctInv');
-      if (inp) inp.value = cardPct;
-      document.getElementById('invThankYou').textContent = (d.thankYou && d.thankYou.trim()) ? d.thankYou.trim() : (t.thankYou || 'Gracias por su negocio');
+        const payableTo = (d.payableTo && d.payableTo.trim()) ? d.payableTo.trim() : (nombre || placeholderNombre);
+        const sincerely = (d.sincerely && d.sincerely.trim()) ? d.sincerely.trim() : (nombre || placeholderNombre);
+        const invPay = document.getElementById('invPayableTo');
+        const invSinc = document.getElementById('invSincerely');
+        const invSend = document.getElementById('invSender');
+        if (invPay) invPay.textContent = payableTo;
+        if (invSinc) invSinc.textContent = sincerely;
+        if (invSend) invSend.textContent = d.sender || '';
+        const cardPct = d.cardFeePct || '3.5';
+        const invCardText = document.getElementById('invCardFeeNoticeText');
+        if (invCardText) invCardText.textContent = idioma === 'es' ? 'Pagos con tarjeta sujetos a cargo del ' : 'Card payments subject to a charge of ';
+        const inp = document.getElementById('cardFeePctInv');
+        if (inp) inp.value = cardPct;
+        const invThank = document.getElementById('invThankYou');
+        if (invThank) invThank.textContent = (d.thankYou && d.thankYou.trim()) ? d.thankYou.trim() : (t.thankYou || 'Gracias por su negocio');
+      } catch (e) {}
     }
 
     async function traducirTexto(texto, desde, hasta) {
@@ -1742,7 +1765,9 @@
 
     function cargarDatosTapiceria() {
       try {
-        const d = JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}');
+        const raw = localStorage.getItem(TAPICERIA_KEY);
+        const d = (raw && raw !== '') ? JSON.parse(raw) : {};
+        if (typeof d !== 'object' || d === null) { actualizarDisplayInvoice({}); return; }
         document.getElementById('configNombre').value = d.nombre || '';
         document.getElementById('configDireccion').value = d.direccion || '';
         document.getElementById('configTelefono').value = d.telefono || '';
@@ -1771,7 +1796,10 @@
         }
         actualizarDisplayTapiceria(d);
         aplicarTipoDocumento();
-      } catch (e) {}
+        actualizarDisplayInvoice(d);
+      } catch (e) {
+        try { actualizarDisplayInvoice({}); } catch (e2) {}
+      }
     }
 
     function actualizarDisplayTapiceria(d) {
@@ -1852,8 +1880,8 @@
     document.getElementById('configLogo').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
-      if (file.size > 500000) {
-        alert(idioma === 'es' ? 'La imagen es muy grande. Máximo 500KB.' : 'Image too large. Max 500KB.');
+      if (file.size > 2000000) {
+        alert(idioma === 'es' ? 'La imagen es muy grande. Máximo 2MB.' : 'Image too large. Max 2MB.');
         return;
       }
       const reader = new FileReader();
@@ -2969,22 +2997,22 @@
       }
       localStorage.setItem('presupuesto_tema', oscuro ? 'oscuro' : 'claro');
     }
-    document.getElementById('btnTema').addEventListener('click', function() {
+    const btnTema = document.getElementById('btnTema');
+    if (btnTema) btnTema.addEventListener('click', function() {
       const esOscuro = document.body.classList.contains('tema-oscuro');
       aplicarTema(!esOscuro);
     });
     const temaGuardado = localStorage.getItem('presupuesto_tema');
     if (temaGuardado === 'oscuro') aplicarTema(true);
     aplicarIdioma();
-    cargarDatosTapiceria();
-    actualizar();
-    actualizarInvoice();
+    try { cargarDatosTapiceria(); } catch (e) { try { actualizarDisplayInvoice({}); } catch (e2) {} }
+    try { actualizar(); } catch (e) {}
+    try { actualizarInvoice(); } catch (e) {}
 
-    // Logo inline drag and resize
-    function setupInlineLogo(spaceId, wrapperId) {
-      const space = document.getElementById(spaceId);
-      const wrapper = document.getElementById(wrapperId);
-      if (!space || !wrapper) return;
+    // Función genérica para hacer elementos arrastrables y redimensionables
+    function setupDraggable(elementId) {
+      const wrapper = document.getElementById(elementId);
+      if (!wrapper) return;
       
       let isDragging = false;
       let isResizing = false;
@@ -2992,8 +3020,16 @@
       let startX, startY, startLeft, startTop, startWidth, startHeight;
       
       wrapper.addEventListener('mousedown', function(e) {
-        if (e.target.classList.contains('logo-resize-handle')) return;
+        if (e.target.classList.contains('drag-handle')) return;
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         isDragging = true;
+        // Quitar transform para que left/top funcionen correctamente
+        if (wrapper.style.transform) {
+          const rect = wrapper.getBoundingClientRect();
+          const parentRect = wrapper.parentElement.getBoundingClientRect();
+          wrapper.style.left = (rect.left - parentRect.left) + 'px';
+          wrapper.style.transform = 'none';
+        }
         startX = e.clientX;
         startY = e.clientY;
         startLeft = parseInt(wrapper.style.left) || 0;
@@ -3001,7 +3037,7 @@
         e.preventDefault();
       });
       
-      const handles = wrapper.querySelectorAll('.logo-resize-handle');
+      const handles = wrapper.querySelectorAll('.drag-handle');
       handles.forEach(function(handle) {
         handle.addEventListener('mousedown', function(e) {
           isResizing = true;
@@ -3051,8 +3087,26 @@
       });
     }
     
-    setupInlineLogo('logoSpaceQuote', 'logoWrapperQuote');
-    setupInlineLogo('logoSpaceInvoice', 'logoWrapperInvoice');
+    // Configurar elementos arrastrables
+    setupDraggable('logoWrapperQuote');
+    setupDraggable('logoWrapperInvoice');
+    setupDraggable('companyInfoQuote');
+    setupDraggable('companyInfoInvoice');
+    
+    // Centrar información de empresa al cargar
+    function centrarCompanyInfo() {
+      try {
+        ['companyInfoQuote', 'companyInfoInvoice'].forEach(function(id) {
+          const el = document.getElementById(id);
+          if (el) {
+            el.style.left = '50%';
+            el.style.transform = 'translateX(-50%)';
+            el.style.top = '-30px';
+          }
+        });
+      } catch (e) {}
+    }
+    centrarCompanyInfo();
     
     // Sincronizar campos de Quote a Invoice
     const syncFields = [
