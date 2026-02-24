@@ -24,6 +24,7 @@
     .documento {
       background: white;
       padding: 10px 14px;
+      border: 1px solid #bbb;
     }
     .encabezado {
       display: flex;
@@ -34,6 +35,21 @@
       margin-bottom: 8px;
     }
     .quote-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 2px solid #2c3e50; padding-bottom: 12px; }
+    .quote-logo-company { display: flex; align-items: flex-start; gap: 15px; }
+    .logo-space { width: 100px; height: 100px; border: 1px dashed #ccc; position: relative; background: #fafafa; overflow: visible; }
+    .logo-wrapper { position: absolute; cursor: move; z-index: 0; }
+    .logo-wrapper img { display: block; width: 100%; height: 100%; }
+    .logo-wrapper .logo-resize-handle { position: absolute; width: 8px; height: 8px; background: #3498db; border-radius: 2px; opacity: 0; z-index: 11; }
+    .logo-wrapper:hover .logo-resize-handle { opacity: 1; }
+    .logo-wrapper .logo-handle-nw { top: -4px; left: -4px; cursor: nwse-resize; }
+    .logo-wrapper .logo-handle-n { top: -4px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+    .logo-wrapper .logo-handle-ne { top: -4px; right: -4px; cursor: nesw-resize; }
+    .logo-wrapper .logo-handle-w { top: 50%; left: -4px; transform: translateY(-50%); cursor: ew-resize; }
+    .logo-wrapper .logo-handle-e { top: 50%; right: -4px; transform: translateY(-50%); cursor: ew-resize; }
+    .logo-wrapper .logo-handle-sw { bottom: -4px; left: -4px; cursor: nesw-resize; }
+    .logo-wrapper .logo-handle-s { bottom: -4px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+    .logo-wrapper .logo-handle-se { bottom: -4px; right: -4px; cursor: nwse-resize; }
+    .quote-company { position: relative; z-index: 5; }
     .quote-company h2 { margin: 0 0 4px 0; font-size: 1.4rem; font-weight: 700; color: #2c3e50; }
     .quote-company .info { font-size: 12px; color: #555; line-height: 1.5; }
     .quote-right { text-align: right; min-width: 180px; display: flex; flex-direction: column; align-items: flex-end; }
@@ -75,11 +91,16 @@
       display: block;
     }
     .campo input, .campo select {
-      padding: 3px 5px;
-      border: 1px solid #bdc3c7;
-      border-radius: 3px;
+      padding: 5px 6px;
+      border: 1px solid #bbb;
+      border-radius: 0;
       font-size: 12px;
       width: 100%;
+      background: transparent;
+    }
+    .campo input:focus, .campo select:focus {
+      background: #fffde7;
+      outline: none;
     }
     .tabla-materiales {
       border-collapse: collapse;
@@ -101,12 +122,20 @@
     }
     .tabla-materiales tr:nth-child(even) { background: #f9f9f9; }
     .tabla-materiales input, .tabla-materiales select {
-      padding: 2px 4px;
+      padding: 5px 6px;
       font-size: 12px;
-      border: 1px solid #ccc;
-      border-radius: 2px;
+      border: none;
+      border-radius: 0;
       width: 100%;
       min-width: 0;
+      background: transparent;
+    }
+    .tabla-materiales input:focus, .tabla-materiales select:focus {
+      background: #fffde7;
+      outline: none;
+    }
+    .tabla-materiales td {
+      border: 1px solid #bbb;
     }
     .tabla-materiales .col-nombre { width: 80px; }
     .tabla-materiales .col-largo { width: 48px; }
@@ -116,7 +145,7 @@
     .tabla-materiales .col-cant { width: 90px; font-weight: 600; font-size: 12px; }
     .tabla-materiales .td-cantidades { font-size: 12px; }
     .tabla-materiales .col-precio { width: 55px; }
-    .tabla-materiales .precio-cell { display: inline-flex; align-items: center; border: 1px solid #ccc; border-radius: 2px; padding: 2px 4px; background: white; width: 100%; box-sizing: border-box; font-size: 12px; }
+    .tabla-materiales .precio-cell { display: inline-flex; align-items: center; border: none; border-radius: 0; padding: 0; background: transparent; width: 100%; box-sizing: border-box; font-size: 12px; }
     .tabla-materiales .precio-cell .precio-simbolo { font-size: 12px; line-height: 1; }
     .tabla-materiales .precio-cell input { width: 5ch; min-width: 4ch; border: none; background: transparent; padding: 0; font-size: 12px; box-shadow: none; outline: none; flex: 1; max-width: 100%; }
     .tabla-materiales .col-por { width: 75px; }
@@ -304,54 +333,63 @@
     .documento[data-tipo="quote"] .bloque-quote { display: block !important; }
     .invoice-wrap { font-size: 12px; }
     .invoice-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 2px solid #2c3e50; padding-bottom: 12px; }
+    .invoice-logo-company { display: flex; align-items: flex-start; gap: 15px; }
+    .invoice-company { position: relative; z-index: 5; }
     .invoice-company h2 { margin: 0 0 4px 0; font-size: 1.4rem; font-weight: 700; color: #2c3e50; }
     .invoice-company .info { font-size: 12px; color: #555; line-height: 1.5; }
-    .invoice-right { min-width: 180px; display: flex; flex-direction: column; align-items: flex-end; }
-    .invoice-right h3 { margin: 0 0 8px 0; font-size: 1.3rem; font-weight: 700; text-align: right; }
-    .invoice-right .meta { font-size: 12px; text-align: right; }
-    .invoice-meta-filas { display: flex !important; flex-direction: column !important; gap: 8px; align-items: flex-start; margin-top: 0; }
-    .invoice-meta-filas .invoice-meta { display: flex !important; flex-direction: column !important; align-items: flex-end; text-align: right; min-width: 120px; }
-    .invoice-meta-filas .invoice-meta.invoice-meta-inline { flex-direction: row !important; align-items: center; gap: 6px; min-width: 180px; }
-    .invoice-meta-filas .invoice-meta-inline label { min-width: 72px; flex-shrink: 0; }
-    .invoice-meta-filas .invoice-meta-inline input { width: 80px !important; max-width: 80px; min-width: 80px; flex-shrink: 0; }
-    #numFactura { width: 56px !important; max-width: 56px !important; min-width: 56px !important; }
+    .invoice-right { min-width: 180px; display: flex; flex-direction: column; align-items: flex-start; }
+    .invoice-right h3 { margin: 0 0 8px 0; font-size: 1.3rem; font-weight: 700; text-align: left; padding-left: 0; }
+    .invoice-right .meta { font-size: 12px; text-align: left; }
+    .invoice-meta-filas { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; margin-top: 0; }
+    .invoice-meta-filas .invoice-meta { display: flex; flex-direction: row; align-items: center; gap: 8px; justify-content: flex-start; }
+    .invoice-meta-filas .invoice-meta.invoice-meta-inline { flex-direction: row; align-items: center; gap: 8px; }
+    .invoice-meta-filas .invoice-meta-inline label { min-width: 75px; text-align: left; flex-shrink: 0; }
+    .invoice-meta-filas .invoice-meta-inline input { width: 90px !important; max-width: 90px; min-width: 90px; flex-shrink: 0; text-align: left; }
+    #numFactura { width: 45px !important; max-width: 45px !important; min-width: 45px !important; }
     .fecha-inv-wrap { position: relative; display: inline-block; }
     .fecha-inv-wrap #fechaInv { padding-right: 24px; }
     .fecha-icono-cal { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 14px; pointer-events: none; user-select: none; z-index: 0; }
     .fecha-inv-wrap input[type="date"] { position: absolute; right: 2px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; padding: 0; border: none; background: transparent; cursor: pointer; opacity: 0; z-index: 1; }
-    .invoice-meta-filas .invoice-meta label { text-align: right; }
-    .invoice-meta-filas .invoice-meta input { width: 120px !important; max-width: 120px; box-sizing: border-box; flex: none; }
+    .invoice-meta-filas .invoice-meta label { text-align: left; font-size: 12px; }
+    .invoice-meta-filas .invoice-meta input { width: 90px !important; max-width: 90px; box-sizing: border-box; flex: none; }
     .invoice-customer-invoice { margin-bottom: 16px; }
     .invoice-customer label, .invoice-meta label { font-size: 12px; font-weight: 600; color: #777; display: block; }
-    .invoice-customer input, .invoice-meta input { border: 1px solid #bdc3c7; padding: 4px 6px; font-size: 12px; width: 100%; border-radius: 3px; }
+    .invoice-customer input, .invoice-meta input { border: 1px solid #bbb; padding: 5px 6px; font-size: 12px; width: 100%; border-radius: 0; background: transparent; }
+    .invoice-customer input:focus, .invoice-meta input:focus { background: #fffde7; outline: none; }
     .fila-nombre-direccion, .fila-email-telefono { display: flex; gap: 12px; align-items: flex-end; margin-bottom: 6px; }
     .fila-nombre-direccion input:first-child { flex: 0 0 150px; }
     .fila-nombre-direccion input:last-child { flex: 1; min-width: 0; }
     .fila-email-telefono input[type="email"],
     .fila-email-telefono input[type="tel"] { flex: 1; min-width: 0; }
     .tabla-materials { border-collapse: collapse; width: 100%; font-size: 12px; margin-bottom: 12px; }
-    .tabla-materials th { background: #90c695; color: #1a3d1a; padding: 5px 6px; text-align: left; font-weight: 600; }
-    .tabla-materials td { padding: 4px 6px; border: 1px solid #ddd; }
-    .tabla-materials input { padding: 2px 4px; font-size: 12px; border: 1px solid #ccc; width: 100%; }
+    .tabla-materials th { background: #90c695; color: #1a3d1a; padding: 5px 6px; text-align: left; font-weight: 600; border: 1px solid #7ab37f; }
+    .tabla-materials td { padding: 0; border: 1px solid #bbb; }
+    .tabla-materials input { padding: 6px 8px; font-size: 12px; border: none; background: transparent; width: 100%; height: 100%; outline: none; }
+    .tabla-materials input:focus { background: #fffde7; }
     .tabla-materials .col-mat { width: 100px; }
     .tabla-materials .col-desc { min-width: 70px; }
-    .tabla-materials .col-yards { width: 95px; }
-    .tabla-materials .col-yards .yards-cell { display: flex; gap: 2px; }
-    .tabla-materials .col-yards .input-yards { flex: 1; min-width: 0; }
-    .tabla-materials .col-yards select { padding: 2px 2px; font-size: 12px; border: 1px solid #ccc; width: 38px; }
+    .tabla-materials .col-yards-num { width: 60px; }
+    .tabla-materials .col-yards-unit { width: 50px; }
+    .tabla-materials .col-yards-unit select { padding: 6px 4px; font-size: 12px; border: none; background: transparent; width: 100%; }
+    .tabla-materials .col-yards-unit select:focus { background: #fffde7; }
     .tabla-materials .col-color { width: 120px; }
     .tabla-materials .col-qty { width: 90px; }
     .tabla-items { border-collapse: collapse; width: 100%; font-size: 12px; margin-bottom: 12px; }
-    .tabla-items th { background: #95a5a6; color: #2c3e50; padding: 5px 6px; text-align: left; font-weight: 600; }
-    .tabla-items td { padding: 4px 6px; border: 1px solid #ddd; }
-    .tabla-items input { padding: 2px 4px; font-size: 12px; border: 1px solid #ccc; width: 100%; }
+    .tabla-items input[type="number"]::-webkit-inner-spin-button,
+    .tabla-items input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    .tabla-items input[type="number"] { -moz-appearance: textfield; }
+    .tabla-items th { background: #95a5a6; color: #2c3e50; padding: 5px 6px; text-align: left; font-weight: 600; border: 1px solid #bbb; }
+    .tabla-items td { padding: 0; border: 1px solid #bbb; }
+    .tabla-items input { padding: 6px 8px; font-size: 12px; border: none; background: transparent; width: 100%; height: 100%; outline: none; }
+    .tabla-items input:focus { background: #fffde7; }
     .tabla-items .col-desc { min-width: 150px; }
     .tabla-items .col-qty { width: 60px; }
     .tabla-items .col-unit { width: 90px; }
-    .tabla-items .unit-price-cell { display: flex; align-items: center; border: 1px solid #ccc; border-radius: 2px; padding: 2px 4px; background: white; font-size: 12px; }
-    .tabla-items .unit-price-cell input { flex: 1; min-width: 0; border: none; background: transparent; padding: 0; font-size: 12px; box-shadow: none; outline: none; }
+    .tabla-items .unit-price-cell { display: flex; align-items: center; padding: 0; background: transparent; font-size: 12px; height: 100%; border: none; }
+    .tabla-items .unit-price-cell input { flex: 1; min-width: 0; border: none; background: transparent; padding: 6px 4px; font-size: 12px; box-shadow: none; outline: none; }
+    .tabla-items .unit-price-cell input:focus { background: #fffde7; }
     .tabla-items .col-total { width: 90px; font-weight: 600; color: #1e8449; }
-    .tabla-items .td-item-total { font-size: 12px; }
+    .tabla-items .td-item-total { font-size: 12px; padding: 6px 8px; }
     .invoice-aceptamos { font-size: 12px; color: #555; margin: 8px 0 12px 0; }
 .invoice-totales-wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 16px; }
     .invoice-totales { max-width: 260px; font-size: 13px; flex-shrink: 0; }
@@ -381,18 +419,20 @@
     .exportando-pdf .fecha-inv-wrap input[type="date"], .exportando-pdf .fecha-icono-cal { display: none !important; }
     .exportando-pdf .tabla-materiales td, .exportando-pdf .tabla-materiales th,
     .exportando-pdf .tabla-materials td, .exportando-pdf .tabla-materials th,
-    .exportando-pdf .tabla-items td, .exportando-pdf .tabla-items th { border: none !important; }
+    .exportando-pdf .tabla-items td, .exportando-pdf .tabla-items th { border: 1px solid #bbb !important; }
     .exportando-pdf .tabla-materiales tr:nth-child(even) { background: transparent !important; }
     .exportando-pdf .tabla-materiales input, .exportando-pdf .tabla-materiales select,
     .exportando-pdf .tabla-materials input, .exportando-pdf .tabla-materials select,
     .exportando-pdf .tabla-items input { border: none !important; box-shadow: none !important; background: transparent !important; }
     .exportando-pdf .tabla-materiales .precio-cell, .exportando-pdf .tabla-items .unit-price-cell { border: none !important; background: transparent !important; }
-    .exportando-pdf .campo input, .exportando-pdf .campo select, .exportando-pdf .campo textarea,
-    .exportando-pdf .invoice-customer input, .exportando-pdf .invoice-meta input { border: none !important; background: transparent !important; }
-    .exportando-pdf .invoice-totales select { border: none !important; background: transparent !important; -webkit-appearance: none; appearance: none; }
-    .exportando-pdf .descripcion-proyecto textarea { border: none !important; background: transparent !important; }
-    .exportando-pdf input[readonly], .exportando-pdf .monto-input { border: none !important; background: transparent !important; }
-    .exportando-pdf .aviso-card-fee-input-wrap { border: none !important; background: transparent !important; box-shadow: none !important; outline: none !important; }
+    .exportando-pdf .campo input, .exportando-pdf .campo select, .exportando-pdf .campo textarea { border: 1px solid #bbb !important; background: transparent !important; }
+    .exportando-pdf .invoice-customer input, .exportando-pdf .invoice-meta input { border: 1px solid #bbb !important; background: transparent !important; }
+    .exportando-pdf .invoice-totales select { border: 1px solid #bbb !important; background: transparent !important; -webkit-appearance: none; appearance: none; }
+    .exportando-pdf .descripcion-proyecto textarea { border: 1px solid #bbb !important; background: transparent !important; }
+    .exportando-pdf input[readonly], .exportando-pdf .monto-input { border: 1px solid #bbb !important; background: transparent !important; }
+    .exportando-pdf .aviso-card-fee-input-wrap { border: 1px solid #bbb !important; background: transparent !important; box-shadow: none !important; outline: none !important; }
+    .exportando-pdf .btn-agregar, .exportando-pdf .btn-del { display: none !important; }
+    .exportando-pdf .col-del { display: none !important; }
     @media print {
       body { background: white; padding: 0; }
       .encabezado { display: none !important; }
@@ -718,9 +758,24 @@
       <div class="logo-resize-handle logo-handle-se" data-dir="se"></div>
     </div>
     <div class="quote-header">
-      <div class="quote-company">
-        <h2 id="quoteCompanyName"></h2>
-        <div class="info" id="quoteCompanyInfo"></div>
+      <div class="quote-logo-company">
+        <div class="logo-space" id="logoSpaceQuote">
+          <div class="logo-wrapper" id="logoWrapperQuote" style="display:none; width:80px; height:60px; top:10px; left:10px;">
+            <img id="quoteCompanyLogoInline" src="" alt="">
+            <div class="logo-resize-handle logo-handle-nw" data-dir="nw"></div>
+            <div class="logo-resize-handle logo-handle-n" data-dir="n"></div>
+            <div class="logo-resize-handle logo-handle-ne" data-dir="ne"></div>
+            <div class="logo-resize-handle logo-handle-w" data-dir="w"></div>
+            <div class="logo-resize-handle logo-handle-e" data-dir="e"></div>
+            <div class="logo-resize-handle logo-handle-sw" data-dir="sw"></div>
+            <div class="logo-resize-handle logo-handle-s" data-dir="s"></div>
+            <div class="logo-resize-handle logo-handle-se" data-dir="se"></div>
+          </div>
+        </div>
+        <div class="quote-company">
+          <h2 id="quoteCompanyName"></h2>
+          <div class="info" id="quoteCompanyInfo"></div>
+        </div>
       </div>
       <div class="quote-right">
         <h3 id="tituloDocumento" data-i18n="tituloQuote">QUOTE</h3>
@@ -761,6 +816,7 @@
     <table class="tabla-materiales">
       <thead>
         <tr>
+          <th class="col-del"></th>
           <th class="col-nombre" data-i18n="material">Material</th>
           <th class="col-largo" data-i18n="largo">Largo</th>
           <th class="col-unidad" data-i18n="unidad">Unidad</th>
@@ -770,7 +826,6 @@
           <th class="col-precio" data-i18n="precio">Precio</th>
           <th class="col-por" data-i18n="por">Por</th>
           <th class="col-sub" data-i18n="subtotal">Subtotal</th>
-          <th class="col-del"></th>
         </tr>
       </thead>
       <tbody id="zonasMateriales"></tbody>
@@ -781,11 +836,11 @@
     <table class="tabla-items">
       <thead>
         <tr>
+          <th class="col-del" style="width:28px;"></th>
           <th class="col-desc" data-i18n="description">Description</th>
           <th class="col-qty" data-i18n="quantity">Quantity</th>
           <th class="col-unit" data-i18n="unitPrice">Unit Price</th>
           <th class="col-total" data-i18n="total">Total</th>
-          <th class="col-del" style="width:28px;"></th>
         </tr>
       </thead>
       <tbody id="zonasItemsQuote"></tbody>
@@ -805,7 +860,7 @@
       </div>
       <div class="fila">
         <span data-i18n="tax">Tax (%)</span>
-        <span><input type="number" id="taxPct" value="7" min="0" step="0.1" readonly style="width:42px;padding:2px;font-size:11px;border-radius:2px;border:1px solid #ddd;background:#f5f5f5;"> %</span>
+        <span><input type="number" id="taxPct" value="7" min="0" step="0.1" readonly style="width:42px;padding:2px;font-size:11px;border-radius:2px;border:1px solid #ddd;background:#f5f5f5;"></span>
       </div>
       <div class="fila">
         <span>Tax</span>
@@ -832,9 +887,24 @@
         <div class="logo-resize-handle logo-handle-se" data-dir="se"></div>
       </div>
       <div class="invoice-header">
-        <div class="invoice-company">
-          <h2 id="invCompanyName"></h2>
-          <div class="info" id="invCompanyInfo"></div>
+        <div class="invoice-logo-company">
+          <div class="logo-space" id="logoSpaceInvoice">
+            <div class="logo-wrapper" id="logoWrapperInvoice" style="display:none; width:80px; height:60px; top:10px; left:10px;">
+              <img id="invCompanyLogoInline" src="" alt="">
+              <div class="logo-resize-handle logo-handle-nw" data-dir="nw"></div>
+              <div class="logo-resize-handle logo-handle-n" data-dir="n"></div>
+              <div class="logo-resize-handle logo-handle-ne" data-dir="ne"></div>
+              <div class="logo-resize-handle logo-handle-w" data-dir="w"></div>
+              <div class="logo-resize-handle logo-handle-e" data-dir="e"></div>
+              <div class="logo-resize-handle logo-handle-sw" data-dir="sw"></div>
+              <div class="logo-resize-handle logo-handle-s" data-dir="s"></div>
+              <div class="logo-resize-handle logo-handle-se" data-dir="se"></div>
+            </div>
+          </div>
+          <div class="invoice-company">
+            <h2 id="invCompanyName"></h2>
+            <div class="info" id="invCompanyInfo"></div>
+          </div>
         </div>
         <div class="invoice-right">
           <h3 data-i18n="invoice">INVOICE</h3>
@@ -870,12 +940,13 @@
       <table class="tabla-materials">
         <thead>
           <tr>
+            <th class="col-del" style="width:28px;"></th>
             <th class="col-mat" data-i18n="materials">Materials</th>
             <th class="col-desc" data-i18n="description">Description</th>
-            <th class="col-yards" data-i18n="yards">Yards</th>
+            <th class="col-yards-num" data-i18n="yards">Yards</th>
+            <th class="col-yards-unit" data-i18n="unit">Unit</th>
             <th class="col-color" data-i18n="color">Color</th>
             <th class="col-qty" data-i18n="colorNum">Color No</th>
-            <th class="col-del" style="width:28px;"></th>
           </tr>
         </thead>
         <tbody id="zonasMaterials"></tbody>
@@ -884,11 +955,11 @@
       <table class="tabla-items">
         <thead>
           <tr>
+            <th class="col-del" style="width:28px;"></th>
             <th class="col-desc" data-i18n="description">Description</th>
             <th class="col-qty" data-i18n="quantity">Quantity</th>
             <th class="col-unit" data-i18n="unitPrice">Unit Price</th>
             <th class="col-total" data-i18n="total">Total</th>
-            <th class="col-del" style="width:28px;"></th>
           </tr>
         </thead>
         <tbody id="zonasItems"></tbody>
@@ -900,7 +971,7 @@
           <div data-i18n="checksPayable">Checks payable to:</div>
           <strong id="invPayableTo"></strong>
           <div class="aviso-card-fee">
-            <span id="invCardFeeNoticeText">Pagos con tarjeta sujetos a cargo del </span>
+            <span id="invCardFeeNoticeText" style="color: red;">Pagos con tarjeta sujetos a cargo del </span>
             <span class="aviso-card-fee-input-wrap">
               <input type="number" id="cardFeePctInv" value="3.5" min="0" step="0.1" placeholder="3.5" data-i18n-title="titleCardFeePct">
               <span class="pct-suffix">%</span>
@@ -911,7 +982,7 @@
         </div>
         <div class="invoice-totales">
           <div class="fila"><span data-i18n="subtotal">Subtotal</span><span id="subtotalInv">$0.00</span></div>
-          <div class="fila"><span data-i18n="tax">tax</span> <input type="number" id="taxPctInv" value="7" min="0" step="0.01" readonly style="width:50px;display:inline;padding:2px;font-size:11px;border:1px solid #ddd;background:#f5f5f5;">% <span id="taxMontoInv">$0.00</span></div>
+          <div class="fila"><span data-i18n="tax">Tax (%)</span> <input type="number" id="taxPctInv" value="7" min="0" step="0.01" readonly style="width:50px;display:inline;padding:2px;font-size:11px;border:1px solid #ddd;background:#f5f5f5;"> <span id="taxMontoInv">$0.00</span></div>
           <div class="fila total"><span data-i18n="total">Total</span><span id="totalInv">$0.00</span></div>
           <div class="fila">
             <span>
@@ -1094,34 +1165,36 @@
 
   <template id="templateFilaMaterial">
     <tr class="fila-material-inv">
+      <td class="col-del"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
       <td><input type="text" class="input-mat" data-i18n-ph="phMat" placeholder="Materiales"></td>
       <td><input type="text" class="input-desc" placeholder=""></td>
-      <td class="col-yards"><div class="yards-cell"><input type="text" class="input-yards" data-i18n-ph="phYards" placeholder="0"><select class="input-yards-unit"><option value="yds">yds</option><option value="ft">ft</option><option value="in">in</option></select></div></td>
+      <td class="col-yards-num"><input type="text" class="input-yards" data-i18n-ph="phYards" placeholder="0"></td>
+      <td class="col-yards-unit"><select class="input-yards-unit"><option value="yds">yds</option><option value="ft">ft</option><option value="in">in</option></select></td>
       <td><input type="text" class="input-color" data-i18n-ph="phColor" placeholder="Dark gray"></td>
       <td><input type="text" class="input-qty-mat" placeholder="0"></td>
-      <td class="col-del"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
     </tr>
   </template>
   <template id="templateFilaItem">
     <tr class="fila-item-inv">
+      <td class="col-del" style="width:28px;"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
       <td><input type="text" class="input-item-desc" data-i18n-ph="phItemDesc" placeholder="Custom boat cover"></td>
       <td><input type="number" class="input-item-qty" placeholder="0" min="0" step="1"></td>
       <td class="col-unit"><span class="unit-price-cell">$<input type="text" inputmode="decimal" class="input-item-unit" placeholder="0.00" min="0"></span></td>
       <td class="td-item-total">$0.00</td>
-      <td class="col-del" style="width:28px;"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
     </tr>
   </template>
   <template id="templateFilaItemQuote">
     <tr class="fila-item-quote">
+      <td class="col-del" style="width:28px;"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
       <td><input type="text" class="input-item-desc" data-i18n-ph="phItemDesc" placeholder="Custom boat cover"></td>
       <td><input type="number" class="input-item-qty" placeholder="0" min="0" step="1"></td>
       <td class="col-unit"><span class="unit-price-cell">$<input type="text" inputmode="decimal" class="input-item-unit" placeholder="0.00" min="0"></span></td>
       <td class="td-item-total">$0.00</td>
-      <td class="col-del" style="width:28px;"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
     </tr>
   </template>
   <template id="templateFila">
     <tr class="fila-material">
+      <td class="col-del"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
       <td class="col-nombre"><input type="text" class="input-nombre" data-i18n-ph="materialPh"></td>
       <td class="col-largo"><input type="number" class="input-largo" step="0.01" min="0" placeholder="0"></td>
       <td class="col-unidad">
@@ -1158,7 +1231,6 @@
         </select>
       </td>
       <td class="col-sub td-subtotal">$0.00</td>
-      <td class="col-del"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
     </tr>
   </template>
 
@@ -1533,11 +1605,25 @@
       const quoteLogo = document.getElementById('quoteCompanyLogo');
       const invContainer = document.getElementById('logoContainerInv');
       const quoteContainer = document.getElementById('logoContainerQuote');
+      const quoteLogoInline = document.getElementById('quoteCompanyLogoInline');
+      const invLogoInline = document.getElementById('invCompanyLogoInline');
+      const logoWrapperQuote = document.getElementById('logoWrapperQuote');
+      const logoWrapperInvoice = document.getElementById('logoWrapperInvoice');
+      const logoSpaceQuote = document.getElementById('logoSpaceQuote');
+      const logoSpaceInvoice = document.getElementById('logoSpaceInvoice');
       if (d.logo) {
         invLogo.src = d.logo;
         quoteLogo.src = d.logo;
-        invContainer.style.display = 'block';
-        quoteContainer.style.display = 'block';
+        invContainer.style.display = 'none';
+        quoteContainer.style.display = 'none';
+        quoteLogoInline.src = d.logo;
+        invLogoInline.src = d.logo;
+        logoWrapperQuote.style.display = 'block';
+        logoWrapperInvoice.style.display = 'block';
+        logoSpaceQuote.style.borderStyle = 'none';
+        logoSpaceQuote.style.background = 'transparent';
+        logoSpaceInvoice.style.borderStyle = 'none';
+        logoSpaceInvoice.style.background = 'transparent';
         if (d.logoPos) {
           if (d.logoPos.quote) {
             quoteContainer.style.left = d.logoPos.quote.x + 'px';
@@ -1555,6 +1641,12 @@
       } else {
         invContainer.style.display = 'none';
         quoteContainer.style.display = 'none';
+        logoWrapperQuote.style.display = 'none';
+        logoWrapperInvoice.style.display = 'none';
+        logoSpaceQuote.style.borderStyle = 'dashed';
+        logoSpaceQuote.style.background = '#fafafa';
+        logoSpaceInvoice.style.borderStyle = 'dashed';
+        logoSpaceInvoice.style.background = '#fafafa';
       }
       const payableTo = (d.payableTo && d.payableTo.trim()) ? d.payableTo.trim() : nombre;
       const sincerely = (d.sincerely && d.sincerely.trim()) ? d.sincerely.trim() : nombre;
@@ -2450,18 +2542,117 @@
       document.getElementById('totalFinal').textContent = `$${totalFinal.toFixed(2)}`;
     }
 
-    function crearFilaItemQuote() {
+    function crearFilaItemQuote(syncToInvoice = true) {
       const t = document.getElementById('templateFilaItemQuote');
       const clone = t.content.cloneNode(true);
       const tr = clone.querySelector('tr');
-      tr.querySelector('.btn-del').onclick = () => { tr.remove(); actualizar(); };
+      const rowIndex = document.querySelectorAll('#zonasItemsQuote .fila-item-quote').length;
+      tr.dataset.rowIndex = rowIndex;
+      
+      tr.querySelector('.btn-del').onclick = () => { 
+        const idx = tr.dataset.rowIndex;
+        tr.remove(); 
+        actualizar();
+        // Eliminar fila correspondiente en Invoice
+        const invRows = document.querySelectorAll('#zonasItems .fila-item-inv');
+        invRows.forEach(invRow => {
+          if (invRow.dataset.rowIndex === idx) {
+            invRow.remove();
+          }
+        });
+        // Reindexar filas
+        reindexarFilasItems();
+        actualizarInvoice();
+      };
       tr.querySelectorAll('input').forEach(inp => {
-        inp.oninput = actualizar;
+        inp.oninput = function() {
+          actualizar();
+          syncFilaToInvoice(tr);
+        };
         inp.onchange = actualizar;
       });
       document.getElementById('zonasItemsQuote').appendChild(clone);
       aplicarTooltipsEn(tr);
       actualizar();
+      
+      // Crear fila correspondiente en Invoice
+      if (syncToInvoice) {
+        crearFilaItemInvoiceSync(rowIndex);
+      }
+    }
+    
+    function crearFilaItemInvoiceSync(rowIndex) {
+      const t = document.getElementById('templateFilaItem');
+      const clone = t.content.cloneNode(true);
+      const tr = clone.querySelector('tr');
+      tr.dataset.rowIndex = rowIndex;
+      tr.querySelector('.btn-del').onclick = () => { 
+        const idx = tr.dataset.rowIndex;
+        tr.remove(); 
+        actualizarInvoice();
+        // Eliminar fila correspondiente en Quote
+        const quoteRows = document.querySelectorAll('#zonasItemsQuote .fila-item-quote');
+        quoteRows.forEach(quoteRow => {
+          if (quoteRow.dataset.rowIndex === idx) {
+            quoteRow.remove();
+          }
+        });
+        reindexarFilasItems();
+        actualizar();
+      };
+      tr.querySelectorAll('input').forEach(inp => {
+        inp.oninput = function() {
+          actualizarInvoice();
+          syncFilaToQuote(tr);
+        };
+        inp.onchange = actualizarInvoice;
+      });
+      document.getElementById('zonasItems').appendChild(clone);
+      aplicarTooltipsEn(tr);
+      actualizarInvoice();
+    }
+    
+    function reindexarFilasItems() {
+      document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach((row, i) => {
+        row.dataset.rowIndex = i;
+      });
+      document.querySelectorAll('#zonasItems .fila-item-inv').forEach((row, i) => {
+        row.dataset.rowIndex = i;
+      });
+    }
+    
+    function syncFilaToInvoice(quoteRow) {
+      const idx = quoteRow.dataset.rowIndex;
+      const invRow = document.querySelector('#zonasItems .fila-item-inv[data-row-index="' + idx + '"]');
+      if (invRow) {
+        const descQ = quoteRow.querySelector('.input-item-desc');
+        const qtyQ = quoteRow.querySelector('.input-item-qty');
+        const unitQ = quoteRow.querySelector('.input-item-unit');
+        const descI = invRow.querySelector('.input-item-desc');
+        const qtyI = invRow.querySelector('.input-item-qty');
+        const unitI = invRow.querySelector('.input-item-unit');
+        if (descQ && descI) descI.value = descQ.value;
+        if (qtyQ && qtyI) qtyI.value = qtyQ.value;
+        if (unitQ && unitI) unitI.value = unitQ.value;
+        actualizarInvoice();
+      }
+    }
+    
+    function syncFilaToQuote(invRow) {
+      const idx = invRow.dataset.rowIndex;
+      const quoteRow = document.querySelector('#zonasItemsQuote .fila-item-quote[data-row-index="' + idx + '"]');
+      if (quoteRow) {
+        const descI = invRow.querySelector('.input-item-desc');
+        const qtyI = invRow.querySelector('.input-item-qty');
+        const unitI = invRow.querySelector('.input-item-unit');
+        const descQ = quoteRow.querySelector('.input-item-desc');
+        const qtyQ = quoteRow.querySelector('.input-item-qty');
+        const unitQ = quoteRow.querySelector('.input-item-unit');
+        if (descI && descQ) descQ.value = descI.value;
+        if (qtyI && qtyQ) qtyQ.value = qtyI.value;
+        if (unitI && unitQ) unitQ.value = unitI.value;
+        actualizar();
+      }
     }
     function crearFilaMaterial() {
       const t = document.getElementById('templateFilaMaterial');
@@ -2477,18 +2668,73 @@
       aplicarTooltipsEn(tr);
     }
 
-    function crearFilaItem() {
+    function crearFilaItem(syncToQuote = true) {
       const t = document.getElementById('templateFilaItem');
       const clone = t.content.cloneNode(true);
       const tr = clone.querySelector('tr');
-      tr.querySelector('.btn-del').onclick = () => { tr.remove(); actualizarInvoice(); };
+      const rowIndex = document.querySelectorAll('#zonasItems .fila-item-inv').length;
+      tr.dataset.rowIndex = rowIndex;
+      
+      tr.querySelector('.btn-del').onclick = () => { 
+        const idx = tr.dataset.rowIndex;
+        tr.remove(); 
+        actualizarInvoice();
+        // Eliminar fila correspondiente en Quote
+        const quoteRows = document.querySelectorAll('#zonasItemsQuote .fila-item-quote');
+        quoteRows.forEach(quoteRow => {
+          if (quoteRow.dataset.rowIndex === idx) {
+            quoteRow.remove();
+          }
+        });
+        reindexarFilasItems();
+        actualizar();
+      };
       tr.querySelectorAll('input').forEach(inp => {
-        inp.oninput = actualizarInvoice;
+        inp.oninput = function() {
+          actualizarInvoice();
+          syncFilaToQuote(tr);
+        };
         inp.onchange = actualizarInvoice;
       });
       document.getElementById('zonasItems').appendChild(clone);
       aplicarTooltipsEn(tr);
       actualizarInvoice();
+      
+      // Crear fila correspondiente en Quote
+      if (syncToQuote) {
+        crearFilaItemQuoteSync(rowIndex);
+      }
+    }
+    
+    function crearFilaItemQuoteSync(rowIndex) {
+      const t = document.getElementById('templateFilaItemQuote');
+      const clone = t.content.cloneNode(true);
+      const tr = clone.querySelector('tr');
+      tr.dataset.rowIndex = rowIndex;
+      tr.querySelector('.btn-del').onclick = () => { 
+        const idx = tr.dataset.rowIndex;
+        tr.remove(); 
+        actualizar();
+        // Eliminar fila correspondiente en Invoice
+        const invRows = document.querySelectorAll('#zonasItems .fila-item-inv');
+        invRows.forEach(invRow => {
+          if (invRow.dataset.rowIndex === idx) {
+            invRow.remove();
+          }
+        });
+        reindexarFilasItems();
+        actualizarInvoice();
+      };
+      tr.querySelectorAll('input').forEach(inp => {
+        inp.oninput = function() {
+          actualizar();
+          syncFilaToInvoice(tr);
+        };
+        inp.onchange = actualizar;
+      });
+      document.getElementById('zonasItemsQuote').appendChild(clone);
+      aplicarTooltipsEn(tr);
+      actualizar();
     }
 
     function actualizarInvoice() {
@@ -2585,9 +2831,8 @@
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
     for (let i = 0; i < 2; i++) crearSeccion();
-    for (let i = 0; i < 2; i++) crearFilaItemQuote();
+    for (let i = 0; i < 2; i++) crearFilaItemQuote(); // Esto también crea filas en Invoice
     for (let i = 0; i < 2; i++) crearFilaMaterial();
-    for (let i = 0; i < 2; i++) crearFilaItem();
     (function() {
       const d = new Date();
       const fechaHoy = (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
@@ -2734,6 +2979,128 @@
     cargarDatosTapiceria();
     actualizar();
     actualizarInvoice();
+
+    // Logo inline drag and resize
+    function setupInlineLogo(spaceId, wrapperId) {
+      const space = document.getElementById(spaceId);
+      const wrapper = document.getElementById(wrapperId);
+      if (!space || !wrapper) return;
+      
+      let isDragging = false;
+      let isResizing = false;
+      let resizeDir = '';
+      let startX, startY, startLeft, startTop, startWidth, startHeight;
+      
+      wrapper.addEventListener('mousedown', function(e) {
+        if (e.target.classList.contains('logo-resize-handle')) return;
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = parseInt(wrapper.style.left) || 0;
+        startTop = parseInt(wrapper.style.top) || 0;
+        e.preventDefault();
+      });
+      
+      const handles = wrapper.querySelectorAll('.logo-resize-handle');
+      handles.forEach(function(handle) {
+        handle.addEventListener('mousedown', function(e) {
+          isResizing = true;
+          resizeDir = handle.getAttribute('data-dir');
+          startX = e.clientX;
+          startY = e.clientY;
+          startWidth = wrapper.offsetWidth;
+          startHeight = wrapper.offsetHeight;
+          startLeft = parseInt(wrapper.style.left) || 0;
+          startTop = parseInt(wrapper.style.top) || 0;
+          e.preventDefault();
+          e.stopPropagation();
+        });
+      });
+      
+      document.addEventListener('mousemove', function(e) {
+        if (isDragging) {
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          wrapper.style.left = (startLeft + dx) + 'px';
+          wrapper.style.top = (startTop + dy) + 'px';
+        }
+        if (isResizing) {
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          let newWidth = startWidth;
+          let newHeight = startHeight;
+          let newLeft = startLeft;
+          let newTop = startTop;
+          
+          if (resizeDir.includes('e')) newWidth = Math.max(20, startWidth + dx);
+          if (resizeDir.includes('w')) { newWidth = Math.max(20, startWidth - dx); newLeft = startLeft + dx; }
+          if (resizeDir.includes('s')) newHeight = Math.max(20, startHeight + dy);
+          if (resizeDir.includes('n')) { newHeight = Math.max(20, startHeight - dy); newTop = startTop + dy; }
+          
+          wrapper.style.width = newWidth + 'px';
+          wrapper.style.height = newHeight + 'px';
+          wrapper.style.left = newLeft + 'px';
+          wrapper.style.top = newTop + 'px';
+        }
+      });
+      
+      document.addEventListener('mouseup', function() {
+        isDragging = false;
+        isResizing = false;
+        resizeDir = '';
+      });
+    }
+    
+    setupInlineLogo('logoSpaceQuote', 'logoWrapperQuote');
+    setupInlineLogo('logoSpaceInvoice', 'logoWrapperInvoice');
+    
+    // Sincronizar campos de Quote a Invoice
+    const syncFields = [
+      { from: 'cliente', to: 'clienteInv' },
+      { from: 'direccionCliente', to: 'direccionInv' },
+      { from: 'emailCliente', to: 'emailClienteInv' },
+      { from: 'telefonoCliente', to: 'telefonoClienteInv' }
+    ];
+    
+    syncFields.forEach(function(pair) {
+      const fromEl = document.getElementById(pair.from);
+      const toEl = document.getElementById(pair.to);
+      if (fromEl && toEl) {
+        fromEl.addEventListener('input', function() {
+          if (!toEl.dataset.edited || toEl.value === toEl.dataset.lastSync) {
+            toEl.value = fromEl.value;
+            toEl.dataset.lastSync = fromEl.value;
+          }
+        });
+        toEl.addEventListener('input', function() {
+          toEl.dataset.edited = 'true';
+        });
+      }
+    });
+    
+    // Sincronizar impuesto de Quote a Invoice
+    const taxPctQuote = document.getElementById('taxPct');
+    if (taxPctQuote) {
+      taxPctQuote.addEventListener('input', function() {
+        const taxInv = document.getElementById('taxPctInv');
+        if (taxInv) {
+          taxInv.value = taxPctQuote.value;
+          actualizarInvoice();
+        }
+      });
+    }
+    
+    // Sincronizar impuesto de Invoice a Quote
+    const taxPctInvoice = document.getElementById('taxPctInv');
+    if (taxPctInvoice) {
+      taxPctInvoice.addEventListener('input', function() {
+        const taxQ = document.getElementById('taxPct');
+        if (taxQ) {
+          taxQ.value = taxPctInvoice.value;
+          actualizar();
+        }
+      });
+    }
   </script>
 </body>
 </html>
