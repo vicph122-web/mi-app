@@ -11,6 +11,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     * { box-sizing: border-box; }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; }
     @page { size: letter portrait; margin: 12mm; }
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
@@ -34,7 +37,7 @@
       padding-bottom: 6px;
       margin-bottom: 8px;
     }
-    .quote-header { position: relative; margin-bottom: 16px; border-bottom: 2px solid #2c3e50; padding-bottom: 12px; min-height: 100px; }
+    .quote-header { position: relative; margin-top: 40px; margin-bottom: 16px; border-bottom: 2px solid #2c3e50; padding-bottom: 50px; min-height: 145px; }
     .quote-header.header-area { display: block; }
     .quote-logo-company { display: flex; align-items: flex-start; gap: 15px; }
     .header-area { position: relative; min-height: 100px; width: 100%; }
@@ -53,7 +56,7 @@
     .logo-space { display: none; }
     .logo-wrapper { position: absolute; cursor: move; z-index: 1; }
     .logo-wrapper img { display: block; width: 100%; height: 100%; }
-    .company-info-wrapper { position: absolute; cursor: move; z-index: 2; background: rgba(255,255,255,0.9); padding: 5px; }
+    .company-info-wrapper { position: absolute; cursor: move; z-index: 2; background: transparent; padding: 5px; }
     .company-info-wrapper h2 { margin: 0 0 4px 0; font-size: 1.4rem; font-weight: 700; color: #2c3e50; }
     .company-info-wrapper .info { font-size: 12px; color: #555; line-height: 1.5; }
     .quote-company { position: relative; z-index: 5; }
@@ -339,9 +342,9 @@
     .documento[data-tipo="quote"] .bloque-invoice { display: none !important; }
     .documento[data-tipo="quote"] .bloque-quote { display: block !important; }
     .invoice-wrap { font-size: 12px; }
-    .invoice-header { position: relative; margin-bottom: 16px; border-bottom: 2px solid #2c3e50; padding-bottom: 50px; min-height: 120px; }
+    .invoice-header { position: relative; margin-top: 40px; margin-bottom: 16px; border-bottom: 2px solid #2c3e50; padding-bottom: 50px; min-height: 145px; }
     .invoice-header.header-area { display: block; }
-    .invoice-header-spacer { height: 32px; min-height: 32px; }
+    .invoice-header-spacer { height: 45px; min-height: 45px; }
     .invoice-logo-company { display: flex; align-items: flex-start; gap: 15px; }
     .invoice-company { position: relative; z-index: 5; }
     .invoice-company h2 { margin: 0 0 4px 0; font-size: 1.4rem; font-weight: 700; color: #2c3e50; }
@@ -384,18 +387,16 @@
     .tabla-materials .col-color { width: 120px; }
     .tabla-materials .col-qty { width: 90px; }
     .tabla-items { border-collapse: collapse; width: 100%; font-size: 12px; margin-bottom: 12px; }
-    .tabla-items input[type="number"]::-webkit-inner-spin-button,
-    .tabla-items input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-    .tabla-items input[type="number"] { -moz-appearance: textfield; }
     .tabla-items th { background: #95a5a6; color: #2c3e50; padding: 5px 6px; text-align: left; font-weight: 600; border: 1px solid #bbb; }
     .tabla-items td { padding: 0; border: 1px solid #bbb; }
     .tabla-items input { padding: 6px 8px; font-size: 12px; border: none; background: transparent; width: 100%; height: 100%; outline: none; }
     .tabla-items input:focus { background: #fffde7; }
     .tabla-items .col-desc { min-width: 150px; }
+    .tabla-items .col-hrs { width: 50px; }
     .tabla-items .col-qty { width: 60px; }
-    .tabla-items .col-unit { width: 90px; }
-    .tabla-items .unit-price-cell { display: flex; align-items: center; padding: 0; background: transparent; font-size: 12px; height: 100%; border: none; }
-    .tabla-items .unit-price-cell input { flex: 1; min-width: 0; border: none; background: transparent; padding: 6px 4px; font-size: 12px; box-shadow: none; outline: none; }
+    .tabla-items .col-unit { width: 90px; text-align: center; }
+    .tabla-items .unit-price-cell { display: flex; align-items: center; justify-content: center; padding: 0; background: transparent; font-size: 12px; height: 100%; border: none; width: 100%; box-sizing: border-box; }
+    .tabla-items .unit-price-cell input { width: 5ch; min-width: 4ch; border: none; background: transparent; padding: 6px 4px; font-size: 12px; box-shadow: none; outline: none; text-align: center; }
     .tabla-items .unit-price-cell input:focus { background: #fffde7; }
     .tabla-items .col-total { width: 90px; font-weight: 600; color: #1e8449; }
     .tabla-items .td-item-total { font-size: 12px; padding: 6px 8px; }
@@ -508,6 +509,7 @@
     .logo-handle-e { right: -5px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
     .documento { position: relative; }
     .exportando-pdf .logo-container { border-color: transparent !important; }
+    .exportando-pdf #logoContainerInv, .exportando-pdf #logoContainerQuote { display: none !important; visibility: hidden !important; }
     .exportando-pdf .logo-resize-handle, .exportando-pdf .drag-handle { display: none !important; }
     .exportando-pdf .draggable-element:hover { outline: none !important; }
     .exportando-pdf .company-info-wrapper { background: transparent !important; }
@@ -515,10 +517,10 @@
     /* Forzar diseño correcto en PDF */
     .exportando-pdf .quote-header,
     .exportando-pdf .invoice-header {
-      display: flex !important;
-      flex-direction: row !important;
-      justify-content: space-between !important;
-      align-items: flex-start !important;
+      page-break-after: avoid !important;
+      page-break-inside: avoid !important;
+      display: block !important;
+      position: relative !important;
     }
     .exportando-pdf .quote-right,
     .exportando-pdf .invoice-meta-wrap {
@@ -825,10 +827,11 @@
           <input type="tel" id="telefonoCliente" data-i18n-ph="phPhone" placeholder="">
         </div>
       </div>
-      <div class="campo">
-        <label data-i18n="trabajo">Trabajo</label>
-        <input type="text" id="trabajo" data-i18n-ph="descripcion">
-      </div>
+    </div>
+
+    <div class="campo" style="margin-top: 12px;">
+      <label data-i18n="trabajo">Job</label>
+      <input type="text" id="trabajo" data-i18n-ph="descripcion">
     </div>
 
     <div style="height: 20px;"></div>
@@ -858,6 +861,7 @@
         <tr>
           <th class="col-del" style="width:28px;"></th>
           <th class="col-desc" data-i18n="description">Description</th>
+          <th class="col-hrs" data-i18n="hrs">Hrs</th>
           <th class="col-qty" data-i18n="quantity">Quantity</th>
           <th class="col-unit" data-i18n="unitPrice">Unit Price</th>
           <th class="col-total" data-i18n="total">Total</th>
@@ -968,6 +972,10 @@
             <input type="tel" id="telefonoClienteInv" data-i18n-ph="phPhone" placeholder="Phone">
           </div>
         </div>
+        <div class="campo" style="margin-top: 12px;">
+          <label>Job</label>
+          <input type="text" id="jobInv" placeholder="">
+        </div>
       </div>
       <table class="tabla-materials">
         <thead>
@@ -989,6 +997,7 @@
           <tr>
             <th class="col-del" style="width:28px;"></th>
             <th class="col-desc" data-i18n="description">Description</th>
+            <th class="col-hrs" data-i18n="hrs">Hrs</th>
             <th class="col-qty" data-i18n="quantity">Quantity</th>
             <th class="col-unit" data-i18n="unitPrice">Unit Price</th>
             <th class="col-total" data-i18n="total">Total</th>
@@ -1210,8 +1219,9 @@
     <tr class="fila-item-inv">
       <td class="col-del" style="width:28px;"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
       <td><input type="text" class="input-item-desc" data-i18n-ph="phItemDesc" placeholder="Custom boat cover"></td>
+      <td><input type="number" class="input-item-hrs" placeholder="0" min="0" step="0.25"></td>
       <td><input type="number" class="input-item-qty" placeholder="0" min="0" step="1"></td>
-      <td class="col-unit"><span class="unit-price-cell">$<input type="text" inputmode="decimal" class="input-item-unit" placeholder="0.00" min="0"></span></td>
+      <td class="col-unit"><span class="unit-price-cell">$ <input type="text" inputmode="decimal" class="input-item-unit" placeholder="0.00" min="0"></span></td>
       <td class="td-item-total">$0.00</td>
     </tr>
   </template>
@@ -1219,8 +1229,9 @@
     <tr class="fila-item-quote">
       <td class="col-del" style="width:28px;"><button type="button" class="btn-del" data-i18n-title="titleEliminar">✕</button></td>
       <td><input type="text" class="input-item-desc" data-i18n-ph="phItemDesc" placeholder="Custom boat cover"></td>
+      <td><input type="number" class="input-item-hrs" placeholder="0" min="0" step="0.25"></td>
       <td><input type="number" class="input-item-qty" placeholder="0" min="0" step="1"></td>
-      <td class="col-unit"><span class="unit-price-cell">$<input type="text" inputmode="decimal" class="input-item-unit" placeholder="0.00" min="0"></span></td>
+      <td class="col-unit"><span class="unit-price-cell">$ <input type="text" inputmode="decimal" class="input-item-unit" placeholder="0.00" min="0"></span></td>
       <td class="td-item-total">$0.00</td>
     </tr>
   </template>
@@ -1251,7 +1262,7 @@
         </select>
       </td>
       <td class="col-cant td-cantidades">—</td>
-      <td class="col-precio"><span class="precio-cell"><span class="precio-simbolo">$</span><input type="text" inputmode="decimal" class="input-precio" placeholder="0"></span></td>
+      <td class="col-precio"><span class="precio-cell"><span class="precio-simbolo">$ </span><input type="text" inputmode="decimal" class="input-precio" placeholder="0.00" value="0.00"></span></td>
       <td class="col-por">
         <select class="input-unidadPrecio">
           <option value="in_lineal" selected>in</option>
@@ -1337,6 +1348,7 @@
         customer: 'Cliente',
         materials: 'Materiales',
         description: 'Descripción',
+        hrs: 'Hrs',
         yards: 'Cantidad',
         color: 'Color',
         quantity: 'Cantidad',
@@ -1485,6 +1497,7 @@
         customer: 'Customer',
         materials: 'Materials',
         description: 'Description',
+        hrs: 'Hrs',
         yards: 'Quantity',
         color: 'Color',
         quantity: 'Quantity',
@@ -1628,6 +1641,65 @@
       } catch (e) {}
     }
 
+    function capturarLayoutEncabezado() {
+      const layout = {};
+      try {
+        const tipo = (document.getElementById('documento') && document.getElementById('documento').getAttribute('data-tipo')) || 'quote';
+        const esQuote = tipo === 'quote';
+        const logoQ = document.getElementById('logoWrapperQuote');
+        const logoI = document.getElementById('logoWrapperInvoice');
+        const compQ = document.getElementById('companyInfoQuote');
+        const compI = document.getElementById('companyInfoInvoice');
+        function capt(elem) {
+          if (!elem || elem.offsetParent === null) return null;
+          const rect = elem.getBoundingClientRect();
+          if (rect.width === 0 && rect.height === 0) return null;
+          const parent = elem.parentElement;
+          const prect = parent ? parent.getBoundingClientRect() : rect;
+          return { l: Math.round(rect.left - prect.left), t: Math.round(rect.top - prect.top), w: elem.offsetWidth, h: elem.offsetHeight };
+        }
+        if (esQuote) {
+          const lq = capt(logoQ); const cq = capt(compQ);
+          if (lq) layout.logoQuote = lq; if (cq) layout.companyQuote = cq;
+        } else {
+          const li = capt(logoI); const ci = capt(compI);
+          if (li) layout.logoInv = li; if (ci) layout.companyInv = ci;
+        }
+      } catch (e) {}
+      return layout;
+    }
+    function guardarLayoutEncabezado() {
+      try {
+        const nuevo = capturarLayoutEncabezado();
+        const raw = localStorage.getItem(TAPICERIA_KEY);
+        const d = (raw && raw !== '') ? JSON.parse(raw) : {};
+        d.headerLayout = d.headerLayout || {};
+        Object.keys(nuevo).forEach(function(k) { d.headerLayout[k] = nuevo[k]; });
+        localStorage.setItem(TAPICERIA_KEY, JSON.stringify(d));
+      } catch (e) {}
+    }
+    function aplicarLayoutEncabezado(d) {
+      try {
+        if (!d || !d.headerLayout) return;
+        const L = d.headerLayout;
+        function apl(elem, c) {
+          if (!elem || !c) return;
+          elem.style.left = c.l + 'px';
+          elem.style.top = c.t + 'px';
+          elem.style.transform = 'none';
+          if (c.w) elem.style.width = c.w + 'px';
+          if (c.h) elem.style.height = c.h + 'px';
+        }
+        const logoQ = document.getElementById('logoWrapperQuote');
+        const logoI = document.getElementById('logoWrapperInvoice');
+        const compQ = document.getElementById('companyInfoQuote');
+        const compI = document.getElementById('companyInfoInvoice');
+        apl(logoQ, L.logoQuote);
+        apl(logoI, L.logoInv);
+        apl(compQ, L.companyQuote);
+        apl(compI, L.companyInv);
+      } catch (e) {}
+    }
     function actualizarDisplayInvoice(d) {
       try {
         if (!d || typeof d !== 'object') d = {};
@@ -1681,6 +1753,7 @@
         if (inp) inp.value = cardPct;
         const invThank = document.getElementById('invThankYou');
         if (invThank) invThank.textContent = (d.thankYou && d.thankYou.trim()) ? d.thankYou.trim() : (t.thankYou || 'Gracias por su negocio');
+        aplicarLayoutEncabezado(d);
       } catch (e) {}
     }
 
@@ -1813,7 +1886,7 @@
 
     function guardarConfiguracion() {
       const logoPreview = document.getElementById('logoPreview');
-      const logoData = logoPreview.style.display !== 'none' ? logoPreview.src : '';
+      const logoData = logoPreview && logoPreview.style.display !== 'none' ? logoPreview.src : '';
       const d = {
         nombre: document.getElementById('configNombre').value.trim(),
         direccion: document.getElementById('configDireccion').value.trim(),
@@ -1827,7 +1900,8 @@
         taxPct: document.getElementById('configTaxPct').value.trim(),
         cardFeePct: document.getElementById('configCardFeePct').value.trim(),
         cardFeeNotice: document.getElementById('configCardFeeNotice').value.trim(),
-        thankYou: document.getElementById('configThankYou').value.trim()
+        thankYou: document.getElementById('configThankYou').value.trim(),
+        headerLayout: capturarLayoutEncabezado()
       };
       localStorage.setItem(TAPICERIA_KEY, JSON.stringify(d));
       actualizarDisplayTapiceria(d);
@@ -1968,6 +2042,7 @@
         datos.direccionCliente = document.getElementById('direccionInv').value;
         datos.emailCliente = document.getElementById('emailClienteInv').value;
         datos.telefonoCliente = document.getElementById('telefonoClienteInv').value;
+        datos.job = document.getElementById('jobInv').value;
         datos.fecha = document.getElementById('fechaInv').value;
         datos.numFactura = document.getElementById('numFactura').value;
         datos.cardFeePct = document.getElementById('cardFeePctInv').value || '3.5';
@@ -1992,6 +2067,7 @@
         document.querySelectorAll('.fila-item-inv').forEach(f => {
           datos.items.push({
             desc: f.querySelector('.input-item-desc').value,
+            hrs: (f.querySelector('.input-item-hrs') && f.querySelector('.input-item-hrs').value) || '',
             qty: f.querySelector('.input-item-qty').value,
             unit: f.querySelector('.input-item-unit').value
           });
@@ -2008,6 +2084,7 @@
         document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(f => {
           datos.itemsQuote.push({
             desc: f.querySelector('.input-item-desc').value,
+            hrs: (f.querySelector('.input-item-hrs') && f.querySelector('.input-item-hrs').value) || '',
             qty: f.querySelector('.input-item-qty').value,
             unit: f.querySelector('.input-item-unit').value
           });
@@ -2088,6 +2165,7 @@
         document.getElementById('direccionInv').value = item.direccionCliente || '';
         document.getElementById('emailClienteInv').value = item.emailCliente || '';
         document.getElementById('telefonoClienteInv').value = item.telefonoCliente || '';
+        document.getElementById('jobInv').value = item.job || '';
         document.getElementById('fechaInv').value = item.fecha || '';
         document.getElementById('fechaInv').dispatchEvent(new Event('input'));
         document.getElementById('numFactura').value = item.numFactura || '';
@@ -2101,7 +2179,7 @@
         document.querySelectorAll('.fila-item-inv').forEach(f => f.remove());
         (item.materials || []).forEach(m => { crearFilaMaterial(); const last = document.querySelector('.fila-material-inv:last-child'); if (last) { last.querySelector('.input-mat').value = m.mat || ''; last.querySelector('.input-desc').value = m.desc || ''; last.querySelector('.input-yards').value = m.yards || ''; const su = last.querySelector('.input-yards-unit'); if (su) su.value = m.yardsUnit || 'yds'; last.querySelector('.input-color').value = m.color || ''; last.querySelector('.input-qty-mat').value = m.qty || ''; } });
         if (!(item.materials || []).length) for (let i = 0; i < 2; i++) crearFilaMaterial();
-        (item.items || []).forEach(it => { crearFilaItem(); const last = document.querySelector('.fila-item-inv:last-child'); if (last) { last.querySelector('.input-item-desc').value = it.desc || ''; last.querySelector('.input-item-qty').value = it.qty || ''; last.querySelector('.input-item-unit').value = (parseFloat(it.unit) || 0).toFixed(2); } });
+        (item.items || []).forEach(it => { crearFilaItem(); const last = document.querySelector('.fila-item-inv:last-child'); if (last) { last.querySelector('.input-item-desc').value = it.desc || ''; const h = last.querySelector('.input-item-hrs'); if (h) h.value = it.hrs || ''; last.querySelector('.input-item-qty').value = it.qty || ''; last.querySelector('.input-item-unit').value = (parseFloat(it.unit) || 0).toFixed(2); } });
         if (!(item.items || []).length) for (let i = 0; i < 2; i++) crearFilaItem();
         actualizarInvoice();
       } else {
@@ -2115,7 +2193,7 @@
         document.getElementById('taxPct').value = item.taxPct || '7';
         document.querySelectorAll('.fila-material').forEach(f => f.remove());
         document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(f => f.remove());
-        (item.itemsQuote || []).forEach(it => { crearFilaItemQuote(); const rows = document.querySelectorAll('#zonasItemsQuote .fila-item-quote'); const last = rows[rows.length - 1]; if (last) { last.querySelector('.input-item-desc').value = it.desc || ''; last.querySelector('.input-item-qty').value = it.qty || ''; last.querySelector('.input-item-unit').value = (parseFloat(it.unit) || 0).toFixed(2); } });
+        (item.itemsQuote || []).forEach(it => { crearFilaItemQuote(); const rows = document.querySelectorAll('#zonasItemsQuote .fila-item-quote'); const last = rows[rows.length - 1]; if (last) { last.querySelector('.input-item-desc').value = it.desc || ''; const h = last.querySelector('.input-item-hrs'); if (h) h.value = it.hrs || ''; last.querySelector('.input-item-qty').value = it.qty || ''; last.querySelector('.input-item-unit').value = (parseFloat(it.unit) || 0).toFixed(2); } });
         if (!(item.itemsQuote || []).length) for (let i = 0; i < 2; i++) crearFilaItemQuote();
         (item.filas || []).forEach(fila => {
         crearSeccion();
@@ -2126,7 +2204,7 @@
           ultima.querySelector('.input-unidad').value = fila.unidad || 'pulgadas';
           ultima.querySelector('.input-ancho').value = fila.ancho || '';
           ultima.querySelector('.input-anchoRollo').value = fila.anchoRollo || '54';
-          ultima.querySelector('.input-precio').value = fila.precio || '';
+          ultima.querySelector('.input-precio').value = (parseFloat(fila.precio) || 0).toFixed(2);
           ultima.querySelector('.input-unidadPrecio').value = fila.unidadPrecio || 'in_lineal';
         }
       });
@@ -2328,7 +2406,8 @@
       const tituloDoc = tipo === 'invoice' ? t.tituloInvoice : t.tituloQuote;
       let txt = tituloDoc + '\n\n';
       if (tipo === 'invoice') {
-        txt += document.getElementById('clienteInv').value + '\n' + document.getElementById('direccionInv').value + '\n' + document.getElementById('emailClienteInv').value + '\n' + document.getElementById('telefonoClienteInv').value + '\n\n';
+        const jobVal = document.getElementById('jobInv').value;
+        txt += document.getElementById('clienteInv').value + '\n' + document.getElementById('direccionInv').value + (jobVal ? '\nJob: ' + jobVal : '') + '\n' + document.getElementById('emailClienteInv').value + '\n' + document.getElementById('telefonoClienteInv').value + '\n\n';
         txt += '$' + document.getElementById('totalInv').textContent;
       } else {
         const tel = document.getElementById('telefonoCliente').value;
@@ -2377,6 +2456,11 @@
         document.getElementById('direccionInv').value = '';
         document.getElementById('emailClienteInv').value = '';
         document.getElementById('telefonoClienteInv').value = '';
+        document.getElementById('jobInv').value = '';
+        ['clienteInv', 'direccionInv', 'emailClienteInv', 'telefonoClienteInv', 'jobInv'].forEach(function(id) {
+          const el = document.getElementById(id);
+          if (el) { delete el.dataset.edited; delete el.dataset.lastSync; }
+        });
         document.getElementById('fechaInv').value = fd;
         document.getElementById('numFactura').value = '';
         document.getElementById('cardFeePctInv').value = configData.cardFeePct || '3.5';
@@ -2397,6 +2481,10 @@
         document.getElementById('trabajo').value = '';
         document.getElementById('telefonoCliente').value = '';
         document.getElementById('descripcionProyecto').value = '';
+        ['clienteInv', 'direccionInv', 'emailClienteInv', 'telefonoClienteInv', 'jobInv'].forEach(function(id) {
+          const el = document.getElementById(id);
+          if (el) { delete el.dataset.edited; delete el.dataset.lastSync; }
+        });
         document.getElementById('taxPct').value = taxDef;
         document.getElementById('fecha').value = fd2;
         document.querySelectorAll('.fila-material').forEach(f => f.remove());
@@ -2490,6 +2578,14 @@
       });
       unidadMedida.addEventListener('input', actualizar);
       unidadPrecio.addEventListener('input', actualizar);
+      const inputPrecio = fila.querySelector('.input-precio');
+      if (inputPrecio) {
+        inputPrecio.addEventListener('focus', function() {
+          const v = (this.value || '').replace(/[^0-9.]/g, '');
+          if (v === '' || v === '0' || parseFloat(v) === 0) this.select();
+        });
+        inputPrecio.addEventListener('blur', function() { formatearMonto(this); actualizar(); });
+      }
 
       document.getElementById('zonasMateriales').appendChild(clone);
       aplicarTooltipsEn(fila);
@@ -2554,9 +2650,10 @@
       });
 
       document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(tr => {
+        const hrs = parseFloat(tr.querySelector('.input-item-hrs')?.value) || 0;
         const qty = parseFloat(tr.querySelector('.input-item-qty').value) || 0;
         const unit = parseFloat(tr.querySelector('.input-item-unit').value) || 0;
-        const total = qty * unit;
+        const total = (hrs * unit) + (qty * unit);
         tr.querySelector('.td-item-total').textContent = '$' + total.toFixed(2);
         subtotalGeneral += total;
       });
@@ -2618,20 +2715,11 @@
         const idx = tr.dataset.rowIndex;
         tr.remove(); 
         actualizarInvoice();
-        // Eliminar fila correspondiente en Quote
-        const quoteRows = document.querySelectorAll('#zonasItemsQuote .fila-item-quote');
-        quoteRows.forEach(quoteRow => {
-          if (quoteRow.dataset.rowIndex === idx) {
-            quoteRow.remove();
-          }
-        });
         reindexarFilasItems();
-        actualizar();
       };
       tr.querySelectorAll('input').forEach(inp => {
         inp.oninput = function() {
           actualizarInvoice();
-          syncFilaToQuote(tr);
         };
         inp.onchange = actualizarInvoice;
       });
@@ -2654,12 +2742,15 @@
       const invRow = document.querySelector('#zonasItems .fila-item-inv[data-row-index="' + idx + '"]');
       if (invRow) {
         const descQ = quoteRow.querySelector('.input-item-desc');
+        const hrsQ = quoteRow.querySelector('.input-item-hrs');
         const qtyQ = quoteRow.querySelector('.input-item-qty');
         const unitQ = quoteRow.querySelector('.input-item-unit');
         const descI = invRow.querySelector('.input-item-desc');
+        const hrsI = invRow.querySelector('.input-item-hrs');
         const qtyI = invRow.querySelector('.input-item-qty');
         const unitI = invRow.querySelector('.input-item-unit');
         if (descQ && descI) descI.value = descQ.value;
+        if (hrsQ && hrsI) hrsI.value = hrsQ.value;
         if (qtyQ && qtyI) qtyI.value = qtyQ.value;
         if (unitQ && unitI) unitI.value = unitQ.value;
         actualizarInvoice();
@@ -2671,12 +2762,15 @@
       const quoteRow = document.querySelector('#zonasItemsQuote .fila-item-quote[data-row-index="' + idx + '"]');
       if (quoteRow) {
         const descI = invRow.querySelector('.input-item-desc');
+        const hrsI = invRow.querySelector('.input-item-hrs');
         const qtyI = invRow.querySelector('.input-item-qty');
         const unitI = invRow.querySelector('.input-item-unit');
         const descQ = quoteRow.querySelector('.input-item-desc');
+        const hrsQ = quoteRow.querySelector('.input-item-hrs');
         const qtyQ = quoteRow.querySelector('.input-item-qty');
         const unitQ = quoteRow.querySelector('.input-item-unit');
         if (descI && descQ) descQ.value = descI.value;
+        if (hrsI && hrsQ) hrsQ.value = hrsI.value;
         if (qtyI && qtyQ) qtyQ.value = qtyI.value;
         if (unitI && unitQ) unitQ.value = unitI.value;
         actualizar();
@@ -2696,7 +2790,7 @@
       aplicarTooltipsEn(tr);
     }
 
-    function crearFilaItem(syncToQuote = true) {
+    function crearFilaItem(syncToQuote = false) {
       const t = document.getElementById('templateFilaItem');
       const clone = t.content.cloneNode(true);
       const tr = clone.querySelector('tr');
@@ -2704,23 +2798,13 @@
       tr.dataset.rowIndex = rowIndex;
       
       tr.querySelector('.btn-del').onclick = () => { 
-        const idx = tr.dataset.rowIndex;
         tr.remove(); 
         actualizarInvoice();
-        // Eliminar fila correspondiente en Quote
-        const quoteRows = document.querySelectorAll('#zonasItemsQuote .fila-item-quote');
-        quoteRows.forEach(quoteRow => {
-          if (quoteRow.dataset.rowIndex === idx) {
-            quoteRow.remove();
-          }
-        });
         reindexarFilasItems();
-        actualizar();
       };
       tr.querySelectorAll('input').forEach(inp => {
         inp.oninput = function() {
           actualizarInvoice();
-          syncFilaToQuote(tr);
         };
         inp.onchange = actualizarInvoice;
       });
@@ -2728,7 +2812,6 @@
       aplicarTooltipsEn(tr);
       actualizarInvoice();
       
-      // Crear fila correspondiente en Quote
       if (syncToQuote) {
         crearFilaItemQuoteSync(rowIndex);
       }
@@ -2768,9 +2851,10 @@
     function actualizarInvoice() {
       let subtotal = 0;
       document.querySelectorAll('.fila-item-inv').forEach(tr => {
+        const hrs = parseFloat(tr.querySelector('.input-item-hrs')?.value) || 0;
         const qty = parseFloat(tr.querySelector('.input-item-qty').value) || 0;
         const unit = parseFloat(tr.querySelector('.input-item-unit').value) || 0;
-        const total = qty * unit;
+        const total = (hrs * unit) + (qty * unit);
         tr.querySelector('.td-item-total').textContent = '$' + total.toFixed(2);
         subtotal += total;
       });
@@ -2815,12 +2899,157 @@
     document.getElementById('discountInv').addEventListener('blur', function() { formatearMonto(this); actualizarInvoice(); });
     document.getElementById('paidInv').addEventListener('input', function() { ajustarAnchoMonto(this); actualizarInvoice(); });
     document.getElementById('paidInv').addEventListener('blur', function() { formatearMonto(this); actualizarInvoice(); });
+    document.getElementById('zonasItems').addEventListener('focus', function(e) {
+      if (e.target.classList.contains('input-item-unit')) {
+        const v = (e.target.value || '').replace(/[^0-9.]/g, '');
+        if (v === '' || v === '0' || parseFloat(v) === 0) e.target.select();
+      }
+    }, true);
     document.getElementById('zonasItems').addEventListener('blur', function(e) {
       if (e.target.classList.contains('input-item-unit')) { formatearMonto(e.target); actualizarInvoice(); }
+    }, true);
+    document.getElementById('zonasItems').addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace') {
+        const t = e.target;
+        if (t.classList.contains('input-item-hrs') || t.classList.contains('input-item-qty')) {
+          if (t.value !== '' && t.value !== '0') {
+            e.preventDefault();
+            t.value = '0';
+            actualizarInvoice();
+          }
+        } else if (t.classList.contains('input-item-unit')) {
+          const vacio = !t.value || t.value.replace(/[^0-9.]/g, '') === '' || parseFloat(t.value.replace(/[^0-9.]/g, '')) === 0;
+          if (!vacio) {
+            e.preventDefault();
+            t.value = '0.00';
+            actualizarInvoice();
+          }
+        }
+      } else if (e.key === 'Enter') {
+        const t = e.target;
+        if (t.classList.contains('input-item-unit')) {
+          e.preventDefault();
+          formatearMonto(t);
+          actualizarInvoice();
+          t.blur();
+        } else if (t.classList.contains('input-item-hrs') || t.classList.contains('input-item-qty')) {
+          e.preventDefault();
+          actualizarInvoice();
+          t.blur();
+        }
+      }
+    }, true);
+    document.getElementById('zonasItemsQuote').addEventListener('focus', function(e) {
+      if (e.target.classList.contains('input-item-unit')) {
+        const v = (e.target.value || '').replace(/[^0-9.]/g, '');
+        if (v === '' || v === '0' || parseFloat(v) === 0) e.target.select();
+      }
     }, true);
     document.getElementById('zonasItemsQuote').addEventListener('blur', function(e) {
       if (e.target.classList.contains('input-item-unit')) { formatearMonto(e.target); actualizar(); }
     }, true);
+    document.getElementById('zonasItemsQuote').addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace') {
+        const t = e.target;
+        if (t.classList.contains('input-item-hrs') || t.classList.contains('input-item-qty')) {
+          if (t.value !== '' && t.value !== '0') {
+            e.preventDefault();
+            t.value = '0';
+            actualizar();
+          }
+        } else if (t.classList.contains('input-item-unit')) {
+          const vacio = !t.value || t.value.replace(/[^0-9.]/g, '') === '' || parseFloat(t.value.replace(/[^0-9.]/g, '')) === 0;
+          if (!vacio) {
+            e.preventDefault();
+            t.value = '0.00';
+            actualizar();
+          }
+        }
+      } else if (e.key === 'Enter') {
+        const t = e.target;
+        if (t.classList.contains('input-item-unit')) {
+          e.preventDefault();
+          formatearMonto(t);
+          actualizar();
+          t.blur();
+        } else if (t.classList.contains('input-item-hrs') || t.classList.contains('input-item-qty')) {
+          e.preventDefault();
+          actualizar();
+          t.blur();
+        }
+      }
+    }, true);
+
+    document.addEventListener('keydown', function(e) {
+      const t = e.target;
+      if (e.key !== 'Enter' && e.key !== 'Backspace') return;
+      if (e.key === 'Enter' && t && t.tagName === 'INPUT') {
+        if (t.classList.contains('input-precio')) {
+          e.preventDefault();
+          formatearMonto(t);
+          actualizar();
+          t.blur();
+          return;
+        }
+        if (t.classList.contains('input-largo') || t.classList.contains('input-ancho')) {
+          e.preventDefault();
+          actualizar();
+          t.blur();
+          return;
+        }
+        if (t.classList.contains('input-yards') || t.classList.contains('input-qty-mat')) {
+          e.preventDefault();
+          actualizarInvoice();
+          t.blur();
+          return;
+        }
+        if (t.id === 'discountInv' || t.id === 'paidInv') {
+          e.preventDefault();
+          formatearMonto(t);
+          actualizarInvoice();
+          if (typeof ajustarAnchoMonto === 'function') ajustarAnchoMonto(t);
+          t.blur();
+          return;
+        }
+      }
+      if (e.key !== 'Backspace') return;
+      if (!t || !t.tagName || t.tagName !== 'INPUT') return;
+      const val = (t.value || '').replace(/[^0-9.]/g, '');
+      const num = parseFloat(val);
+      if (t.id === 'discountInv' || t.id === 'paidInv') {
+        if (val !== '' && num !== 0) {
+          e.preventDefault();
+          t.value = '0.00';
+          actualizarInvoice();
+          if (typeof ajustarAnchoMonto === 'function') ajustarAnchoMonto(t);
+        }
+        return;
+      }
+      if (t.classList.contains('input-yards') || t.classList.contains('input-qty-mat')) {
+        if (t.value !== '' && t.value !== '0') {
+          e.preventDefault();
+          t.value = '0';
+          actualizarInvoice();
+        }
+        return;
+      }
+      if (t.classList.contains('input-largo') || t.classList.contains('input-ancho')) {
+        if (t.value !== '' && t.value !== '0') {
+          e.preventDefault();
+          t.value = '0';
+          actualizar();
+        }
+        return;
+      }
+      if (t.classList.contains('input-precio')) {
+        if (val !== '' && num !== 0) {
+          e.preventDefault();
+          t.value = '0.00';
+          actualizar();
+        }
+      }
+    }, true);
+
     document.getElementById('tipoPagadoBalance').addEventListener('change', actualizarInvoice);
     document.getElementById('tipoDescuentoDeposito').addEventListener('change', function() {
       if (this.value === 'deposito') {
@@ -3081,6 +3310,7 @@
       });
       
       document.addEventListener('mouseup', function() {
+        if (isDragging || isResizing) guardarLayoutEncabezado();
         isDragging = false;
         isResizing = false;
         resizeDir = '';
@@ -3093,27 +3323,35 @@
     setupDraggable('companyInfoQuote');
     setupDraggable('companyInfoInvoice');
     
-    // Centrar información de empresa al cargar
-    function centrarCompanyInfo() {
+    // Centrar información de empresa solo si no hay layout guardado para cada uno
+    function centrarCompanyInfoSiNecesario() {
       try {
-        ['companyInfoQuote', 'companyInfoInvoice'].forEach(function(id) {
-          const el = document.getElementById(id);
-          if (el) {
-            el.style.left = '50%';
-            el.style.transform = 'translateX(-50%)';
-            el.style.top = '-30px';
-          }
-        });
+        const raw = localStorage.getItem(TAPICERIA_KEY);
+        const d = (raw && raw !== '') ? JSON.parse(raw) : {};
+        const L = d.headerLayout || {};
+        const compQ = document.getElementById('companyInfoQuote');
+        const compI = document.getElementById('companyInfoInvoice');
+        if (!L.companyQuote && compQ) {
+          compQ.style.left = '50%';
+          compQ.style.transform = 'translateX(-50%)';
+          compQ.style.top = '-30px';
+        }
+        if (!L.companyInv && compI) {
+          compI.style.left = '50%';
+          compI.style.transform = 'translateX(-50%)';
+          compI.style.top = '-30px';
+        }
       } catch (e) {}
     }
-    centrarCompanyInfo();
+    centrarCompanyInfoSiNecesario();
     
     // Sincronizar campos de Quote a Invoice
     const syncFields = [
       { from: 'cliente', to: 'clienteInv' },
       { from: 'direccionCliente', to: 'direccionInv' },
       { from: 'emailCliente', to: 'emailClienteInv' },
-      { from: 'telefonoCliente', to: 'telefonoClienteInv' }
+      { from: 'telefonoCliente', to: 'telefonoClienteInv' },
+      { from: 'trabajo', to: 'jobInv' }
     ];
     
     syncFields.forEach(function(pair) {
