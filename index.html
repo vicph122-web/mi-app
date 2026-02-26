@@ -272,6 +272,10 @@
     .modal .btn-guardar { background: #27ae60; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 8px; }
     .modal .btn-guardar:hover { background: #219a52; }
     .modal-registro { max-width: 500px; }
+    .tabs-registro { display: flex; gap: 0; margin-bottom: 10px; border-bottom: 1px solid #bdc3c7; }
+    .tabs-registro button { padding: 8px 16px; border: none; background: transparent; cursor: pointer; font-size: 14px; color: #7f8c8d; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .tabs-registro button:hover { color: #2c3e50; }
+    .tabs-registro button.activo { color: #3498db; font-weight: 600; border-bottom-color: #3498db; }
     .lista-registro { max-height: 60vh; overflow-y: auto; margin: 12px 0; }
     .item-registro {
       display: flex;
@@ -394,14 +398,15 @@
     .tabla-items .col-desc { min-width: 150px; }
     .tabla-items .col-hrs { width: 50px; }
     .tabla-items .col-qty { width: 60px; }
-    .tabla-items .col-unit { width: 90px; text-align: center; }
+    .tabla-items .col-unit { width: 95px; text-align: center; }
     .tabla-items .unit-price-cell { display: flex; align-items: center; justify-content: center; padding: 0; background: transparent; font-size: 12px; height: 100%; border: none; width: 100%; box-sizing: border-box; }
-    .tabla-items .unit-price-cell input { width: 5ch; min-width: 4ch; border: none; background: transparent; padding: 6px 4px; font-size: 12px; box-shadow: none; outline: none; text-align: center; }
+    .tabla-items .unit-price-cell input { width: 6ch; min-width: 6ch; max-width: 10ch; border: none; background: transparent; padding: 6px 2px; font-size: 12px; box-shadow: none; outline: none; text-align: center; box-sizing: border-box; }
     .tabla-items .unit-price-cell input:focus { background: #fffde7; }
     .tabla-items .col-total { width: 90px; font-weight: 600; color: #1e8449; }
     .tabla-items .td-item-total { font-size: 12px; padding: 6px 8px; }
     .invoice-aceptamos { font-size: 12px; color: #555; margin: 8px 0 12px 0; }
 .invoice-totales-wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 16px; }
+    .invoice-totales-wrap.invoice-totales-caja { border: 1px solid #ddd; border-radius: 6px; padding: 12px 16px; background: #fafafa; margin-top: 12px; margin-bottom: 12px; }
     .invoice-totales { max-width: 260px; font-size: 13px; flex-shrink: 0; }
     .invoice-totales .fila { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; gap: 12px; }
     .invoice-totales .fila > span:first-child { flex-shrink: 0; }
@@ -481,9 +486,14 @@
     body.tema-oscuro .fila-descripcion-totales { background: rgba(255,255,255,0.03); border-color: #3498db33; }
     body.tema-oscuro .totales-finales h3, body.tema-oscuro .totales-finales .fila { color: #ecf0f1; }
     body.tema-oscuro .invoice-totales .fila { color: #ecf0f1; }
+    body.tema-oscuro .invoice-totales-caja { border-color: #3498db33; background: rgba(255,255,255,0.03); }
     body.tema-oscuro .modal { background: #16213e; color: #eee; }
     body.tema-oscuro .modal h3, body.tema-oscuro .modal h4 { color: #ecf0f1; }
     body.tema-oscuro .modal input, body.tema-oscuro .modal select { background: #0f3460; border-color: #3498db; color: #eee; }
+    body.tema-oscuro .tabs-registro { border-bottom-color: #3498db33; }
+    body.tema-oscuro .tabs-registro button { color: #bdc3c7; }
+    body.tema-oscuro .tabs-registro button:hover { color: #ecf0f1; }
+    body.tema-oscuro .tabs-registro button.activo { color: #3498db; border-bottom-color: #3498db; }
     body.tema-oscuro .item-registro { background: #0f3460; border-color: #3498db; }
     body.tema-oscuro .item-registro .cliente { color: #ecf0f1; }
     body.tema-oscuro .item-registro .trabajo, body.tema-oscuro .item-registro .telefono, body.tema-oscuro .item-registro .fecha { color: #bdc3c7; }
@@ -544,6 +554,7 @@
     .exportando-pdf .descripcion-proyecto {
       max-width: 55% !important;
     }
+    .exportando-pdf .invoice-totales-caja { border: 1px solid #ccc !important; border-radius: 4px !important; padding: 10px !important; background: #fafafa !important; }
     .exportando-pdf .totales-finales,
     .exportando-pdf .invoice-totales {
       margin-left: auto !important;
@@ -1006,8 +1017,7 @@
         <tbody id="zonasItems"></tbody>
       </table>
       <button type="button" class="btn-agregar" id="btnAgregarItem" data-i18n="addRow" data-i18n-title="titleAddRow">+ Add row</button>
-      <div class="invoice-aceptamos" data-i18n="aceptamos">Aceptamos: cheques, efectivo, tarjetas, zelle, pagos por tel.</div>
-      <div class="invoice-totales-wrap">
+      <div class="invoice-totales-wrap invoice-totales-caja">
         <div class="invoice-pago">
           <div data-i18n="checksPayable">Checks payable to:</div>
           <strong id="invPayableTo"></strong>
@@ -1022,6 +1032,7 @@
           <div class="invoice-pago-sender"><span data-i18n="sender">Remitente:</span> <span id="invSender"></span></div>
         </div>
         <div class="invoice-totales">
+          <div class="fila" id="filaSubtotalMateriales"><span data-i18n="materials">Materials</span><span id="subtotalMaterialesInv">$0.00</span></div>
           <div class="fila"><span data-i18n="subtotal">Subtotal</span><span id="subtotalInv">$0.00</span></div>
           <div class="fila"><span data-i18n="tax">Tax (%)</span> <input type="number" id="taxPctInv" value="7" min="0" step="0.01" readonly style="width:50px;display:inline;padding:2px;font-size:11px;border:1px solid #ddd;background:#f5f5f5;"> <span id="taxMontoInv">$0.00</span></div>
           <div class="fila total"><span data-i18n="total">Total</span><span id="totalInv">$0.00</span></div>
@@ -1046,6 +1057,7 @@
           </div>
         </div>
       </div>
+      <div class="invoice-aceptamos" data-i18n="aceptamos">Aceptamos: cheques, efectivo, tarjetas, zelle, pagos por tel.</div>
       <div class="invoice-footer">
         <div class="invoice-footer-line invoice-footer-thanks" id="invThankYou"></div>
       </div>
@@ -1055,6 +1067,10 @@
   <div class="modal-overlay" id="modalRegistro" onclick="if(event.target.id==='modalRegistro') cerrarRegistro()">
     <div class="modal modal-registro">
       <h3 data-i18n="registroTitulo">Registro de presupuestos</h3>
+      <div class="tabs-registro">
+        <button type="button" id="tabPresupuestos" class="activo" data-i18n="tabPresupuestos">Presupuestos</button>
+        <button type="button" id="tabFacturas" data-i18n="tabFacturas">Facturas</button>
+      </div>
       <input type="text" id="buscarRegistro" class="buscar-registro" data-i18n-ph="buscarRegistro" placeholder="Buscar por nombre o teléfono...">
       <div class="filtro-fecha-wrap">
         <label data-i18n="filtroDesde">Desde:</label>
@@ -1401,6 +1417,8 @@
         seleccionarServicio: 'Seleccionar servicio para agregar',
         registro: 'Registro',
         registroTitulo: 'Registro de presupuestos',
+        tabPresupuestos: 'Presupuestos',
+        tabFacturas: 'Facturas',
         cerrar: 'Cerrar',
         cargar: 'Cargar',
         borrar: 'Borrar',
@@ -1554,6 +1572,8 @@
         continuar: 'Continue',
         limpiar: 'Clear',
         registroTitulo: 'Quote registry',
+        tabPresupuestos: 'Quotes',
+        tabFacturas: 'Invoices',
         cerrar: 'Close',
         cargar: 'Load',
         borrar: 'Delete',
@@ -2020,11 +2040,84 @@
       });
     }
 
+    function construirDatosQuote() {
+      const datos = { fechaGuardado: new Date().toISOString(), tipoDocumento: 'quote' };
+      datos.cliente = document.getElementById('cliente').value;
+      datos.direccionCliente = document.getElementById('direccionCliente').value;
+      datos.emailCliente = document.getElementById('emailCliente').value;
+      datos.trabajo = document.getElementById('trabajo').value;
+      datos.telefonoCliente = document.getElementById('telefonoCliente').value;
+      datos.fecha = document.getElementById('fecha').value;
+      datos.descripcionProyecto = document.getElementById('descripcionProyecto').value;
+      datos.itemsQuote = [];
+      document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(f => {
+        datos.itemsQuote.push({
+          desc: f.querySelector('.input-item-desc').value,
+          hrs: (f.querySelector('.input-item-hrs') && f.querySelector('.input-item-hrs').value) || '',
+          qty: f.querySelector('.input-item-qty').value,
+          unit: f.querySelector('.input-item-unit').value
+        });
+      });
+      datos.taxPct = document.getElementById('taxPct').value;
+      datos.filas = [];
+      document.querySelectorAll('.fila-material').forEach(f => {
+        datos.filas.push({
+          nombre: f.querySelector('.input-nombre').value,
+          largo: f.querySelector('.input-largo').value,
+          unidad: f.querySelector('.input-unidad').value,
+          ancho: f.querySelector('.input-ancho').value,
+          anchoRollo: f.querySelector('.input-anchoRollo').value,
+          precio: f.querySelector('.input-precio').value,
+          unidadPrecio: f.querySelector('.input-unidadPrecio').value
+        });
+      });
+      return datos;
+    }
+
+    function construirDatosInvoice() {
+      const datos = { fechaGuardado: new Date().toISOString(), tipoDocumento: 'invoice' };
+      datos.cliente = document.getElementById('clienteInv').value;
+      datos.direccionCliente = document.getElementById('direccionInv').value;
+      datos.emailCliente = document.getElementById('emailClienteInv').value;
+      datos.telefonoCliente = document.getElementById('telefonoClienteInv').value;
+      datos.job = document.getElementById('jobInv').value;
+      datos.fecha = document.getElementById('fechaInv').value;
+      datos.numFactura = document.getElementById('numFactura').value;
+      datos.cardFeePct = document.getElementById('cardFeePctInv').value || '3.5';
+      datos.taxPct = document.getElementById('taxPctInv').value;
+      datos.tipoDescuentoDeposito = document.getElementById('tipoDescuentoDeposito').value;
+      datos.discount = document.getElementById('discountInv').value;
+      datos.tipoPagadoBalance = document.getElementById('tipoPagadoBalance').value;
+      datos.paid = document.getElementById('paidInv').value;
+      datos.materials = [];
+      datos.items = [];
+      document.querySelectorAll('.fila-material-inv').forEach(f => {
+        const u = f.querySelector('.input-yards-unit');
+        datos.materials.push({
+          mat: f.querySelector('.input-mat').value,
+          desc: f.querySelector('.input-desc').value,
+          yards: f.querySelector('.input-yards').value,
+          yardsUnit: u ? u.value : 'yds',
+          color: f.querySelector('.input-color').value,
+          qty: f.querySelector('.input-qty-mat').value
+        });
+      });
+      document.querySelectorAll('.fila-item-inv').forEach(f => {
+        datos.items.push({
+          desc: f.querySelector('.input-item-desc').value,
+          hrs: (f.querySelector('.input-item-hrs') && f.querySelector('.input-item-hrs').value) || '',
+          qty: f.querySelector('.input-item-qty').value,
+          unit: f.querySelector('.input-item-unit').value
+        });
+      });
+      return datos;
+    }
+
     function salvarPresupuesto() {
-      const tipo = document.getElementById('configTipoDocumento').value;
+      const tipoVista = document.getElementById('documento').getAttribute('data-tipo') || 'quote';
       const t = T[idioma] || T.es;
       let camposFaltantes = [];
-      if (tipo === 'invoice') {
+      if (tipoVista === 'invoice') {
         if (!document.getElementById('clienteInv').value.trim()) camposFaltantes.push(t.customer || 'Cliente');
         if (!document.getElementById('fechaInv').value.trim()) camposFaltantes.push(t.fecha || 'Fecha');
       } else {
@@ -2036,74 +2129,20 @@
         alert(msg + camposFaltantes.join('\n'));
         return;
       }
-      const datos = { fechaGuardado: new Date().toISOString(), tipoDocumento: tipo };
-      if (tipo === 'invoice') {
-        datos.cliente = document.getElementById('clienteInv').value;
-        datos.direccionCliente = document.getElementById('direccionInv').value;
-        datos.emailCliente = document.getElementById('emailClienteInv').value;
-        datos.telefonoCliente = document.getElementById('telefonoClienteInv').value;
-        datos.job = document.getElementById('jobInv').value;
-        datos.fecha = document.getElementById('fechaInv').value;
-        datos.numFactura = document.getElementById('numFactura').value;
-        datos.cardFeePct = document.getElementById('cardFeePctInv').value || '3.5';
-        datos.taxPct = document.getElementById('taxPctInv').value;
-        datos.tipoDescuentoDeposito = document.getElementById('tipoDescuentoDeposito').value;
-        datos.discount = document.getElementById('discountInv').value;
-        datos.tipoPagadoBalance = document.getElementById('tipoPagadoBalance').value;
-        datos.paid = document.getElementById('paidInv').value;
-        datos.materials = [];
-        datos.items = [];
-        document.querySelectorAll('.fila-material-inv').forEach(f => {
-          const u = f.querySelector('.input-yards-unit');
-          datos.materials.push({
-            mat: f.querySelector('.input-mat').value,
-            desc: f.querySelector('.input-desc').value,
-            yards: f.querySelector('.input-yards').value,
-            yardsUnit: u ? u.value : 'yds',
-            color: f.querySelector('.input-color').value,
-            qty: f.querySelector('.input-qty-mat').value
-          });
-        });
-        document.querySelectorAll('.fila-item-inv').forEach(f => {
-          datos.items.push({
-            desc: f.querySelector('.input-item-desc').value,
-            hrs: (f.querySelector('.input-item-hrs') && f.querySelector('.input-item-hrs').value) || '',
-            qty: f.querySelector('.input-item-qty').value,
-            unit: f.querySelector('.input-item-unit').value
-          });
-        });
+      if (tipoVista === 'quote') {
+        const datosQuote = construirDatosQuote();
+        const datosInvoice = construirDatosInvoice();
+        datosInvoice.cliente = datosQuote.cliente;
+        datosInvoice.direccionCliente = datosQuote.direccionCliente;
+        datosInvoice.emailCliente = datosQuote.emailCliente;
+        datosInvoice.telefonoCliente = datosQuote.telefonoCliente;
+        datosInvoice.job = datosQuote.trabajo;
+        datosInvoice.fecha = datosQuote.fecha;
+        guardarEnDB(datosQuote).then(() => guardarEnDB(datosInvoice)).then(() => alert((t.msgGuardado || 'Guardado') + (idioma === 'es' ? ' (Presupuesto y Factura)' : ' (Quote and Invoice)'))).catch(() => alert('Error al guardar'));
       } else {
-        datos.cliente = document.getElementById('cliente').value;
-        datos.direccionCliente = document.getElementById('direccionCliente').value;
-        datos.emailCliente = document.getElementById('emailCliente').value;
-        datos.trabajo = document.getElementById('trabajo').value;
-        datos.telefonoCliente = document.getElementById('telefonoCliente').value;
-        datos.fecha = document.getElementById('fecha').value;
-        datos.descripcionProyecto = document.getElementById('descripcionProyecto').value;
-        datos.itemsQuote = [];
-        document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(f => {
-          datos.itemsQuote.push({
-            desc: f.querySelector('.input-item-desc').value,
-            hrs: (f.querySelector('.input-item-hrs') && f.querySelector('.input-item-hrs').value) || '',
-            qty: f.querySelector('.input-item-qty').value,
-            unit: f.querySelector('.input-item-unit').value
-          });
-        });
-        datos.taxPct = document.getElementById('taxPct').value;
-        datos.filas = [];
-        document.querySelectorAll('.fila-material').forEach(f => {
-          datos.filas.push({
-            nombre: f.querySelector('.input-nombre').value,
-            largo: f.querySelector('.input-largo').value,
-            unidad: f.querySelector('.input-unidad').value,
-            ancho: f.querySelector('.input-ancho').value,
-            anchoRollo: f.querySelector('.input-anchoRollo').value,
-            precio: f.querySelector('.input-precio').value,
-            unidadPrecio: f.querySelector('.input-unidadPrecio').value
-          });
-        });
+        const datosInvoice = construirDatosInvoice();
+        guardarEnDB(datosInvoice).then(() => alert((t.msgGuardado || 'Guardado'))).catch(() => alert('Error al guardar'));
       }
-      guardarEnDB(datos).then(() => alert((T[idioma] || T.es).msgGuardado)).catch(() => alert('Error al guardar'));
     }
 
     function abrirRegistro() {
@@ -2112,20 +2151,29 @@
         const t = T[idioma] || T.es;
         const div = document.getElementById('listaRegistro');
         div.innerHTML = '';
-        if (lista.length === 0) {
-          div.innerHTML = '<p style="color:#666;text-align:center;">' + (idioma === 'es' ? 'No hay presupuestos guardados' : 'No saved quotes') + '</p>';
-          return;
-        }
-        const listaOrdenada = lista.reverse();
-        function renderizarLista(filtro) {
+        const listaOrdenada = (lista || []).slice().reverse();
+        let tabActivo = 'quote';
+        function renderizarLista(filtroTexto, tipoTab) {
           div.innerHTML = '';
-          const q = (filtro || '').toLowerCase().trim();
-          listaOrdenada.forEach(item => {
-            const c = (item.cliente || '').toLowerCase();
-            const em = (item.emailCliente || '').toLowerCase();
-            const tel = (item.telefonoCliente || '').replace(/\D/g, '');
-            const qNum = q.replace(/\D/g, '');
-            if (q && !c.includes(q) && !em.includes(q) && !(item.telefonoCliente || '').toLowerCase().includes(q) && !tel.includes(qNum)) return;
+          const q = (filtroTexto || '').toLowerCase().trim();
+          const tipoFiltro = tipoTab || tabActivo;
+          const filtrados = listaOrdenada.filter(item => {
+            if (tipoFiltro && (item.tipoDocumento || 'quote') !== tipoFiltro) return false;
+            if (q) {
+              const c = (item.cliente || '').toLowerCase();
+              const em = (item.emailCliente || '').toLowerCase();
+              const tel = (item.telefonoCliente || '').replace(/\D/g, '');
+              const qNum = q.replace(/\D/g, '');
+              if (!c.includes(q) && !em.includes(q) && !(item.telefonoCliente || '').toLowerCase().includes(q) && !tel.includes(qNum)) return false;
+            }
+            return true;
+          });
+          if (filtrados.length === 0) {
+            const msg = tipoFiltro === 'invoice' ? (idioma === 'es' ? 'No hay facturas guardadas' : 'No saved invoices') : (idioma === 'es' ? 'No hay presupuestos guardados' : 'No saved quotes');
+            div.innerHTML = '<p style="color:#666;text-align:center;">' + msg + '</p>';
+            return;
+          }
+          filtrados.forEach(item => {
             const el = document.createElement('div');
             el.className = 'item-registro';
             const f = new Date(item.fechaGuardado);
@@ -2139,11 +2187,29 @@
             div.appendChild(el);
           });
         }
-        renderizarLista();
+        renderizarLista('', tabActivo);
         const busq = document.getElementById('buscarRegistro');
         if (busq) {
           busq.value = '';
-          busq.oninput = () => renderizarLista(busq.value);
+          busq.oninput = () => renderizarLista(busq.value, tabActivo);
+        }
+        const tabPresup = document.getElementById('tabPresupuestos');
+        const tabFact = document.getElementById('tabFacturas');
+        if (tabPresup) {
+          tabPresup.onclick = () => {
+            tabActivo = 'quote';
+            tabPresup.classList.add('activo');
+            if (tabFact) tabFact.classList.remove('activo');
+            renderizarLista(busq ? busq.value : '', tabActivo);
+          };
+        }
+        if (tabFact) {
+          tabFact.onclick = () => {
+            tabActivo = 'invoice';
+            tabFact.classList.add('activo');
+            if (tabPresup) tabPresup.classList.remove('activo');
+            renderizarLista(busq ? busq.value : '', tabActivo);
+          };
         }
       });
     }
@@ -2193,7 +2259,8 @@
         document.getElementById('taxPct').value = item.taxPct || '7';
         document.querySelectorAll('.fila-material').forEach(f => f.remove());
         document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(f => f.remove());
-        (item.itemsQuote || []).forEach(it => { crearFilaItemQuote(); const rows = document.querySelectorAll('#zonasItemsQuote .fila-item-quote'); const last = rows[rows.length - 1]; if (last) { last.querySelector('.input-item-desc').value = it.desc || ''; const h = last.querySelector('.input-item-hrs'); if (h) h.value = it.hrs || ''; last.querySelector('.input-item-qty').value = it.qty || ''; last.querySelector('.input-item-unit').value = (parseFloat(it.unit) || 0).toFixed(2); } });
+        document.querySelectorAll('#zonasItems .fila-item-inv').forEach(f => f.remove());
+        (item.itemsQuote || []).forEach(it => { crearFilaItemQuote(); const rows = document.querySelectorAll('#zonasItemsQuote .fila-item-quote'); const last = rows[rows.length - 1]; if (last) { last.querySelector('.input-item-desc').value = it.desc || ''; const h = last.querySelector('.input-item-hrs'); if (h) h.value = it.hrs || ''; last.querySelector('.input-item-qty').value = it.qty || ''; last.querySelector('.input-item-unit').value = (parseFloat(it.unit) || 0).toFixed(2); syncFilaToInvoice(last); } });
         if (!(item.itemsQuote || []).length) for (let i = 0; i < 2; i++) crearFilaItemQuote();
         (item.filas || []).forEach(fila => {
         crearSeccion();
@@ -2206,6 +2273,7 @@
           ultima.querySelector('.input-anchoRollo').value = fila.anchoRollo || '54';
           ultima.querySelector('.input-precio').value = (parseFloat(fila.precio) || 0).toFixed(2);
           ultima.querySelector('.input-unidadPrecio').value = fila.unidadPrecio || 'in_lineal';
+          syncMaterialNombreToInvoice(ultima);
         }
       });
         if (!(item.filas || []).length) for (let i = 0; i < 2; i++) crearSeccion();
@@ -2488,6 +2556,7 @@
         document.getElementById('taxPct').value = taxDef;
         document.getElementById('fecha').value = fd2;
         document.querySelectorAll('.fila-material').forEach(f => f.remove());
+        document.querySelectorAll('#zonasMaterials .fila-material-inv').forEach(f => f.remove());
         document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(f => f.remove());
         for (let i = 0; i < 2; i++) crearFilaItemQuote();
         for (let i = 0; i < 2; i++) crearSeccion();
@@ -2512,9 +2581,16 @@
       const template = document.getElementById('templateFila');
       const clone = template.content.cloneNode(true);
       const fila = clone.querySelector('tr');
+      const rowIndex = document.querySelectorAll('.fila-material').length;
+      fila.dataset.rowIndex = rowIndex;
 
       fila.querySelector('.btn-del').addEventListener('click', () => {
+        const idx = fila.dataset.rowIndex;
         fila.remove();
+        document.querySelectorAll('#zonasMaterials .fila-material-inv').forEach(invRow => {
+          if (invRow.dataset.rowIndex === idx) invRow.remove();
+        });
+        reindexarFilasMaterials();
         actualizar();
       });
 
@@ -2586,10 +2662,49 @@
         });
         inputPrecio.addEventListener('blur', function() { formatearMonto(this); actualizar(); });
       }
-
+      const inputNombre = fila.querySelector('.input-nombre');
+      if (inputNombre) {
+        inputNombre.addEventListener('input', function() { syncMaterialNombreToInvoice(fila); actualizar(); });
+        inputNombre.addEventListener('change', function() { syncMaterialNombreToInvoice(fila); actualizar(); });
+      }
       document.getElementById('zonasMateriales').appendChild(clone);
       aplicarTooltipsEn(fila);
+      crearFilaMaterialInvSync(rowIndex);
+      reindexarFilasMaterials();
       actualizar();
+    }
+
+    function syncMaterialNombreToInvoice(quoteRow) {
+      const idx = quoteRow.dataset.rowIndex;
+      const invRow = document.querySelector('#zonasMaterials .fila-material-inv[data-row-index="' + idx + '"]');
+      const nombre = quoteRow.querySelector('.input-nombre');
+      if (invRow && nombre) {
+        const mat = invRow.querySelector('.input-mat');
+        if (mat) mat.value = nombre.value;
+      }
+    }
+
+    function crearFilaMaterialInvSync(rowIndex) {
+      const t = document.getElementById('templateFilaMaterial');
+      const clone = t.content.cloneNode(true);
+      const tr = clone.querySelector('tr');
+      tr.dataset.rowIndex = rowIndex;
+      tr.querySelector('.btn-del').onclick = () => {
+        tr.remove();
+        reindexarFilasMaterials();
+      };
+      const selectZeroOnFocus = (inp) => {
+        inp.addEventListener('focus', function() { if (this.value === '0') this.select(); });
+      };
+      selectZeroOnFocus(tr.querySelector('.input-yards'));
+      selectZeroOnFocus(tr.querySelector('.input-qty-mat'));
+      document.getElementById('zonasMaterials').appendChild(clone);
+      aplicarTooltipsEn(tr);
+    }
+
+    function reindexarFilasMaterials() {
+      document.querySelectorAll('.fila-material').forEach((row, i) => { row.dataset.rowIndex = i; });
+      document.querySelectorAll('#zonasMaterials .fila-material-inv').forEach((row, i) => { row.dataset.rowIndex = i; });
     }
 
     function calcSeccion(fila) {
@@ -2633,17 +2748,27 @@
       const filas = document.querySelectorAll('.fila-material');
       let subtotalGeneral = 0;
 
-      filas.forEach(fila => {
+      filas.forEach((fila, i) => {
         const r = calcSeccion(fila);
         const unidadPrecio = fila.querySelector('.input-unidadPrecio').value;
         let qtyText = '—';
-        if (unidadPrecio === 'yd_lineal' && r.materialYardas > 0) qtyText = r.materialYardas.toFixed(1) + ' yd';
-        else if (unidadPrecio === 'ft_lineal' && r.materialPies > 0) qtyText = r.materialPies.toFixed(1) + ' ft';
-        else if (unidadPrecio === 'in_lineal' && r.materialPulg > 0) qtyText = r.materialPulg.toFixed(0) + ' in';
-        else if (unidadPrecio === 'yd_cuadrada' && r.areaYardas2 > 0) qtyText = r.areaYardas2.toFixed(2) + ' yd²';
-        else if (unidadPrecio === 'ft_cuadrado' && r.areaPies2 > 0) qtyText = r.areaPies2.toFixed(2) + ' ft²';
-        else if (unidadPrecio === 'in_cuadrada' && r.areaPulg2 > 0) qtyText = r.areaPulg2.toFixed(0) + ' in²';
+        let qtyNum = 0;
+        let qtyUnit = 'yds';
+        if (unidadPrecio === 'yd_lineal' && r.materialYardas > 0) { qtyText = r.materialYardas.toFixed(1) + ' yd'; qtyNum = r.materialYardas; qtyUnit = 'yds'; }
+        else if (unidadPrecio === 'ft_lineal' && r.materialPies > 0) { qtyText = r.materialPies.toFixed(1) + ' ft'; qtyNum = r.materialPies; qtyUnit = 'ft'; }
+        else if (unidadPrecio === 'in_lineal' && r.materialPulg > 0) { qtyText = r.materialPulg.toFixed(0) + ' in'; qtyNum = r.materialPulg; qtyUnit = 'in'; }
+        else if (unidadPrecio === 'yd_cuadrada' && r.areaYardas2 > 0) { qtyText = r.areaYardas2.toFixed(2) + ' yd²'; qtyNum = r.areaYardas2; qtyUnit = 'yds'; }
+        else if (unidadPrecio === 'ft_cuadrado' && r.areaPies2 > 0) { qtyText = r.areaPies2.toFixed(2) + ' ft²'; qtyNum = r.areaPies2; qtyUnit = 'ft'; }
+        else if (unidadPrecio === 'in_cuadrada' && r.areaPulg2 > 0) { qtyText = r.areaPulg2.toFixed(0) + ' in²'; qtyNum = r.areaPulg2; qtyUnit = 'in'; }
         fila.querySelector('.td-cantidades').textContent = qtyText;
+
+        const invRow = document.querySelector('#zonasMaterials .fila-material-inv[data-row-index="' + i + '"]');
+        if (invRow && !invRow.contains(document.activeElement)) {
+          const inpYards = invRow.querySelector('.input-yards');
+          const inpUnit = invRow.querySelector('.input-yards-unit');
+          if (inpYards) inpYards.value = qtyNum > 0 ? (qtyNum % 1 === 0 ? String(qtyNum) : qtyNum.toFixed(2)) : '';
+          if (inpUnit) inpUnit.value = qtyUnit;
+        }
 
         fila.querySelector('.td-subtotal').textContent = `$${r.total.toFixed(2)}`;
         subtotalGeneral += r.total;
@@ -2665,6 +2790,11 @@
       document.getElementById('subtotalGeneral').textContent = `$${subtotalGeneral.toFixed(2)}`;
       document.getElementById('taxMonto').textContent = `$${taxMonto.toFixed(2)}`;
       document.getElementById('totalFinal').textContent = `$${totalFinal.toFixed(2)}`;
+      document.querySelectorAll('#zonasItemsQuote .input-item-unit').forEach(inp => {
+        if (inp !== document.activeElement) inp.value = (parseFloat(inp.value) || 0).toFixed(2);
+      });
+      document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(quoteRow => { syncFilaToInvoice(quoteRow); });
+      actualizarInvoice();
     }
 
     function crearFilaItemQuote(syncToInvoice = true) {
@@ -2752,7 +2882,7 @@
         if (descQ && descI) descI.value = descQ.value;
         if (hrsQ && hrsI) hrsI.value = hrsQ.value;
         if (qtyQ && qtyI) qtyI.value = qtyQ.value;
-        if (unitQ && unitI) unitI.value = unitQ.value;
+        if (unitQ && unitI) unitI.value = (parseFloat(unitQ.value) || 0).toFixed(2);
         actualizarInvoice();
       }
     }
@@ -2772,7 +2902,7 @@
         if (descI && descQ) descQ.value = descI.value;
         if (hrsI && hrsQ) hrsQ.value = hrsI.value;
         if (qtyI && qtyQ) qtyQ.value = qtyI.value;
-        if (unitI && unitQ) unitQ.value = unitI.value;
+        if (unitI && unitQ) unitQ.value = (parseFloat(unitI.value) || 0).toFixed(2);
         actualizar();
       }
     }
@@ -2780,7 +2910,12 @@
       const t = document.getElementById('templateFilaMaterial');
       const clone = t.content.cloneNode(true);
       const tr = clone.querySelector('tr');
-      tr.querySelector('.btn-del').onclick = () => { tr.remove(); };
+      const rowIndex = document.querySelectorAll('#zonasMaterials .fila-material-inv').length;
+      tr.dataset.rowIndex = rowIndex;
+      tr.querySelector('.btn-del').onclick = () => {
+        tr.remove();
+        reindexarFilasMaterials();
+      };
       const selectZeroOnFocus = (inp) => {
         inp.addEventListener('focus', function() { if (this.value === '0') this.select(); });
       };
@@ -2849,15 +2984,23 @@
     }
 
     function actualizarInvoice() {
-      let subtotal = 0;
+      let subtotalItems = 0;
       document.querySelectorAll('.fila-item-inv').forEach(tr => {
         const hrs = parseFloat(tr.querySelector('.input-item-hrs')?.value) || 0;
         const qty = parseFloat(tr.querySelector('.input-item-qty').value) || 0;
         const unit = parseFloat(tr.querySelector('.input-item-unit').value) || 0;
         const total = (hrs * unit) + (qty * unit);
         tr.querySelector('.td-item-total').textContent = '$' + total.toFixed(2);
-        subtotal += total;
+        subtotalItems += total;
       });
+      let subtotalMateriales = 0;
+      document.querySelectorAll('.fila-material').forEach(fila => {
+        const r = typeof calcSeccion === 'function' ? calcSeccion(fila) : { total: 0 };
+        subtotalMateriales += r.total || 0;
+      });
+      const spanSubtotalMat = document.getElementById('subtotalMaterialesInv');
+      if (spanSubtotalMat) spanSubtotalMat.textContent = '$' + subtotalMateriales.toFixed(2);
+      const subtotal = subtotalItems + subtotalMateriales;
       const taxPct = parseFloat(document.getElementById('taxPctInv').value) || 0;
       const taxMonto = subtotal * (taxPct / 100);
       const total = subtotal + taxMonto;
@@ -2877,6 +3020,9 @@
         paidInput.type = 'text';
       }
       if (typeof ajustarAnchoMonto === 'function') { ajustarAnchoMonto(document.getElementById('discountInv')); ajustarAnchoMonto(paidInput); }
+      document.querySelectorAll('.fila-item-inv .input-item-unit').forEach(inp => {
+        if (inp !== document.activeElement) inp.value = (parseFloat(inp.value) || 0).toFixed(2);
+      });
     }
 
     document.getElementById('btnAgregarMat').addEventListener('click', crearFilaMaterial);
@@ -3087,9 +3233,8 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
-    for (let i = 0; i < 2; i++) crearSeccion();
+    for (let i = 0; i < 2; i++) crearSeccion(); // Crea secciones en Quote y materiales en Invoice
     for (let i = 0; i < 2; i++) crearFilaItemQuote(); // Esto también crea filas en Invoice
-    for (let i = 0; i < 2; i++) crearFilaMaterial();
     (function() {
       const d = new Date();
       const fechaHoy = (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
