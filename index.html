@@ -42,6 +42,9 @@
     .quote-logo-company { display: flex; align-items: flex-start; gap: 15px; }
     .header-area { position: relative; min-height: 100px; width: 100%; }
     .draggable-element { position: absolute; cursor: move; }
+    .draggable-element.plantilla-fija { cursor: default; pointer-events: auto; }
+    .draggable-element.plantilla-fija:hover { outline: none; }
+    .draggable-element.plantilla-fija .drag-handle { display: none !important; }
     .draggable-element:hover { outline: 1px dashed #3498db; }
     .draggable-element .drag-handle { position: absolute; width: 8px; height: 8px; background: #3498db; border-radius: 2px; opacity: 0; z-index: 11; }
     .draggable-element:hover .drag-handle { opacity: 1; }
@@ -119,8 +122,8 @@
       margin-bottom: 6px;
     }
     .tabla-materiales th {
-      background: #2c3e50;
-      color: white;
+      background: #95a5a6;
+      color: #2c3e50;
       padding: 4px 6px;
       text-align: left;
       font-weight: 600;
@@ -193,6 +196,8 @@
       font-size: 12px;
       font-family: inherit;
       resize: vertical;
+      text-align: left;
+      box-sizing: border-box;
     }
     .btn-agregar {
       margin: 4px 0 8px 0;
@@ -272,7 +277,8 @@
     .modal .btn-guardar { background: #27ae60; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 8px; }
     .modal .btn-guardar:hover { background: #219a52; }
     .modal-registro { max-width: 500px; }
-    .tabs-registro { display: flex; gap: 0; margin-bottom: 10px; border-bottom: 1px solid #bdc3c7; }
+    .registro-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #bdc3c7; flex-wrap: wrap; gap: 8px; }
+    .tabs-registro { display: flex; gap: 0; }
     .tabs-registro button { padding: 8px 16px; border: none; background: transparent; cursor: pointer; font-size: 14px; color: #7f8c8d; border-bottom: 2px solid transparent; margin-bottom: -1px; }
     .tabs-registro button:hover { color: #2c3e50; }
     .tabs-registro button.activo { color: #3498db; font-weight: 600; border-bottom-color: #3498db; }
@@ -294,17 +300,32 @@
     .item-registro .fecha { font-size: 12px; color: #999; }
     .buscar-registro { width: 100%; padding: 8px 10px; margin-bottom: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 13px; }
     .buscar-registro:focus { outline: none; border-color: #3498db; }
-    .item-registro .acciones { display: flex; gap: 6px; }
-    .item-registro .btn-cargar, .item-registro .btn-borrar-item {
-      padding: 4px 10px;
-      font-size: 12px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .item-registro .btn-cargar { background: #3498db; color: white; }
-    .item-registro .btn-borrar-item { background: #e74c3c; color: white; }
+    .registro-botones-header { display: flex; gap: 6px; }
+    .btn-registro-header { padding: 6px 12px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; }
+    .registro-botones-header .btn-cargar { background: #3498db; color: white; }
+    .registro-botones-header .btn-editar { background: #27ae60; color: white; }
+    .btn-borrar-header { background: #e74c3c; color: white; padding: 6px 12px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; }
+    .registro-botones-header .btn-cargar:hover { background: #2980b9; }
+    .registro-botones-header .btn-editar:hover { background: #219a52; }
+    .btn-borrar-header:hover { background: #c0392b; }
+    .item-registro .checkbox-registro { margin-left: 10px; cursor: pointer; flex-shrink: 0; }
+    .registro-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #eee; }
+    .registro-formatos { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+    .registro-formatos label { font-size: 12px; color: #555; margin-right: 4px; }
+    .registro-formatos select { padding: 4px 8px; font-size: 12px; border: 1px solid #bbb; border-radius: 4px; }
+    .btn-exportar, .btn-importar { padding: 6px 12px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; }
+    .btn-exportar { background: #27ae60; color: white; }
+    .btn-exportar:hover { background: #219a52; }
+    .btn-importar { background: #3498db; color: white; }
+    .btn-importar:hover { background: #2980b9; }
     .modal-config { max-width: 420px; }
+    .modal-plantillas { max-width: 400px; }
+    .modal-desc { font-size: 12px; color: #666; margin: 0 0 16px 0; line-height: 1.4; }
+    .plantillas-opciones { display: flex; flex-direction: column; gap: 12px; }
+    .plantilla-opcion { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
+    .plantilla-opcion.plantilla-usar { background: #f0f8ff; border-color: #3498db; }
+    .plantilla-opcion span { font-size: 13px; flex: 1; }
+    .btn-sm { padding: 6px 14px; font-size: 12px; }
     .config-seccion { border-top: 1px solid #eee; margin-top: 12px; padding-top: 12px; }
     .config-seccion:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
     .config-seccion h4 { margin: 0 0 8px 0; font-size: 0.85rem; color: #2c3e50; }
@@ -313,6 +334,14 @@
     .btn-upload-logo:hover { background: #2980b9; }
     .btn-remove-logo { padding: 4px 8px; font-size: 12px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; }
     .btn-remove-logo:hover { background: #c0392b; }
+    .email-domains-dropdown { position: absolute; background: white; border: 1px solid #bbb; border-radius: 4px; max-height: 180px; overflow-y: auto; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 13px; }
+    .email-domains-dropdown .domain-option { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee; }
+    .email-domains-dropdown .domain-option:hover { background: #e8f4fc; }
+    .email-domains-dropdown .domain-option:last-child { border-bottom: none; }
+    body.tema-oscuro .email-domains-dropdown { background: #16213e; border-color: #3498db; }
+    body.tema-oscuro .email-domains-dropdown .domain-option { color: #eee; border-color: #0f3460; }
+    body.tema-oscuro .email-domains-dropdown .domain-option:hover { background: #0f3460; }
+    .campo-email-wrap { position: relative; }
     .btn-servicios { background: #16a085 !important; }
     .btn-servicios:hover { background: #1abc9c !important; }
     .modal-servicios { max-width: 500px; max-height: 85vh; display: flex; flex-direction: column; }
@@ -378,7 +407,7 @@
     .fila-email-telefono input[type="email"],
     .fila-email-telefono input[type="tel"] { flex: 1; min-width: 0; }
     .tabla-materials { border-collapse: collapse; width: 100%; font-size: 12px; margin-bottom: 12px; }
-    .tabla-materials th { background: #90c695; color: #1a3d1a; padding: 5px 6px; text-align: left; font-weight: 600; border: 1px solid #7ab37f; }
+    .tabla-materials th { background: #b8e0be; color: #1a3d1a; padding: 5px 6px; text-align: left; font-weight: 600; border: 1px solid #9ec9a4; }
     .tabla-materials td { padding: 0; border: 1px solid #bbb; }
     .tabla-materials input { padding: 6px 8px; font-size: 12px; border: none; background: transparent; width: 100%; height: 100%; outline: none; }
     .tabla-materials input:focus { background: #fffde7; }
@@ -391,7 +420,7 @@
     .tabla-materials .col-color { width: 120px; }
     .tabla-materials .col-qty { width: 90px; }
     .tabla-items { border-collapse: collapse; width: 100%; font-size: 12px; margin-bottom: 12px; }
-    .tabla-items th { background: #95a5a6; color: #2c3e50; padding: 5px 6px; text-align: left; font-weight: 600; border: 1px solid #bbb; }
+    .tabla-items th { background: #d5dbdb; color: #2c3e50; padding: 5px 6px; text-align: left; font-weight: 600; border: 1px solid #bdc3c7; }
     .tabla-items td { padding: 0; border: 1px solid #bbb; }
     .tabla-items input { padding: 6px 8px; font-size: 12px; border: none; background: transparent; width: 100%; height: 100%; outline: none; }
     .tabla-items input:focus { background: #fffde7; }
@@ -443,7 +472,14 @@
     .exportando-pdf .campo input, .exportando-pdf .campo select, .exportando-pdf .campo textarea { border: 1px solid #bbb !important; background: transparent !important; }
     .exportando-pdf .invoice-customer input, .exportando-pdf .invoice-meta input { border: 1px solid #bbb !important; background: transparent !important; }
     .exportando-pdf .invoice-totales select { border: 1px solid #bbb !important; background: transparent !important; -webkit-appearance: none; appearance: none; }
-    .exportando-pdf .descripcion-proyecto textarea { border: 1px solid #bbb !important; background: transparent !important; }
+    .exportando-pdf .descripcion-proyecto textarea {
+      border: 1px solid #bbb !important;
+      background: transparent !important;
+      text-align: left !important;
+      padding: 6px 10px 8px 10px !important;
+      line-height: 1.4 !important;
+      vertical-align: top !important;
+    }
     .exportando-pdf input[readonly], .exportando-pdf .monto-input { border: 1px solid #bbb !important; background: transparent !important; }
     .exportando-pdf .aviso-card-fee-input-wrap { border: 1px solid #bbb !important; background: transparent !important; box-shadow: none !important; outline: none !important; }
     .exportando-pdf .btn-agregar, .exportando-pdf .btn-del { display: none !important; }
@@ -546,6 +582,7 @@
     .exportando-pdf .fila-descripcion-totales {
       display: flex !important;
       flex-direction: row !important;
+      align-items: flex-start !important;
       border: 1px solid #ccc !important;
       border-radius: 4px !important;
       padding: 10px !important;
@@ -553,6 +590,7 @@
     }
     .exportando-pdf .descripcion-proyecto {
       max-width: 55% !important;
+      align-self: flex-start !important;
     }
     .exportando-pdf .invoice-totales-caja { border: 1px solid #ccc !important; border-radius: 4px !important; padding: 10px !important; background: #fafafa !important; }
     .exportando-pdf .totales-finales,
@@ -751,6 +789,7 @@
     <div class="botones-accion">
       <button type="button" class="btn-config" id="btnConfig" data-i18n-title="titleConfig" onclick="abrirConfig()">⚙</button>
       <button type="button" class="btn-accion" id="btnSalvar" data-i18n="salvar" data-i18n-title="titleSalvar">Salvar</button>
+      <button type="button" class="btn-accion" id="btnPlantillas" data-i18n="plantillas" data-i18n-title="titlePlantillas" title="Plantillas">Plantillas</button>
       <button type="button" class="btn-accion" id="btnRegistro" data-i18n="registro" data-i18n-title="titleRegistro">Registro</button>
       <button type="button" class="btn-accion btn-servicios" id="btnServicios" data-i18n="servicios" data-i18n-title="titleServicios">Servicios</button>
       <button type="button" class="btn-accion" id="btnCompartir" data-i18n="compartir" data-i18n-title="titleCompartir">Compartir</button>
@@ -909,7 +948,7 @@
     </div>
     
     <div class="quote-footer" style="margin-top: 15px; text-align: center;">
-      <span style="color: red; font-size: 14px;" data-i18n="quoteValidez">Quote valid for 90 days</span>
+      <span style="color: red; font-size: 12px;" data-i18n="quoteValidez">Quote valid for 90 days</span>
     </div>
     </div>
 
@@ -1067,9 +1106,16 @@
   <div class="modal-overlay" id="modalRegistro" onclick="if(event.target.id==='modalRegistro') cerrarRegistro()">
     <div class="modal modal-registro">
       <h3 data-i18n="registroTitulo">Registro de presupuestos</h3>
-      <div class="tabs-registro">
-        <button type="button" id="tabPresupuestos" class="activo" data-i18n="tabPresupuestos">Presupuestos</button>
-        <button type="button" id="tabFacturas" data-i18n="tabFacturas">Facturas</button>
+      <div class="registro-header-row">
+        <div class="tabs-registro">
+          <button type="button" id="tabPresupuestos" class="activo" data-i18n="tabPresupuestos">Presupuestos</button>
+          <button type="button" id="tabFacturas" data-i18n="tabFacturas">Facturas</button>
+        </div>
+        <div class="registro-botones-header">
+          <button type="button" class="btn-cargar btn-registro-header" id="btnRegistroCargar" data-i18n="cargar">Cargar</button>
+          <button type="button" class="btn-editar btn-registro-header" id="btnRegistroEditar" data-i18n="editar">Editar</button>
+          <button type="button" class="btn-borrar-header" id="btnRegistroBorrar" data-i18n="borrar">Borrar</button>
+        </div>
       </div>
       <input type="text" id="buscarRegistro" class="buscar-registro" data-i18n-ph="buscarRegistro" placeholder="Buscar por nombre o teléfono...">
       <div class="filtro-fecha-wrap">
@@ -1081,6 +1127,19 @@
       </div>
       <div id="listaRegistro" class="lista-registro"></div>
       <div class="registro-acciones">
+        <div class="registro-formatos">
+          <span><label data-i18n="formatoExportar">Exportar como:</label>
+          <select id="formatoExportar">
+            <option value="json" data-i18n-opt="formatoJson">JSON</option>
+            <option value="pdf" data-i18n-opt="formatoPdf">PDF</option>
+          </select></span>
+          <span><label data-i18n="formatoImportar">Importar solo:</label>
+          <select id="formatoImportar">
+            <option value="ambos" data-i18n-opt="formatoAmbos">Presupuesto y Factura</option>
+            <option value="quote" data-i18n-opt="formatoSoloQuote">Solo Presupuesto</option>
+            <option value="invoice" data-i18n-opt="formatoSoloInvoice">Solo Factura</option>
+          </select></span>
+        </div>
         <button type="button" class="btn-exportar" id="btnExportarDatos" data-i18n="exportarDatos">Exportar datos</button>
         <button type="button" class="btn-importar" id="btnImportarDatos" data-i18n="importarDatos">Importar datos</button>
         <input type="file" id="inputImportarDatos" accept=".json" style="display:none;">
@@ -1158,8 +1217,51 @@
           <label data-i18n="configThankYou">Mensaje agradecimiento / Thank you message</label>
           <input type="text" id="configThankYou" placeholder="" style="width:100%;">
         </div>
+        <div class="campo" style="margin-top:12px;">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="configPlantillaFija">
+            <span data-i18n="configPlantillaFija">Fijar logo e info de empresa (no se pueden mover)</span>
+          </label>
+        </div>
       </div>
       <button type="button" class="btn-guardar" id="btnGuardarConfig" data-i18n="guardarConfig" data-i18n-title="titleGuardarConfig">Guardar datos</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalGuardarCambios" onclick="if(event.target.id==='modalGuardarCambios') cerrarModalGuardarCambios()">
+    <div class="modal modal-guardar-cambios" onclick="event.stopPropagation()">
+      <h3 data-i18n="guardarCambiosTitulo">¿Guardar los cambios?</h3>
+      <p data-i18n="guardarCambiosDesc">Este documento fue cargado del registro. ¿Desea guardar los cambios o cancelar?</p>
+      <div style="display:flex;gap:12px;margin-top:16px;justify-content:center;">
+        <button type="button" class="btn-guardar" id="btnGuardarCambiosSi" data-i18n="guardarCambiosSi">Sí, guardar cambios</button>
+        <button type="button" class="btn-accion" id="btnGuardarCambiosNo" data-i18n="guardarCambiosNo">No, cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalPlantillas" onclick="if(event.target.id==='modalPlantillas') cerrarModalPlantillas()">
+    <div class="modal modal-plantillas" onclick="event.stopPropagation()">
+      <h3 data-i18n="plantillasTitulo">Plantillas</h3>
+      <p class="modal-desc" data-i18n="plantillasDesc">Guardar o usar plantillas vacías con logo e info de empresa. Al abrir, la fecha se actualiza.</p>
+      <div class="plantillas-opciones">
+        <div class="plantilla-opcion">
+          <span data-i18n="guardarPlantillaQuote">Guardar plantilla Presupuesto</span>
+          <button type="button" class="btn-guardar btn-sm" id="btnGuardarPlantillaQuote">Guardar</button>
+        </div>
+        <div class="plantilla-opcion">
+          <span data-i18n="guardarPlantillaInvoice">Guardar plantilla Factura</span>
+          <button type="button" class="btn-guardar btn-sm" id="btnGuardarPlantillaInvoice">Guardar</button>
+        </div>
+        <div class="plantilla-opcion plantilla-usar">
+          <span data-i18n="usarPlantillaQuote">Usar plantilla Presupuesto</span>
+          <button type="button" class="btn-accion btn-sm" id="btnUsarPlantillaQuote">Usar</button>
+        </div>
+        <div class="plantilla-opcion plantilla-usar">
+          <span data-i18n="usarPlantillaInvoice">Usar plantilla Factura</span>
+          <button type="button" class="btn-accion btn-sm" id="btnUsarPlantillaInvoice">Usar</button>
+        </div>
+      </div>
+      <button type="button" class="btn-accion" style="margin-top:12px;" onclick="cerrarModalPlantillas()" data-i18n="cerrar">Cerrar</button>
     </div>
   </div>
 
@@ -1332,6 +1434,7 @@
         configurar: '⚙ Configurar',
         titleConfig: 'Configurar',
         titleSalvar: 'Guardar presupuesto o factura',
+        titlePlantillas: 'Guardar o usar plantillas vacías',
         titleRegistro: 'Ver registro de presupuestos',
         titleCompartir: 'Compartir o copiar al portapapeles',
         titleLimpiar: 'Borrar todo el contenido',
@@ -1339,6 +1442,7 @@
         titleAddRow: 'Agregar fila',
         titleEliminar: 'Eliminar fila',
         titleCargar: 'Cargar este presupuesto',
+        titleEditar: 'Editar este documento',
         titleSelectDate: 'Seleccionar fecha',
         titleCardFeePct: '% cargo por uso de tarjeta',
         titleBorrar: 'Borrar del registro',
@@ -1358,6 +1462,7 @@
         configCardFeePct: '% Cargo tarjetas',
         configCardFeeNotice: 'Aviso pagos con tarjeta',
         configThankYou: 'Mensaje de agradecimiento',
+        configMantenerPlantilla: 'Mantener plantilla al recargar (logo e info de empresa se aplican siempre)',
         tipoDocumento: 'Tipo de documento',
         guardarConfig: 'Guardar datos',
         invoice: 'FACTURA',
@@ -1392,6 +1497,12 @@
         filtroDesde: 'Desde:',
         filtroHasta: 'Hasta:',
         limpiarFiltro: 'Limpiar',
+        formatoExportar: 'Exportar como:',
+        formatoImportar: 'Importar solo:',
+        formatoJson: 'JSON',
+        formatoAmbos: 'Presupuesto y Factura',
+        formatoSoloQuote: 'Solo Presupuesto',
+        formatoSoloInvoice: 'Solo Factura',
         exportarDatos: 'Exportar datos',
         importarDatos: 'Importar datos',
         exportExito: 'Datos exportados correctamente',
@@ -1421,8 +1532,20 @@
         tabFacturas: 'Facturas',
         cerrar: 'Cerrar',
         cargar: 'Cargar',
+        editar: 'Editar',
+        guardarCambiosTitulo: '¿Guardar los cambios?',
+        guardarCambiosDesc: 'Este documento fue cargado del registro. ¿Desea guardar los cambios o cancelar?',
+        guardarCambiosSi: 'Sí, guardar cambios',
+        guardarCambiosNo: 'No, cancelar',
         borrar: 'Borrar',
         salvar: 'Salvar',
+        plantillas: 'Plantillas',
+        plantillasTitulo: 'Plantillas',
+        plantillasDesc: 'Guardar o usar plantillas vacías con logo e info de empresa. Al abrir, la fecha se actualiza.',
+        guardarPlantillaQuote: 'Guardar plantilla Presupuesto',
+        guardarPlantillaInvoice: 'Guardar plantilla Factura',
+        usarPlantillaQuote: 'Usar plantilla Presupuesto (vacía, fecha actual)',
+        usarPlantillaInvoice: 'Usar plantilla Factura (vacía, fecha actual)',
         compartir: 'Compartir',
         formatoSalida: 'Formato de salida',
         formatoTexto: 'Texto',
@@ -1481,6 +1604,7 @@
         configurar: '⚙ Configure',
         titleConfig: 'Configure',
         titleSalvar: 'Save quote or invoice',
+        titlePlantillas: 'Save or use empty templates',
         titleRegistro: 'View quote registry',
         titleCompartir: 'Share or copy to clipboard',
         titleLimpiar: 'Clear all content',
@@ -1490,6 +1614,7 @@
         titleCerrar: 'Close window',
         titleGuardarConfig: 'Save configuration',
         titleCargar: 'Load this quote',
+        titleEditar: 'Edit this document',
         titleSelectDate: 'Select date',
         titleCardFeePct: 'Card fee %',
         titleBorrar: 'Delete from registry',
@@ -1509,6 +1634,7 @@
         configCardFeePct: 'Card fee %',
         configCardFeeNotice: 'Card payment notice',
         configThankYou: 'Thank you message',
+        configPlantillaFija: 'Lock logo and company info (cannot be moved)',
         tipoDocumento: 'Document type',
         guardarConfig: 'Save data',
         invoice: 'INVOICE',
@@ -1546,6 +1672,13 @@
         filtroHasta: 'To:',
         limpiarFiltro: 'Clear',
         salvar: 'Save',
+        plantillas: 'Templates',
+        plantillasTitulo: 'Templates',
+        plantillasDesc: 'Save or use empty templates with logo and company info. Date updates when opening.',
+        guardarPlantillaQuote: 'Save Quote template',
+        guardarPlantillaInvoice: 'Save Invoice template',
+        usarPlantillaQuote: 'Use Quote template (empty, current date)',
+        usarPlantillaInvoice: 'Use Invoice template (empty, current date)',
         registro: 'Registry',
         servicios: 'Services',
         titleServicios: 'Job and service list',
@@ -1576,7 +1709,23 @@
         tabFacturas: 'Invoices',
         cerrar: 'Close',
         cargar: 'Load',
+        editar: 'Edit',
+        guardarCambiosTitulo: 'Save changes?',
+        guardarCambiosDesc: 'This document was loaded from the registry. Do you want to save changes or cancel?',
+        guardarCambiosSi: 'Yes, save changes',
+        guardarCambiosNo: 'No, cancel',
         borrar: 'Delete',
+        formatoExportar: 'Export as:',
+        formatoImportar: 'Import only:',
+        formatoJson: 'JSON',
+        formatoAmbos: 'Quote and Invoice',
+        formatoSoloQuote: 'Quote only',
+        formatoSoloInvoice: 'Invoice only',
+        exportarDatos: 'Export data',
+        importarDatos: 'Import data',
+        exportExito: 'Data exported successfully',
+        importExito: 'Data imported successfully',
+        importError: 'Error importing data',
         msgGuardado: 'Quote saved',
         msgCopiado: 'Copied to clipboard',
         msgConfirmarLimpiar: 'Clear all content?',
@@ -1658,6 +1807,7 @@
         document.getElementById('configTipoDocumento').value = tipo;
         actualizarTituloDocumento();
         actualizarDisplayInvoice(d);
+        aplicarPlantillaFija(d.plantillaFija === true);
       } catch (e) {}
     }
 
@@ -1719,6 +1869,28 @@
         apl(compQ, L.companyQuote);
         apl(compI, L.companyInv);
       } catch (e) {}
+    }
+    function aplicarFechaBloqueada(bloquear) {
+      const fechaQ = document.getElementById('fecha');
+      const fechaI = document.getElementById('fechaInv');
+      const pickerQ = document.getElementById('fechaQuotePicker');
+      const pickerI = document.getElementById('fechaInvPicker');
+      const btnCalQ = document.getElementById('btnCalendarioQuote');
+      const btnCalI = document.getElementById('btnCalendarioInv');
+      [fechaQ, fechaI].forEach(function(el) { if (el) { el.readOnly = bloquear; el.style.backgroundColor = bloquear ? '#eee' : ''; el.style.cursor = bloquear ? 'default' : ''; } });
+      [pickerQ, pickerI].forEach(function(el) { if (el) el.style.pointerEvents = bloquear ? 'none' : 'auto'; });
+      [btnCalQ, btnCalI].forEach(function(el) { if (el) { el.style.pointerEvents = bloquear ? 'none' : 'auto'; el.style.opacity = bloquear ? '0.5' : ''; } });
+    }
+
+    function aplicarPlantillaFija(fija) {
+      const ids = ['logoWrapperQuote', 'logoWrapperInvoice', 'companyInfoQuote', 'companyInfoInvoice'];
+      ids.forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.dataset.plantillaFija = fija ? 'true' : 'false';
+          el.classList.toggle('plantilla-fija', !!fija);
+        }
+      });
     }
     function actualizarDisplayInvoice(d) {
       try {
@@ -1839,6 +2011,8 @@
         document.getElementById('configCardFeePct').value = d.cardFeePct !== undefined && d.cardFeePct !== '' ? d.cardFeePct : '';
         document.getElementById('configCardFeeNotice').value = d.cardFeeNotice || '';
         document.getElementById('configThankYou').value = d.thankYou || '';
+        const chkPlantilla = document.getElementById('configPlantillaFija');
+        if (chkPlantilla) chkPlantilla.checked = d.plantillaFija === true;
         const logoPreview = document.getElementById('logoPreview');
         const btnRemove = document.getElementById('btnRemoveLogo');
         if (d.logo) {
@@ -1873,6 +2047,8 @@
         document.getElementById('configCardFeePct').value = d.cardFeePct !== undefined && d.cardFeePct !== '' ? d.cardFeePct : '';
         document.getElementById('configCardFeeNotice').value = d.cardFeeNotice || '';
         document.getElementById('configThankYou').value = d.thankYou || '';
+        const chkPlantilla = document.getElementById('configPlantillaFija');
+        if (chkPlantilla) chkPlantilla.checked = d.plantillaFija === true;
         const logoPreview = document.getElementById('logoPreview');
         const btnRemove = document.getElementById('btnRemoveLogo');
         if (d.logo) {
@@ -1887,9 +2063,10 @@
           document.getElementById('taxPct').value = d.taxPct;
           document.getElementById('taxPctInv').value = d.taxPct;
         }
-        actualizarDisplayTapiceria(d);
         aplicarTipoDocumento();
+        actualizarDisplayTapiceria(d);
         actualizarDisplayInvoice(d);
+        aplicarPlantillaFija(d.plantillaFija === true);
       } catch (e) {
         try { actualizarDisplayInvoice({}); } catch (e2) {}
       }
@@ -1907,25 +2084,32 @@
     function guardarConfiguracion() {
       const logoPreview = document.getElementById('logoPreview');
       const logoData = logoPreview && logoPreview.style.display !== 'none' ? logoPreview.src : '';
-      const d = {
-        nombre: document.getElementById('configNombre').value.trim(),
-        direccion: document.getElementById('configDireccion').value.trim(),
-        telefono: document.getElementById('configTelefono').value.trim(),
-        email: document.getElementById('configEmail').value.trim(),
-        logo: logoData,
-        payableTo: document.getElementById('configPayableTo').value.trim(),
-        sincerely: document.getElementById('configSincerely').value.trim(),
-        sender: document.getElementById('configSender').value.trim(),
-        tipoDocumento: document.getElementById('configTipoDocumento').value || 'quote',
-        taxPct: document.getElementById('configTaxPct').value.trim(),
-        cardFeePct: document.getElementById('configCardFeePct').value.trim(),
-        cardFeeNotice: document.getElementById('configCardFeeNotice').value.trim(),
-        thankYou: document.getElementById('configThankYou').value.trim(),
-        headerLayout: capturarLayoutEncabezado()
-      };
+      let d = {};
+      try {
+        const raw = localStorage.getItem(TAPICERIA_KEY);
+        d = (raw && raw !== '') ? JSON.parse(raw) : {};
+      } catch (e) {}
+      d.nombre = document.getElementById('configNombre').value.trim();
+      d.direccion = document.getElementById('configDireccion').value.trim();
+      d.telefono = document.getElementById('configTelefono').value.trim();
+      d.email = document.getElementById('configEmail').value.trim();
+      d.logo = logoData;
+      d.payableTo = document.getElementById('configPayableTo').value.trim();
+      d.sincerely = document.getElementById('configSincerely').value.trim();
+      d.sender = document.getElementById('configSender').value.trim();
+      d.tipoDocumento = document.getElementById('configTipoDocumento').value || 'quote';
+      d.taxPct = document.getElementById('configTaxPct').value.trim();
+      d.cardFeePct = document.getElementById('configCardFeePct').value.trim();
+      d.cardFeeNotice = document.getElementById('configCardFeeNotice').value.trim();
+      d.thankYou = document.getElementById('configThankYou').value.trim();
+      d.plantillaFija = document.getElementById('configPlantillaFija').checked;
+      const nuevoLayout = capturarLayoutEncabezado();
+      d.headerLayout = d.headerLayout || {};
+      Object.keys(nuevoLayout).forEach(function(k) { d.headerLayout[k] = nuevoLayout[k]; });
       localStorage.setItem(TAPICERIA_KEY, JSON.stringify(d));
       actualizarDisplayTapiceria(d);
       actualizarDisplayInvoice(d);
+      aplicarPlantillaFija(d.plantillaFija === true);
       if (d.taxPct) {
         document.getElementById('taxPct').value = d.taxPct;
         document.getElementById('taxPctInv').value = d.taxPct;
@@ -1997,6 +2181,7 @@
     const DB_NAME = 'PresupuestoDB';
     const DB_STORE = 'presupuestos';
     let db = null;
+    let documentoEditando = null;
 
     function abrirDB() {
       return new Promise((res, rej) => {
@@ -2012,9 +2197,10 @@
       return abrirDB().then(d => {
         return new Promise((res, rej) => {
           const t = d.transaction(DB_STORE, 'readwrite');
-          t.objectStore(DB_STORE).add(datos);
-          t.oncomplete = () => res();
-          t.onerror = () => rej(t.error);
+          const store = t.objectStore(DB_STORE);
+          const req = datos.id ? store.put(datos) : store.add(datos);
+          req.onsuccess = () => res(datos.id || req.result);
+          req.onerror = () => rej(req.error);
         });
       });
     }
@@ -2113,7 +2299,7 @@
       return datos;
     }
 
-    function salvarPresupuesto() {
+    function ejecutarGuardado() {
       const tipoVista = document.getElementById('documento').getAttribute('data-tipo') || 'quote';
       const t = T[idioma] || T.es;
       let camposFaltantes = [];
@@ -2138,20 +2324,58 @@
         datosInvoice.telefonoCliente = datosQuote.telefonoCliente;
         datosInvoice.job = datosQuote.trabajo;
         datosInvoice.fecha = datosQuote.fecha;
-        guardarEnDB(datosQuote).then(() => guardarEnDB(datosInvoice)).then(() => alert((t.msgGuardado || 'Guardado') + (idioma === 'es' ? ' (Presupuesto y Factura)' : ' (Quote and Invoice)'))).catch(() => alert('Error al guardar'));
+        if (documentoEditando && documentoEditando.quoteId) datosQuote.id = documentoEditando.quoteId;
+        if (documentoEditando && documentoEditando.invoiceId) datosInvoice.id = documentoEditando.invoiceId;
+        const esEdicion = !!(datosQuote.id || datosInvoice.id);
+        guardarEnDB(datosQuote).then(function(id1) {
+          return guardarEnDB(datosInvoice).then(function(id2) {
+            if (!esEdicion) {
+              datosQuote.id = id1; datosQuote.idPar = id2;
+              datosInvoice.id = id2; datosInvoice.idPar = id1;
+              return guardarEnDB(datosQuote).then(() => guardarEnDB(datosInvoice));
+            }
+          });
+        }).then(function() { documentoEditando = { quoteId: datosQuote.id, invoiceId: datosInvoice.id }; alert((t.msgGuardado || 'Guardado') + (idioma === 'es' ? ' (Presupuesto y Factura)' : ' (Quote and Invoice)')); }).catch(() => alert('Error al guardar'));
       } else {
         const datosInvoice = construirDatosInvoice();
+        if (documentoEditando && documentoEditando.invoiceId) datosInvoice.id = documentoEditando.invoiceId;
         guardarEnDB(datosInvoice).then(() => alert((t.msgGuardado || 'Guardado'))).catch(() => alert('Error al guardar'));
       }
     }
 
+    function salvarPresupuesto() {
+      if (documentoEditando && (documentoEditando.quoteId || documentoEditando.invoiceId)) {
+        document.getElementById('modalGuardarCambios').classList.add('visible');
+        aplicarIdioma();
+        return;
+      }
+      ejecutarGuardado();
+    }
+
+    function cerrarModalGuardarCambios() {
+      document.getElementById('modalGuardarCambios').classList.remove('visible');
+    }
+
+    document.getElementById('btnGuardarCambiosSi').addEventListener('click', function() {
+      cerrarModalGuardarCambios();
+      ejecutarGuardado();
+    });
+    document.getElementById('btnGuardarCambiosNo').addEventListener('click', function() {
+      cerrarModalGuardarCambios();
+    });
+
+    let listaRegistroActual = [];
+
     function abrirRegistro() {
       document.getElementById('modalRegistro').classList.add('visible');
+      aplicarIdioma();
       obtenerTodos().then(lista => {
+        listaRegistroActual = lista || [];
         const t = T[idioma] || T.es;
         const div = document.getElementById('listaRegistro');
         div.innerHTML = '';
         const listaOrdenada = (lista || []).slice().reverse();
+        listaRegistroActual = listaOrdenada;
         let tabActivo = 'quote';
         function renderizarLista(filtroTexto, tipoTab) {
           div.innerHTML = '';
@@ -2176,14 +2400,9 @@
           filtrados.forEach(item => {
             const el = document.createElement('div');
             el.className = 'item-registro';
-            const f = new Date(item.fechaGuardado);
-            const fechaStr = f.getDate() + '/' + (f.getMonth() + 1) + '/' + f.getFullYear();
+            el.dataset.itemId = item.id;
             const telStr = item.telefonoCliente ? '<div class="telefono">' + item.telefonoCliente + '</div>' : '';
-            const trabajoStr = item.tipoDocumento === 'invoice' ? (item.numFactura ? 'Inv #' + item.numFactura : '-') : (item.trabajo || '-');
-            el.innerHTML = '<div class="info"><div class="cliente">' + (item.cliente || '-') + '</div><div class="trabajo">' + trabajoStr + '</div>' + telStr + '<div class="fecha">' + fechaStr + '</div></div><div class="acciones"><button class="btn-cargar" data-i18n-title="titleCargar">' + t.cargar + '</button><button class="btn-borrar-item" data-i18n-title="titleBorrar">' + t.borrar + '</button></div>';
-            el.querySelector('.btn-cargar').onclick = () => cargarPresupuesto(item);
-            el.querySelector('.btn-borrar-item').onclick = () => { borrarDeDB(item.id).then(() => abrirRegistro()); };
-            aplicarTooltipsEn(el);
+            el.innerHTML = '<div class="info" style="flex:1;"><div class="cliente">' + (item.cliente || '-') + '</div>' + telStr + '</div><label class="item-registro-check-wrap" style="display:flex;align-items:center;cursor:pointer;flex-shrink:0;"><input type="checkbox" class="checkbox-registro" data-item-id="' + item.id + '"></label>';
             div.appendChild(el);
           });
         }
@@ -2218,13 +2437,15 @@
       document.getElementById('modalRegistro').classList.remove('visible');
     }
 
-    function cargarPresupuesto(item) {
+    function cargarPresupuesto(item, opts) {
+      const noCerrar = opts && opts.noCerrar === true;
       document.getElementById('configTipoDocumento').value = item.tipoDocumento || 'quote';
       document.getElementById('documento').setAttribute('data-tipo', item.tipoDocumento || 'quote');
       actualizarTituloDocumento();
       try {
         const d = JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}');
         actualizarDisplayInvoice(d);
+        aplicarPlantillaFija(d.plantillaFija === true);
       } catch (e) {}
       if (item.tipoDocumento === 'invoice') {
         document.getElementById('clienteInv').value = item.cliente || '';
@@ -2244,9 +2465,9 @@
         document.querySelectorAll('.fila-material-inv').forEach(f => f.remove());
         document.querySelectorAll('.fila-item-inv').forEach(f => f.remove());
         (item.materials || []).forEach(m => { crearFilaMaterial(); const last = document.querySelector('.fila-material-inv:last-child'); if (last) { last.querySelector('.input-mat').value = m.mat || ''; last.querySelector('.input-desc').value = m.desc || ''; last.querySelector('.input-yards').value = m.yards || ''; const su = last.querySelector('.input-yards-unit'); if (su) su.value = m.yardsUnit || 'yds'; last.querySelector('.input-color').value = m.color || ''; last.querySelector('.input-qty-mat').value = m.qty || ''; } });
-        if (!(item.materials || []).length) for (let i = 0; i < 2; i++) crearFilaMaterial();
+        if (!(item.materials || []).length) for (let i = 0; i < 1; i++) crearFilaMaterial();
         (item.items || []).forEach(it => { crearFilaItem(); const last = document.querySelector('.fila-item-inv:last-child'); if (last) { last.querySelector('.input-item-desc').value = it.desc || ''; const h = last.querySelector('.input-item-hrs'); if (h) h.value = it.hrs || ''; last.querySelector('.input-item-qty').value = it.qty || ''; last.querySelector('.input-item-unit').value = (parseFloat(it.unit) || 0).toFixed(2); } });
-        if (!(item.items || []).length) for (let i = 0; i < 2; i++) crearFilaItem();
+        if (!(item.items || []).length) for (let i = 0; i < 1; i++) crearFilaItem();
         actualizarInvoice();
       } else {
         document.getElementById('cliente').value = item.cliente || '';
@@ -2261,7 +2482,7 @@
         document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(f => f.remove());
         document.querySelectorAll('#zonasItems .fila-item-inv').forEach(f => f.remove());
         (item.itemsQuote || []).forEach(it => { crearFilaItemQuote(); const rows = document.querySelectorAll('#zonasItemsQuote .fila-item-quote'); const last = rows[rows.length - 1]; if (last) { last.querySelector('.input-item-desc').value = it.desc || ''; const h = last.querySelector('.input-item-hrs'); if (h) h.value = it.hrs || ''; last.querySelector('.input-item-qty').value = it.qty || ''; last.querySelector('.input-item-unit').value = (parseFloat(it.unit) || 0).toFixed(2); syncFilaToInvoice(last); } });
-        if (!(item.itemsQuote || []).length) for (let i = 0; i < 2; i++) crearFilaItemQuote();
+        if (!(item.itemsQuote || []).length) for (let i = 0; i < 1; i++) crearFilaItemQuote();
         (item.filas || []).forEach(fila => {
         crearSeccion();
         const ultima = document.querySelector('.fila-material:last-child');
@@ -2276,13 +2497,163 @@
           syncMaterialNombreToInvoice(ultima);
         }
       });
-        if (!(item.filas || []).length) for (let i = 0; i < 2; i++) crearSeccion();
+        if (!(item.filas || []).length) for (let i = 0; i < 1; i++) crearSeccion();
         actualizar();
       }
-      cerrarRegistro();
+      documentoEditando = { quoteId: item.tipoDocumento === 'quote' ? item.id : (item.idPar || null), invoiceId: item.tipoDocumento === 'invoice' ? item.id : (item.idPar || null) };
+      aplicarFechaBloqueada(true);
+      if (!noCerrar) cerrarRegistro();
     }
 
     document.getElementById('btnRegistro').addEventListener('click', abrirRegistro);
+
+    document.getElementById('btnRegistroCargar').addEventListener('click', function() {
+      const checked = document.querySelectorAll('#listaRegistro .checkbox-registro:checked');
+      if (checked.length !== 1) {
+        alert(idioma === 'es' ? 'Seleccione un documento para cargar' : 'Select one document to load');
+        return;
+      }
+      const id = parseInt(checked[0].dataset.itemId, 10);
+      const item = listaRegistroActual.find(i => i.id === id);
+      if (item) cargarPresupuesto(item);
+    });
+    document.getElementById('btnRegistroEditar').addEventListener('click', function() {
+      const checked = document.querySelectorAll('#listaRegistro .checkbox-registro:checked');
+      if (checked.length !== 1) {
+        alert(idioma === 'es' ? 'Seleccione un documento para editar' : 'Select one document to edit');
+        return;
+      }
+      const id = parseInt(checked[0].dataset.itemId, 10);
+      const item = listaRegistroActual.find(i => i.id === id);
+      if (item) cargarPresupuesto(item);
+    });
+    document.getElementById('btnRegistroBorrar').addEventListener('click', function() {
+      const checked = document.querySelectorAll('#listaRegistro .checkbox-registro:checked');
+      if (checked.length === 0) {
+        alert(idioma === 'es' ? 'Seleccione al menos un documento para borrar' : 'Select at least one document to delete');
+        return;
+      }
+      const t = T[idioma] || T.es;
+      if (!confirm((idioma === 'es' ? '¿Borrar ' : 'Delete ') + checked.length + (idioma === 'es' ? ' documento(s)?' : ' document(s)?'))) return;
+      Promise.all(Array.from(checked).map(cb => borrarDeDB(parseInt(cb.dataset.itemId, 10)))).then(() => abrirRegistro());
+    });
+
+    document.getElementById('btnExportarDatos').addEventListener('click', function() {
+      const checked = document.querySelectorAll('#listaRegistro .checkbox-registro:checked');
+      if (checked.length === 0) {
+        alert(idioma === 'es' ? 'Seleccione al menos un documento para exportar' : 'Select at least one document to export');
+        return;
+      }
+      const t = T[idioma] || T.es;
+      const formato = document.getElementById('formatoExportar').value;
+      const idsSeleccionados = Array.from(checked).map(cb => parseInt(cb.dataset.itemId, 10));
+      const aExportar = listaRegistroActual.filter(item => idsSeleccionados.includes(item.id));
+      if (aExportar.length === 0) {
+        alert(t.importError || 'Error al exportar datos');
+        return;
+      }
+      if (formato === 'pdf') {
+        if (aExportar.length > 1) {
+          alert(idioma === 'es' ? 'Para PDF seleccione un solo documento.' : 'For PDF select only one document.');
+          return;
+        }
+        cargarPresupuesto(aExportar[0], { noCerrar: true });
+        const tipo = aExportar[0].tipoDocumento || 'quote';
+        const nombre = ((tipo === 'invoice' ? t.tituloInvoice : t.tituloQuote) + '_' + (aExportar[0].cliente || 'doc').replace(/\s+/g, '_')).replace(/[^\w\-_\.]/g, '') + '.pdf';
+        document.getElementById('documento').classList.add('exportando-pdf');
+        const opt = { margin: 10, filename: nombre, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } };
+        if (typeof html2pdf !== 'undefined') {
+          html2pdf().set(opt).from(document.getElementById('documento')).save().then(function() {
+            document.getElementById('documento').classList.remove('exportando-pdf');
+            cerrarRegistro();
+            alert(t.exportExito || 'Datos exportados correctamente');
+          }).catch(function() {
+            document.getElementById('documento').classList.remove('exportando-pdf');
+            alert(t.importError || 'Error al exportar');
+          });
+        } else {
+          window.print();
+          document.getElementById('documento').classList.remove('exportando-pdf');
+          cerrarRegistro();
+          alert(t.exportExito || 'Datos exportados correctamente');
+        }
+      } else {
+        const json = JSON.stringify(aExportar, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'tapiceria-registro-' + new Date().toISOString().slice(0, 10) + '.json';
+        a.click();
+        URL.revokeObjectURL(a.href);
+        alert(t.exportExito || 'Datos exportados correctamente');
+      }
+    });
+
+    document.getElementById('btnImportarDatos').addEventListener('click', function() {
+      document.getElementById('inputImportarDatos').click();
+    });
+
+    function esDocumentoValido(item) {
+      if (!item || typeof item !== 'object') return false;
+      const tipo = item.tipoDocumento;
+      if (tipo !== 'quote' && tipo !== 'invoice') return false;
+      if (tipo === 'quote') {
+        return Array.isArray(item.itemsQuote) && Array.isArray(item.filas);
+      }
+      return Array.isArray(item.materials) && Array.isArray(item.items);
+    }
+
+    document.getElementById('inputImportarDatos').addEventListener('change', function(e) {
+      const file = e.target.files && e.target.files[0];
+      e.target.value = '';
+      if (!file) return;
+      const t = T[idioma] || T.es;
+      const reader = new FileReader();
+      reader.onload = function() {
+        try {
+          const datos = JSON.parse(reader.result);
+          var arr;
+          if (Array.isArray(datos)) {
+            arr = datos;
+          } else if (datos && typeof datos === 'object' && !Array.isArray(datos) && (datos.tipoDocumento === 'quote' || datos.tipoDocumento === 'invoice')) {
+            arr = [datos];
+          } else {
+            alert(idioma === 'es' ? 'El archivo debe contener solo documentos (Presupuesto o Factura), no carpetas.' : 'File must contain only documents (Quote or Invoice), not folders.');
+            return;
+          }
+          const filtroFormato = document.getElementById('formatoImportar').value;
+          var validos = arr.filter(esDocumentoValido);
+          if (filtroFormato === 'quote') validos = validos.filter(x => x.tipoDocumento === 'quote');
+          else if (filtroFormato === 'invoice') validos = validos.filter(x => x.tipoDocumento === 'invoice');
+          const ignorados = arr.length - validos.length;
+          if (validos.length === 0) {
+            alert(idioma === 'es' ? 'No se encontraron documentos en formato válido (Presupuesto o Factura)' : 'No valid documents found (Quote or Invoice format required)');
+            return;
+          }
+          if (ignorados > 0) {
+            alert((idioma === 'es' ? 'Se omitirán ' : 'Skipping ') + ignorados + (idioma === 'es' ? ' documento(s) con formato no válido.' : ' document(s) with invalid format.') + '\n' + (idioma === 'es' ? 'Importando ' : 'Importing ') + validos.length + (idioma === 'es' ? ' documento(s) válido(s).' : ' valid document(s).'));
+          }
+          const importar = (items) => {
+            if (items.length === 0) {
+              alert(t.importExito || 'Datos importados correctamente');
+              abrirRegistro();
+              return;
+            }
+            const item = items.shift();
+            delete item.id;
+            delete item.idPar;
+            guardarEnDB(item).then(() => importar(items)).catch(() => {
+              alert(t.importError || 'Error al importar datos');
+            });
+          };
+          importar(validos.slice());
+        } catch (err) {
+          alert(t.importError || 'Error al importar datos');
+        }
+      };
+      reader.readAsText(file);
+    });
+
     document.getElementById('btnServicios').addEventListener('click', abrirServicios);
     document.getElementById('tabListaServicios').addEventListener('click', () => mostrarTabServicios('lista'));
     document.getElementById('tabAgregarServicio').addEventListener('click', () => mostrarTabServicios('agregar'));
@@ -2512,6 +2883,8 @@
 
     function limpiarTodo() {
       if (!confirm((T[idioma] || T.es).msgConfirmarLimpiar)) return;
+      documentoEditando = null;
+      aplicarFechaBloqueada(false);
       const tipo = document.getElementById('configTipoDocumento').value;
       let configData = {};
       try { configData = JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}'); } catch (e) {}
@@ -2539,8 +2912,8 @@
         document.getElementById('paidInv').value = '0.00';
         document.querySelectorAll('.fila-material-inv').forEach(f => f.remove());
         document.querySelectorAll('.fila-item-inv').forEach(f => f.remove());
-        for (let i = 0; i < 2; i++) crearFilaMaterial();
-        for (let i = 0; i < 2; i++) crearFilaItem();
+        for (let i = 0; i < 1; i++) crearFilaMaterial();
+        for (let i = 0; i < 1; i++) crearFilaItem();
         actualizarInvoice();
       } else {
         document.getElementById('cliente').value = '';
@@ -2558,13 +2931,106 @@
         document.querySelectorAll('.fila-material').forEach(f => f.remove());
         document.querySelectorAll('#zonasMaterials .fila-material-inv').forEach(f => f.remove());
         document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(f => f.remove());
-        for (let i = 0; i < 2; i++) crearFilaItemQuote();
-        for (let i = 0; i < 2; i++) crearSeccion();
+        for (let i = 0; i < 1; i++) crearFilaItemQuote();
+        for (let i = 0; i < 1; i++) crearSeccion();
         actualizar();
       }
     }
 
     document.getElementById('btnSalvar').addEventListener('click', salvarPresupuesto);
+
+    function abrirModalPlantillas() {
+      document.getElementById('modalPlantillas').classList.add('visible');
+      aplicarIdioma();
+    }
+    function cerrarModalPlantillas() {
+      document.getElementById('modalPlantillas').classList.remove('visible');
+    }
+
+    function guardarPlantilla(tipo) {
+      const doc = document.getElementById('documento');
+      doc.setAttribute('data-tipo', tipo);
+      document.getElementById('configTipoDocumento').value = tipo;
+      actualizarTituloDocumento();
+      actualizarDisplayInvoice(JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}'));
+      const nuevoLayout = capturarLayoutEncabezado();
+      try {
+        const raw = localStorage.getItem(TAPICERIA_KEY);
+        const d = (raw && raw !== '') ? JSON.parse(raw) : {};
+        d.headerLayout = d.headerLayout || {};
+        Object.keys(nuevoLayout).forEach(function(k) { d.headerLayout[k] = nuevoLayout[k]; });
+        localStorage.setItem(TAPICERIA_KEY, JSON.stringify(d));
+      } catch (e) {}
+      const t = T[idioma] || T.es;
+      const msg = idioma === 'es' ? 'Plantilla guardada' : 'Template saved';
+      alert(msg + (tipo === 'invoice' ? ' (Factura)' : ' (Presupuesto)'));
+    }
+
+    function usarPlantilla(tipo) {
+      const d = JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}');
+      document.getElementById('configTipoDocumento').value = tipo;
+      document.getElementById('documento').setAttribute('data-tipo', tipo);
+      actualizarTituloDocumento();
+      actualizarDisplayInvoice(d);
+      aplicarPlantillaFija(d.plantillaFija === true);
+      const taxDef = d.taxPct || '7';
+      const date = new Date();
+      const fd = (date.getMonth()+1) + '/' + date.getDate() + '/' + date.getFullYear();
+      const fd2 = (date.getMonth()+1) + '/' + date.getDate() + '/' + String(date.getFullYear()).slice(-2);
+      if (tipo === 'invoice') {
+        document.getElementById('clienteInv').value = '';
+        document.getElementById('direccionInv').value = '';
+        document.getElementById('emailClienteInv').value = '';
+        document.getElementById('telefonoClienteInv').value = '';
+        document.getElementById('jobInv').value = '';
+        ['clienteInv', 'direccionInv', 'emailClienteInv', 'telefonoClienteInv', 'jobInv'].forEach(function(id) {
+          const el = document.getElementById(id);
+          if (el) { delete el.dataset.edited; delete el.dataset.lastSync; }
+        });
+        document.getElementById('fechaInv').value = fd;
+        document.getElementById('numFactura').value = '';
+        document.getElementById('cardFeePctInv').value = d.cardFeePct || '3.5';
+        document.getElementById('taxPctInv').value = taxDef;
+        document.getElementById('tipoDescuentoDeposito').value = 'descuento';
+        document.getElementById('discountInv').value = '0.00';
+        document.getElementById('tipoPagadoBalance').value = 'pagado';
+        document.getElementById('paidInv').value = '0.00';
+        document.querySelectorAll('.fila-material-inv').forEach(f => f.remove());
+        document.querySelectorAll('.fila-item-inv').forEach(f => f.remove());
+        for (let i = 0; i < 1; i++) crearFilaMaterial();
+        for (let i = 0; i < 1; i++) crearFilaItem();
+        actualizarInvoice();
+      } else {
+        document.getElementById('cliente').value = '';
+        document.getElementById('direccionCliente').value = '';
+        document.getElementById('emailCliente').value = '';
+        document.getElementById('trabajo').value = '';
+        document.getElementById('telefonoCliente').value = '';
+        document.getElementById('descripcionProyecto').value = '';
+        ['clienteInv', 'direccionInv', 'emailClienteInv', 'telefonoClienteInv', 'jobInv'].forEach(function(id) {
+          const el = document.getElementById(id);
+          if (el) { delete el.dataset.edited; delete el.dataset.lastSync; }
+        });
+        document.getElementById('taxPct').value = taxDef;
+        document.getElementById('fecha').value = fd2;
+        document.querySelectorAll('.fila-material').forEach(f => f.remove());
+        document.querySelectorAll('#zonasMaterials .fila-material-inv').forEach(f => f.remove());
+        document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(f => f.remove());
+        for (let i = 0; i < 1; i++) crearFilaItemQuote();
+        for (let i = 0; i < 1; i++) crearSeccion();
+        actualizar();
+      }
+      documentoEditando = null;
+      aplicarFechaBloqueada(false);
+      cerrarModalPlantillas();
+    }
+
+    document.getElementById('btnPlantillas').addEventListener('click', abrirModalPlantillas);
+    document.getElementById('btnGuardarPlantillaQuote').addEventListener('click', () => guardarPlantilla('quote'));
+    document.getElementById('btnGuardarPlantillaInvoice').addEventListener('click', () => guardarPlantilla('invoice'));
+    document.getElementById('btnUsarPlantillaQuote').addEventListener('click', () => usarPlantilla('quote'));
+    document.getElementById('btnUsarPlantillaInvoice').addEventListener('click', () => usarPlantilla('invoice'));
+
     document.getElementById('btnCompartir').addEventListener('click', abrirModalCompartir);
     document.getElementById('btnCompartirContinuar').addEventListener('click', function() {
       const formato = document.getElementById('formatoCompartir').value;
@@ -3233,8 +3699,8 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
-    for (let i = 0; i < 2; i++) crearSeccion(); // Crea secciones en Quote y materiales en Invoice
-    for (let i = 0; i < 2; i++) crearFilaItemQuote(); // Esto también crea filas en Invoice
+    for (let i = 0; i < 1; i++) crearSeccion(); // Crea secciones en Quote y materiales en Invoice
+    for (let i = 0; i < 1; i++) crearFilaItemQuote(); // Esto también crea filas en Invoice
     (function() {
       const d = new Date();
       const fechaHoy = (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
@@ -3394,6 +3860,7 @@
       let startX, startY, startLeft, startTop, startWidth, startHeight;
       
       wrapper.addEventListener('mousedown', function(e) {
+        if (wrapper.dataset.plantillaFija === 'true') return;
         if (e.target.classList.contains('drag-handle')) return;
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         isDragging = true;
@@ -3414,6 +3881,7 @@
       const handles = wrapper.querySelectorAll('.drag-handle');
       handles.forEach(function(handle) {
         handle.addEventListener('mousedown', function(e) {
+          if (wrapper.dataset.plantillaFija === 'true') return;
           isResizing = true;
           resizeDir = handle.getAttribute('data-dir');
           startX = e.clientX;
@@ -3538,6 +4006,86 @@
         }
       });
     }
+
+    // Formato teléfono (000) 000-0000
+    function formatearTelefono(val) {
+      const dig = (val || '').replace(/\D/g, '').slice(0, 10);
+      if (!dig) return '';
+      if (dig.length <= 3) return '(' + dig;
+      if (dig.length <= 6) return '(' + dig.slice(0,3) + ') ' + dig.slice(3);
+      return '(' + dig.slice(0,3) + ') ' + dig.slice(3,6) + '-' + dig.slice(6);
+    }
+    function setupTelefonoFormat(inputId) {
+      const el = document.getElementById(inputId);
+      if (!el) return;
+      el.addEventListener('input', function() {
+        const formatted = formatearTelefono(this.value);
+        if (this.value !== formatted) {
+          this.value = formatted;
+          this.setSelectionRange(formatted.length, formatted.length);
+        }
+      });
+      el.addEventListener('blur', function() {
+        const formatted = formatearTelefono(this.value);
+        if (this.value !== formatted) this.value = formatted;
+      });
+    }
+    ['telefonoCliente', 'telefonoClienteInv', 'configTelefono'].forEach(setupTelefonoFormat);
+
+    // Lista dominios email al escribir @
+    const DOMINIOS_EMAIL = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'aol.com', 'mail.com', 'protonmail.com', 'yahoo.es', 'live.com', 'msn.com', 'ymail.com', 'comcast.net', 'verizon.net', 'att.net', 'cox.net', 'bellsouth.net'];
+    let emailDropdown = null;
+    let emailDropdownInput = null;
+    function mostrarDominiosEmail(input) {
+      const val = input.value;
+      const idx = val.lastIndexOf('@');
+      if (idx === -1) { ocultarDominiosEmail(); return; }
+      const despues = val.slice(idx + 1).toLowerCase();
+      const filtrados = DOMINIOS_EMAIL.filter(d => d.startsWith(despues) || !despues);
+      if (filtrados.length === 0) { ocultarDominiosEmail(); return; }
+      if (!emailDropdown) {
+        emailDropdown = document.createElement('div');
+        emailDropdown.className = 'email-domains-dropdown';
+        document.body.appendChild(emailDropdown);
+        emailDropdown.addEventListener('mousedown', function(e) { e.preventDefault(); });
+      }
+      emailDropdown.innerHTML = filtrados.slice(0, 8).map(d => '<div class="domain-option" data-domain="' + d + '">@' + d + '</div>').join('');
+      emailDropdown.querySelectorAll('.domain-option').forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          const dominio = this.dataset.domain;
+          const antes = input.value.slice(0, idx + 1);
+          input.value = antes + dominio;
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+          ocultarDominiosEmail();
+          input.focus();
+        });
+      });
+      const rect = input.getBoundingClientRect();
+      emailDropdown.style.left = rect.left + 'px';
+      emailDropdown.style.top = (rect.bottom + 2) + 'px';
+      emailDropdown.style.minWidth = Math.max(rect.width, 180) + 'px';
+      emailDropdown.style.display = 'block';
+      emailDropdownInput = input;
+    }
+    function ocultarDominiosEmail() {
+      if (emailDropdown) emailDropdown.style.display = 'none';
+      emailDropdownInput = null;
+    }
+    function setupEmailDominios(inputId) {
+      const el = document.getElementById(inputId);
+      if (!el) return;
+      el.addEventListener('input', function() {
+        if (this.value.includes('@')) mostrarDominiosEmail(this);
+        else ocultarDominiosEmail();
+      });
+      el.addEventListener('blur', function() {
+        setTimeout(ocultarDominiosEmail, 200);
+      });
+      el.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') ocultarDominiosEmail();
+      });
+    }
+    ['emailCliente', 'emailClienteInv', 'configEmail'].forEach(setupEmailDominios);
   </script>
 </body>
 </html>
