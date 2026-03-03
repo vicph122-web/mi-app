@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, viewport-fit=cover">
   <meta name="theme-color" content="#2c3e50">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,6 +11,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; touch-action: manipulation; }
+    body { padding: calc(8px + env(safe-area-inset-top)) calc(8px + env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left)); }
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     input[type="number"] { -moz-appearance: textfield; }
@@ -37,11 +39,12 @@
       padding-bottom: 6px;
       margin-bottom: 8px;
     }
+    .btn-accion, .btn-config, .btn-tema { min-height: 44px; min-width: 44px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
     .quote-header { position: relative; margin-top: 40px; margin-bottom: 16px; border-bottom: 2px solid #2c3e50; padding-bottom: 50px; min-height: 145px; }
     .quote-header.header-area { display: block; }
     .quote-logo-company { display: flex; align-items: flex-start; gap: 15px; }
     .header-area { position: relative; min-height: 100px; width: 100%; }
-    .draggable-element { position: absolute; cursor: move; }
+    .draggable-element { position: absolute; cursor: move; touch-action: none; -webkit-user-select: none; user-select: none; }
     .draggable-element.plantilla-fija { cursor: default; pointer-events: auto; }
     .draggable-element.plantilla-fija:hover { outline: none; }
     .draggable-element.plantilla-fija .drag-handle { display: none !important; }
@@ -59,7 +62,7 @@
     .logo-space { display: none; }
     .logo-wrapper { position: absolute; cursor: move; z-index: 1; }
     .logo-wrapper img { display: block; width: 100%; height: 100%; }
-    .company-info-wrapper { position: absolute; cursor: move; z-index: 2; background: transparent; padding: 5px; }
+    .company-info-wrapper { position: absolute; cursor: move; z-index: 2; background: transparent; padding: 5px; touch-action: none; -webkit-user-select: none; user-select: none; }
     .company-info-wrapper h2 { margin: 0 0 4px 0; font-size: 1.4rem; font-weight: 700; color: #2c3e50; }
     .company-info-wrapper .info { font-size: 12px; color: #555; line-height: 1.5; }
     .quote-company { position: relative; z-index: 5; }
@@ -173,6 +176,9 @@
       border-radius: 2px;
       cursor: pointer;
       font-size: 12px;
+      min-height: 44px;
+      min-width: 44px;
+      touch-action: manipulation;
     }
     .btn-del:hover { background: #c0392b; }
     .zonas-materiales { min-height: 20px; }
@@ -265,6 +271,7 @@
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
       background: rgba(0,0,0,0.5);
       z-index: 9999;
       align-items: center;
@@ -274,7 +281,7 @@
     .modal { background: white; padding: 20px; border-radius: 8px; max-width: 400px; width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
     .modal h3 { margin: 0 0 12px 0; font-size: 1rem; }
     .modal .campo { margin-bottom: 10px; }
-    .modal .btn-guardar { background: #27ae60; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 8px; }
+    .modal .btn-guardar { background: #27ae60; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 8px; min-height: 44px; touch-action: manipulation; }
     .modal .btn-guardar:hover { background: #219a52; }
     .modal-registro { max-width: 500px; }
     .registro-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #bdc3c7; flex-wrap: wrap; gap: 8px; }
@@ -301,19 +308,21 @@
     .buscar-registro { width: 100%; padding: 8px 10px; margin-bottom: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 13px; }
     .buscar-registro:focus { outline: none; border-color: #3498db; }
     .registro-botones-header { display: flex; gap: 6px; }
-    .btn-registro-header { padding: 6px 12px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; }
+    .btn-registro-header { padding: 6px 12px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; min-height: 44px; touch-action: manipulation; }
     .registro-botones-header .btn-cargar { background: #3498db; color: white; }
     .registro-botones-header .btn-editar { background: #27ae60; color: white; }
+    .registro-botones-header .btn-compartir { background: #9b59b6; color: white; }
     .btn-borrar-header { background: #e74c3c; color: white; padding: 6px 12px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; }
     .registro-botones-header .btn-cargar:hover { background: #2980b9; }
     .registro-botones-header .btn-editar:hover { background: #219a52; }
+    .registro-botones-header .btn-compartir:hover { background: #8e44ad; }
     .btn-borrar-header:hover { background: #c0392b; }
-    .item-registro .checkbox-registro { margin-left: 10px; cursor: pointer; flex-shrink: 0; }
+    .item-registro .checkbox-registro { margin-left: 10px; cursor: pointer; flex-shrink: 0; min-width: 44px; min-height: 44px; touch-action: manipulation; }
     .registro-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #eee; }
     .registro-formatos { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
     .registro-formatos label { font-size: 12px; color: #555; margin-right: 4px; }
     .registro-formatos select { padding: 4px 8px; font-size: 12px; border: 1px solid #bbb; border-radius: 4px; }
-    .btn-exportar, .btn-importar { padding: 6px 12px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; }
+    .btn-exportar, .btn-importar { padding: 6px 12px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; min-height: 44px; touch-action: manipulation; }
     .btn-exportar { background: #27ae60; color: white; }
     .btn-exportar:hover { background: #219a52; }
     .btn-importar { background: #3498db; color: white; }
@@ -323,6 +332,9 @@
     .modal-desc { font-size: 12px; color: #666; margin: 0 0 16px 0; line-height: 1.4; }
     .plantillas-opciones { display: flex; flex-direction: column; gap: 12px; }
     .plantilla-opcion { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
+    .compartir-botones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    .btn-compartir-opcion { padding: 8px 14px; font-size: 13px; border: 1px solid #3498db; background: #fff; color: #3498db; border-radius: 6px; cursor: pointer; }
+    .btn-compartir-opcion:hover { background: #e8f4fc; }
     .plantilla-opcion.plantilla-usar { background: #f0f8ff; border-color: #3498db; }
     .plantilla-opcion span { font-size: 13px; flex: 1; }
     .btn-sm { padding: 6px 14px; font-size: 12px; }
@@ -543,7 +555,7 @@
     .logo-container:hover { border-color: #3498db; }
     .logo-container.dragging { border-color: #e74c3c; opacity: 0.8; }
     .logo-container img { display: block; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
-    .logo-resize-handle { position: absolute; width: 10px; height: 10px; background: #3498db; border-radius: 2px; opacity: 0; z-index: 11; }
+    .logo-resize-handle { position: absolute; width: 10px; height: 10px; background: #3498db; border-radius: 2px; opacity: 0; z-index: 11; padding: 14px; margin: -14px; touch-action: none; }
     .logo-container:hover .logo-resize-handle { opacity: 1; }
     .logo-handle-nw { top: -5px; left: -5px; cursor: nwse-resize; }
     .logo-handle-ne { top: -5px; right: -5px; cursor: nesw-resize; }
@@ -1114,6 +1126,7 @@
         <div class="registro-botones-header">
           <button type="button" class="btn-cargar btn-registro-header" id="btnRegistroCargar" data-i18n="cargar">Cargar</button>
           <button type="button" class="btn-editar btn-registro-header" id="btnRegistroEditar" data-i18n="editar">Editar</button>
+          <button type="button" class="btn-compartir btn-registro-header" id="btnRegistroCompartir" data-i18n="compartir">Compartir</button>
           <button type="button" class="btn-borrar-header" id="btnRegistroBorrar" data-i18n="borrar">Borrar</button>
         </div>
       </div>
@@ -1202,6 +1215,10 @@
           <input type="text" id="configSender" data-i18n-ph="phConfigSender" placeholder="">
         </div>
         <div class="campo">
+          <label data-i18n="configCodigoPais">Código país (WhatsApp/SMS)</label>
+          <input type="text" id="configCodigoPais" placeholder="52" maxlength="4" style="width:60px;" data-i18n-ph="phCodigoPais" data-i18n-title="titleCodigoPais">
+        </div>
+        <div class="campo">
           <label data-i18n="configTaxPct">% Impuestos por defecto / Default tax %</label>
           <input type="number" id="configTaxPct" placeholder="7" min="0" step="0.01" style="width:80px;">
         </div>
@@ -1275,9 +1292,31 @@
           <option value="pdf" data-i18n-opt="formatoPdf">PDF</option>
         </select>
       </div>
+      <div class="campo" style="margin-top:14px;">
+        <label data-i18n="enviarPor">Enviar por</label>
+        <div class="compartir-botones">
+          <button type="button" class="btn-compartir-opcion" id="btnCompartirEmail" data-i18n="enviarEmail">Correo</button>
+          <button type="button" class="btn-compartir-opcion" id="btnCompartirWhatsApp" data-i18n="enviarWhatsApp">WhatsApp</button>
+          <button type="button" class="btn-compartir-opcion" id="btnCompartirSms" data-i18n="enviarSms">SMS / Tel</button>
+          <button type="button" class="btn-compartir-opcion" id="btnCompartirNativo" data-i18n="compartirNativo">Compartir</button>
+        </div>
+      </div>
       <div style="display:flex;gap:10px;margin-top:14px;">
-        <button type="button" class="btn-guardar" id="btnCompartirContinuar" data-i18n="continuar">Continuar</button>
         <button type="button" class="btn-accion" onclick="cerrarModalCompartir()" data-i18n="cerrar">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalConfirmarEnvio" onclick="if(event.target.id==='modalConfirmarEnvio') cerrarModalConfirmarEnvio()">
+    <div class="modal modal-compartir" onclick="event.stopPropagation()">
+      <h3 id="modalConfirmarEnvioTitulo">Confirmar envío</h3>
+      <div class="campo">
+        <label id="modalConfirmarEnvioLabel">Destinatario</label>
+        <input type="text" id="modalConfirmarEnvioInput" placeholder="" style="width:100%;padding:8px;">
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px;">
+        <button type="button" class="btn-guardar" id="btnConfirmarEnvioSi" data-i18n="enviar">Enviar</button>
+        <button type="button" class="btn-accion" onclick="cerrarModalConfirmarEnvio()" data-i18n="cerrar">Cerrar</button>
       </div>
     </div>
   </div>
@@ -1396,6 +1435,11 @@
   </template>
 
   <script>
+    function getEventCoords(e) {
+      if (e.changedTouches && e.changedTouches.length) return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+      if (e.touches && e.touches.length) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      return { x: e.clientX, y: e.clientY };
+    }
     const aPulg = { pulgadas: 1, pies: 12, yardas: 36 };
     let contadorId = 0;
     let idioma = localStorage.getItem('presupuesto_idioma') || 'es';
@@ -1458,6 +1502,9 @@
         configPayableTo: 'Cheques a nombre de',
         configSincerely: 'Atentamente (nombre)',
         configSender: 'Remitente / Sender',
+        configCodigoPais: 'Código país (WhatsApp/SMS)',
+        titleCodigoPais: 'Si el teléfono tiene 10 dígitos, se añade este código. Ej: 52 México, 1 EE.UU.',
+        phCodigoPais: '52',
         configTaxPct: '% Impuestos por defecto',
         configCardFeePct: '% Cargo tarjetas',
         configCardFeeNotice: 'Aviso pagos con tarjeta',
@@ -1547,6 +1594,12 @@
         usarPlantillaQuote: 'Usar plantilla Presupuesto (vacía, fecha actual)',
         usarPlantillaInvoice: 'Usar plantilla Factura (vacía, fecha actual)',
         compartir: 'Compartir',
+        enviarPor: 'Enviar por',
+        enviarEmail: 'Correo',
+        enviarWhatsApp: 'WhatsApp',
+        enviarSms: 'SMS / Tel',
+        enviar: 'Enviar',
+        compartirNativo: 'Compartir',
         formatoSalida: 'Formato de salida',
         formatoTexto: 'Texto',
         formatoPdf: 'PDF',
@@ -1630,6 +1683,9 @@
         configPayableTo: 'Checks payable to',
         configSincerely: 'Sincerely (name)',
         configSender: 'Sender',
+        configCodigoPais: 'Country code (WhatsApp/SMS)',
+        titleCodigoPais: 'If phone has 10 digits, this code is prepended. E.g. 52 Mexico, 1 USA',
+        phCodigoPais: '1',
         configTaxPct: 'Default tax %',
         configCardFeePct: 'Card fee %',
         configCardFeeNotice: 'Card payment notice',
@@ -1699,6 +1755,12 @@
         sinServicios: 'No services registered',
         seleccionarServicio: 'Select service to add',
         compartir: 'Share',
+        enviarPor: 'Send via',
+        enviarEmail: 'Email',
+        enviarWhatsApp: 'WhatsApp',
+        enviarSms: 'SMS / Phone',
+        enviar: 'Send',
+        compartirNativo: 'Share',
         formatoSalida: 'Output format',
         formatoTexto: 'Text',
         formatoPdf: 'PDF',
@@ -2007,6 +2069,7 @@
         document.getElementById('configSincerely').value = d.sincerely || '';
         document.getElementById('configSender').value = d.sender || '';
         document.getElementById('configTipoDocumento').value = d.tipoDocumento || 'quote';
+        document.getElementById('configCodigoPais').value = d.codigoPais || '';
         document.getElementById('configTaxPct').value = d.taxPct !== undefined && d.taxPct !== '' ? d.taxPct : '';
         document.getElementById('configCardFeePct').value = d.cardFeePct !== undefined && d.cardFeePct !== '' ? d.cardFeePct : '';
         document.getElementById('configCardFeeNotice').value = d.cardFeeNotice || '';
@@ -2043,6 +2106,7 @@
         document.getElementById('configSincerely').value = d.sincerely || '';
         document.getElementById('configSender').value = d.sender || '';
         document.getElementById('configTipoDocumento').value = d.tipoDocumento || 'quote';
+        document.getElementById('configCodigoPais').value = d.codigoPais || '';
         document.getElementById('configTaxPct').value = d.taxPct !== undefined && d.taxPct !== '' ? d.taxPct : '';
         document.getElementById('configCardFeePct').value = d.cardFeePct !== undefined && d.cardFeePct !== '' ? d.cardFeePct : '';
         document.getElementById('configCardFeeNotice').value = d.cardFeeNotice || '';
@@ -2103,6 +2167,7 @@
       d.cardFeeNotice = document.getElementById('configCardFeeNotice').value.trim();
       d.thankYou = document.getElementById('configThankYou').value.trim();
       d.plantillaFija = document.getElementById('configPlantillaFija').checked;
+      d.codigoPais = (document.getElementById('configCodigoPais').value || '').replace(/\D/g, '');
       const nuevoLayout = capturarLayoutEncabezado();
       d.headerLayout = d.headerLayout || {};
       Object.keys(nuevoLayout).forEach(function(k) { d.headerLayout[k] = nuevoLayout[k]; });
@@ -2526,6 +2591,19 @@
       const id = parseInt(checked[0].dataset.itemId, 10);
       const item = listaRegistroActual.find(i => i.id === id);
       if (item) cargarPresupuesto(item);
+    });
+    document.getElementById('btnRegistroCompartir').addEventListener('click', function() {
+      const checked = document.querySelectorAll('#listaRegistro .checkbox-registro:checked');
+      if (checked.length !== 1) {
+        alert(idioma === 'es' ? 'Seleccione un documento para compartir' : 'Select one document to share');
+        return;
+      }
+      const id = parseInt(checked[0].dataset.itemId, 10);
+      const item = listaRegistroActual.find(i => i.id === id);
+      if (item) {
+        cargarPresupuesto(item);
+        abrirModalCompartir();
+      }
     });
     document.getElementById('btnRegistroBorrar').addEventListener('click', function() {
       const checked = document.querySelectorAll('#listaRegistro .checkbox-registro:checked');
@@ -3032,15 +3110,154 @@
     document.getElementById('btnUsarPlantillaInvoice').addEventListener('click', () => usarPlantilla('invoice'));
 
     document.getElementById('btnCompartir').addEventListener('click', abrirModalCompartir);
-    document.getElementById('btnCompartirContinuar').addEventListener('click', function() {
-      const formato = document.getElementById('formatoCompartir').value;
-      cerrarModalCompartir();
-      if (formato === 'pdf') {
-        exportarPdf();
+
+    function obtenerDatosCompartir() {
+      const tipo = document.getElementById('configTipoDocumento').value;
+      const t = T[idioma] || T.es;
+      const tituloDoc = tipo === 'invoice' ? t.tituloInvoice : t.tituloQuote;
+      let txt = tituloDoc + '\n\n';
+      let email = '', telefono = '';
+      let codigoPais = '';
+      try { codigoPais = (JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}').codigoPais || '').replace(/\D/g, ''); } catch (e) {}
+      if (tipo === 'invoice') {
+        email = (document.getElementById('emailClienteInv').value || '').trim();
+        telefono = (document.getElementById('telefonoClienteInv').value || '').replace(/\D/g, '');
+        const jobVal = document.getElementById('jobInv').value;
+        txt += document.getElementById('clienteInv').value + '\n' + document.getElementById('direccionInv').value + (jobVal ? '\nJob: ' + jobVal : '') + '\n' + email + '\n' + document.getElementById('telefonoClienteInv').value + '\n\n';
+        txt += '$' + document.getElementById('totalInv').textContent;
       } else {
-        compartirPresupuesto();
+        email = (document.getElementById('emailCliente').value || '').trim();
+        telefono = (document.getElementById('telefonoCliente').value || '').replace(/\D/g, '');
+        const tel = document.getElementById('telefonoCliente').value;
+        const dir = document.getElementById('direccionCliente').value;
+        const em = document.getElementById('emailCliente').value;
+        const desc = document.getElementById('descripcionProyecto').value;
+        txt += document.getElementById('cliente').value + '\n' + document.getElementById('trabajo').value + (dir ? '\n' + dir : '') + (em ? '\n' + em : '') + (tel ? '\n' + tel : '') + (desc ? '\n' + desc : '') + '\n\n' + document.getElementById('totalFinal').textContent;
       }
+      if (telefono.length === 10 && codigoPais) telefono = codigoPais + telefono;
+      return { txt, email, telefono, tituloDoc };
+    }
+
+    let pendienteEnvio = null;
+
+    function cerrarModalConfirmarEnvio() {
+      document.getElementById('modalConfirmarEnvio').classList.remove('visible');
+      pendienteEnvio = null;
+    }
+
+    function abrirModalConfirmarEnvio(método, datos) {
+      const t = T[idioma] || T.es;
+      pendienteEnvio = { método, datos };
+      const modal = document.getElementById('modalConfirmarEnvio');
+      const titulo = document.getElementById('modalConfirmarEnvioTitulo');
+      const label = document.getElementById('modalConfirmarEnvioLabel');
+      const input = document.getElementById('modalConfirmarEnvioInput');
+      if (método === 'email') {
+        titulo.textContent = idioma === 'es' ? 'Enviar por correo' : 'Send by email';
+        label.textContent = idioma === 'es' ? 'Correo del destinatario:' : 'Recipient email:';
+        input.type = 'email';
+        input.value = datos.email || '';
+        input.placeholder = idioma === 'es' ? 'ejemplo@correo.com' : 'example@email.com';
+      } else {
+        titulo.textContent = idioma === 'es' ? 'Enviar por teléfono' : 'Send by phone';
+        label.textContent = idioma === 'es' ? 'Teléfono (WhatsApp/SMS):' : 'Phone (WhatsApp/SMS):';
+        input.type = 'tel';
+        input.value = datos.telefono || '';
+        input.placeholder = idioma === 'es' ? '(123) 456-7890 o 521234567890' : '(123) 456-7890 or 521234567890';
+      }
+      modal.classList.add('visible');
+      aplicarIdioma();
+      setTimeout(function() { input.focus(); }, 100);
+    }
+
+    function ejecutarEnvioPor(método, emailOtelOverride) {
+      const formato = document.getElementById('formatoCompartir').value;
+      const datos = obtenerDatosCompartir();
+      const t = T[idioma] || T.es;
+      if (!pendienteEnvio) cerrarModalCompartir();
+
+      if (emailOtelOverride !== undefined) {
+        if (método === 'email') datos.email = String(emailOtelOverride).trim();
+        else datos.telefono = String(emailOtelOverride).replace(/\D/g, '');
+        if (datos.telefono && datos.telefono.length === 10) {
+          try { var cp = (JSON.parse(localStorage.getItem(TAPICERIA_KEY) || '{}').codigoPais || '').replace(/\D/g, ''); } catch (e) { cp = ''; }
+          if (cp) datos.telefono = cp + datos.telefono;
+        }
+      }
+
+      if (método === 'email') {
+        const mailto = 'mailto:' + (datos.email || '') + '?subject=' + encodeURIComponent(datos.tituloDoc) + '&body=' + encodeURIComponent(datos.txt);
+        window.location.href = mailto;
+        if (formato === 'pdf') {
+          setTimeout(function() { exportarPdf(); }, 300);
+        }
+      } else if (método === 'whatsapp') {
+        const num = datos.telefono;
+        if (!num) {
+          alert(idioma === 'es' ? 'Agregue el teléfono del cliente para enviar por WhatsApp.' : 'Add client phone to send via WhatsApp.');
+          return;
+        }
+        const url = 'https://wa.me/' + num + (datos.txt ? '?text=' + encodeURIComponent(datos.txt) : '');
+        window.open(url, '_blank');
+        if (formato === 'pdf') setTimeout(function() { exportarPdf(); }, 300);
+      } else if (método === 'sms') {
+        const url = datos.telefono ? 'sms:' + datos.telefono + '?body=' + encodeURIComponent(datos.txt) : 'sms:?body=' + encodeURIComponent(datos.txt);
+        window.location.href = url;
+        if (formato === 'pdf') setTimeout(function() { exportarPdf(); }, 300);
+      } else {
+        if (formato === 'pdf') {
+          const el = document.getElementById('documento');
+          el.classList.add('exportando-pdf');
+          const opt = { margin: 10, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } };
+          if (typeof html2pdf !== 'undefined' && navigator.share) {
+            html2pdf().set(opt).from(el).outputPdf('blob').then(function(blob) {
+              el.classList.remove('exportando-pdf');
+              const file = new File([blob], (datos.tituloDoc || 'documento').replace(/\s+/g, '_') + '.pdf', { type: 'application/pdf' });
+              navigator.share({ title: datos.tituloDoc, text: datos.txt, files: [file] }).catch(function() { exportarPdf(); });
+            }).catch(function() { el.classList.remove('exportando-pdf'); exportarPdf(); });
+          } else {
+            exportarPdf();
+            el.classList.remove('exportando-pdf');
+          }
+        } else {
+          compartirPresupuesto();
+        }
+      }
+    }
+
+    document.getElementById('btnCompartirEmail').addEventListener('click', function() {
+      const datos = obtenerDatosCompartir();
+      cerrarModalCompartir();
+      abrirModalConfirmarEnvio('email', datos);
     });
+    document.getElementById('btnCompartirWhatsApp').addEventListener('click', function() {
+      const datos = obtenerDatosCompartir();
+      cerrarModalCompartir();
+      abrirModalConfirmarEnvio('whatsapp', datos);
+    });
+    document.getElementById('btnCompartirSms').addEventListener('click', function() {
+      const datos = obtenerDatosCompartir();
+      cerrarModalCompartir();
+      abrirModalConfirmarEnvio('sms', datos);
+    });
+    document.getElementById('btnConfirmarEnvioSi').addEventListener('click', function() {
+      const inp = document.getElementById('modalConfirmarEnvioInput');
+      const val = (inp && inp.value || '').trim();
+      const m = pendienteEnvio && pendienteEnvio.método;
+      if (!m) return;
+      if (m === 'email' && !val) {
+        alert(idioma === 'es' ? 'Escriba el correo del destinatario.' : 'Enter recipient email.');
+        return;
+      }
+      if (m === 'whatsapp' && !val.replace(/\D/g, '')) {
+        alert(idioma === 'es' ? 'Escriba el teléfono del destinatario.' : 'Enter recipient phone.');
+        return;
+      }
+      cerrarModalConfirmarEnvio();
+      ejecutarEnvioPor(m, val || undefined);
+    });
+
+    document.getElementById('btnCompartirNativo').addEventListener('click', function() { ejecutarEnvioPor('nativo'); });
     document.getElementById('btnLimpiar').addEventListener('click', limpiarTodo);
 
     function crearSeccion() {
@@ -3752,42 +3969,49 @@
       let startX, startY, startLeft, startTop, startWidth, startHeight;
       const handles = container.querySelectorAll('.logo-resize-handle');
 
-      container.addEventListener('mousedown', function(e) {
+      function onContainerStart(e) {
         if (e.target.classList.contains('logo-resize-handle')) return;
+        const c = getEventCoords(e);
         isDragging = true;
         container.classList.add('dragging');
-        startX = e.clientX;
-        startY = e.clientY;
+        startX = c.x;
+        startY = c.y;
         startLeft = container.offsetLeft;
         startTop = container.offsetTop;
         e.preventDefault();
-      });
+      }
+      container.addEventListener('mousedown', onContainerStart);
+      container.addEventListener('touchstart', onContainerStart, { passive: false });
 
       handles.forEach(function(handle) {
-        handle.addEventListener('mousedown', function(e) {
+        function onHandleStart(e) {
+          const c = getEventCoords(e);
           isResizing = true;
           resizeDir = handle.getAttribute('data-dir');
-          startX = e.clientX;
-          startY = e.clientY;
+          startX = c.x;
+          startY = c.y;
           startLeft = container.offsetLeft;
           startTop = container.offsetTop;
           startWidth = container.offsetWidth;
           startHeight = container.offsetHeight;
           e.preventDefault();
           e.stopPropagation();
-        });
+        }
+        handle.addEventListener('mousedown', onHandleStart);
+        handle.addEventListener('touchstart', onHandleStart, { passive: false });
       });
 
-      document.addEventListener('mousemove', function(e) {
+      function onDocMove(e) {
+        const c = getEventCoords(e);
         if (isDragging) {
-          const dx = e.clientX - startX;
-          const dy = e.clientY - startY;
+          const dx = c.x - startX;
+          const dy = c.y - startY;
           container.style.left = (startLeft + dx) + 'px';
           container.style.top = (startTop + dy) + 'px';
         }
         if (isResizing) {
-          const dx = e.clientX - startX;
-          const dy = e.clientY - startY;
+          const dx = c.x - startX;
+          const dy = c.y - startY;
           let newW = startWidth, newH = startHeight, newL = startLeft, newT = startTop;
           if (resizeDir.includes('e')) newW = Math.max(40, startWidth + dx);
           if (resizeDir.includes('w')) { newW = Math.max(40, startWidth - dx); newL = startLeft + dx; }
@@ -3798,9 +4022,12 @@
           container.style.left = newL + 'px';
           container.style.top = newT + 'px';
         }
-      });
+        if ((isDragging || isResizing) && e.touches) e.preventDefault();
+      }
+      document.addEventListener('mousemove', onDocMove);
+      document.addEventListener('touchmove', onDocMove, { passive: false });
 
-      document.addEventListener('mouseup', function() {
+      function onDocEnd() {
         if (isDragging || isResizing) {
           isDragging = false;
           isResizing = false;
@@ -3808,7 +4035,9 @@
           container.classList.remove('dragging');
           guardarPosicionLogo();
         }
-      });
+      }
+      document.addEventListener('mouseup', onDocEnd);
+      document.addEventListener('touchend', onDocEnd);
     }
 
     function guardarPosicionLogo() {
@@ -3859,52 +4088,58 @@
       let resizeDir = '';
       let startX, startY, startLeft, startTop, startWidth, startHeight;
       
-      wrapper.addEventListener('mousedown', function(e) {
+      function onWrapperStart(e) {
         if (wrapper.dataset.plantillaFija === 'true') return;
         if (e.target.classList.contains('drag-handle')) return;
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        const c = getEventCoords(e);
         isDragging = true;
-        // Quitar transform para que left/top funcionen correctamente
         if (wrapper.style.transform) {
           const rect = wrapper.getBoundingClientRect();
           const parentRect = wrapper.parentElement.getBoundingClientRect();
           wrapper.style.left = (rect.left - parentRect.left) + 'px';
           wrapper.style.transform = 'none';
         }
-        startX = e.clientX;
-        startY = e.clientY;
+        startX = c.x;
+        startY = c.y;
         startLeft = parseInt(wrapper.style.left) || 0;
         startTop = parseInt(wrapper.style.top) || 0;
         e.preventDefault();
-      });
+      }
+      wrapper.addEventListener('mousedown', onWrapperStart);
+      wrapper.addEventListener('touchstart', onWrapperStart, { passive: false });
       
       const handles = wrapper.querySelectorAll('.drag-handle');
       handles.forEach(function(handle) {
-        handle.addEventListener('mousedown', function(e) {
+        function onHandleStart(e) {
           if (wrapper.dataset.plantillaFija === 'true') return;
+          const c = getEventCoords(e);
           isResizing = true;
           resizeDir = handle.getAttribute('data-dir');
-          startX = e.clientX;
-          startY = e.clientY;
+          startX = c.x;
+          startY = c.y;
           startWidth = wrapper.offsetWidth;
           startHeight = wrapper.offsetHeight;
           startLeft = parseInt(wrapper.style.left) || 0;
           startTop = parseInt(wrapper.style.top) || 0;
           e.preventDefault();
           e.stopPropagation();
-        });
+        }
+        handle.addEventListener('mousedown', onHandleStart);
+        handle.addEventListener('touchstart', onHandleStart, { passive: false });
       });
       
-      document.addEventListener('mousemove', function(e) {
+      function onDocMove(e) {
+        const c = getEventCoords(e);
         if (isDragging) {
-          const dx = e.clientX - startX;
-          const dy = e.clientY - startY;
+          const dx = c.x - startX;
+          const dy = c.y - startY;
           wrapper.style.left = (startLeft + dx) + 'px';
           wrapper.style.top = (startTop + dy) + 'px';
         }
         if (isResizing) {
-          const dx = e.clientX - startX;
-          const dy = e.clientY - startY;
+          const dx = c.x - startX;
+          const dy = c.y - startY;
           let newWidth = startWidth;
           let newHeight = startHeight;
           let newLeft = startLeft;
@@ -3920,14 +4155,19 @@
           wrapper.style.left = newLeft + 'px';
           wrapper.style.top = newTop + 'px';
         }
-      });
+        if ((isDragging || isResizing) && e.touches) e.preventDefault();
+      }
+      document.addEventListener('mousemove', onDocMove);
+      document.addEventListener('touchmove', onDocMove, { passive: false });
       
-      document.addEventListener('mouseup', function() {
+      function onDocEnd() {
         if (isDragging || isResizing) guardarLayoutEncabezado();
         isDragging = false;
         isResizing = false;
         resizeDir = '';
-      });
+      }
+      document.addEventListener('mouseup', onDocEnd);
+      document.addEventListener('touchend', onDocEnd);
     }
     
     // Configurar elementos arrastrables
@@ -4048,6 +4288,7 @@
         emailDropdown.className = 'email-domains-dropdown';
         document.body.appendChild(emailDropdown);
         emailDropdown.addEventListener('mousedown', function(e) { e.preventDefault(); });
+        emailDropdown.addEventListener('touchstart', function(e) { e.preventDefault(); }, { passive: false });
       }
       emailDropdown.innerHTML = filtrados.slice(0, 8).map(d => '<div class="domain-option" data-domain="' + d + '">@' + d + '</div>').join('');
       emailDropdown.querySelectorAll('.domain-option').forEach(function(opt) {
@@ -4086,6 +4327,10 @@
       });
     }
     ['emailCliente', 'emailClienteInv', 'configEmail'].forEach(setupEmailDominios);
+  </script>
+</body>
+</html>
+(setupEmailDominios);
   </script>
 </body>
 </html>
