@@ -60,9 +60,9 @@
     .draggable-element .drag-handle-s { bottom: -4px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
     .draggable-element .drag-handle-se { bottom: -4px; right: -4px; cursor: nwse-resize; }
     .logo-space { display: none; }
-    .logo-wrapper { position: absolute; cursor: move; z-index: 1; }
+    .logo-wrapper { position: absolute; cursor: move; z-index: 5; touch-action: none; -webkit-user-select: none; user-select: none; }
     .logo-wrapper img { display: block; width: 100%; height: 100%; }
-    .company-info-wrapper { position: absolute; cursor: move; z-index: 2; background: transparent; padding: 5px; touch-action: none; -webkit-user-select: none; user-select: none; }
+    .company-info-wrapper { position: absolute; cursor: move; z-index: 15; background: rgba(255,255,255,0.98); padding: 5px; touch-action: none; -webkit-user-select: none; user-select: none; }
     .company-info-wrapper h2 { margin: 0 0 4px 0; font-size: 1.4rem; font-weight: 700; color: #2c3e50; }
     .company-info-wrapper .info { font-size: 12px; color: #555; line-height: 1.5; }
     .quote-company { position: relative; z-index: 5; }
@@ -551,7 +551,7 @@
     body.tema-oscuro .invoice-pago, body.tema-oscuro .invoice-footer { color: #bdc3c7; }
     body.tema-oscuro .aviso-card-fee, body.tema-oscuro .aviso-card-fee-input-wrap { color: #eee; border-color: #eee; }
     body.tema-oscuro .aviso-card-fee-input-wrap input, body.tema-oscuro .pct-suffix { color: #eee; }
-    .logo-container { position: absolute; cursor: move; z-index: 10; border: 2px dashed transparent; padding: 4px; }
+    .logo-container { position: absolute; cursor: move; z-index: 5; border: 2px dashed transparent; padding: 4px; }
     .logo-container:hover { border-color: #3498db; }
     .logo-container.dragging { border-color: #e74c3c; opacity: 0.8; }
     .logo-container img { display: block; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
