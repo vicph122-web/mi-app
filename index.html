@@ -2618,21 +2618,51 @@
     document.getElementById('btnUploadLogo').addEventListener('click', function() {
       document.getElementById('configLogo').click();
     });
+    function redimensionarLogo(file, maxAncho, maxAlto) {
+      return new Promise(function(resolve, reject) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          const img = new Image();
+          img.onload = function() {
+            let w = img.width, h = img.height;
+            if (w <= maxAncho && h <= maxAlto) {
+              resolve(ev.target.result);
+              return;
+            }
+            const ratio = Math.min(maxAncho / w, maxAlto / h);
+            w = Math.round(w * ratio);
+            h = Math.round(h * ratio);
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            const esPng = file.type === 'image/png';
+            const dataUrl = canvas.toDataURL(esPng ? 'image/png' : 'image/jpeg', esPng ? 0.95 : 0.88);
+            resolve(dataUrl);
+          };
+          img.onerror = function() { reject(new Error('Error al cargar imagen')); };
+          img.src = ev.target.result;
+        };
+        reader.onerror = function() { reject(new Error('Error al leer archivo')); };
+        reader.readAsDataURL(file);
+      });
+    }
     document.getElementById('configLogo').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
-      if (file.size > 2000000) {
-        alert(idioma === 'es' ? 'La imagen es muy grande. Máximo 2MB.' : 'Image too large. Max 2MB.');
+      if (!file.type.startsWith('image/')) {
+        alert(idioma === 'es' ? 'Selecciona una imagen (PNG, JPG, etc.).' : 'Select an image (PNG, JPG, etc.).');
         return;
       }
-      const reader = new FileReader();
-      reader.onload = function(ev) {
+      redimensionarLogo(file, 400, 300).then(function(dataUrl) {
         const logoPreview = document.getElementById('logoPreview');
-        logoPreview.src = ev.target.result;
+        logoPreview.src = dataUrl;
         logoPreview.style.display = 'block';
         document.getElementById('btnRemoveLogo').style.display = 'inline-block';
-      };
-      reader.readAsDataURL(file);
+      }).catch(function() {
+        alert(idioma === 'es' ? 'No se pudo procesar la imagen.' : 'Could not process image.');
+      });
     });
     document.getElementById('btnRemoveLogo').addEventListener('click', function() {
       document.getElementById('logoPreview').src = '';
