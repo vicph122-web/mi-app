@@ -7,8 +7,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
   <title>Presupuesto — Tapicería</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" async></script>
   <style>
     * { box-sizing: border-box; }
     html { -webkit-text-size-adjust: 100%; touch-action: manipulation; }
@@ -22,7 +23,7 @@
       font-size: 12px;
       max-width: 8.5in;
       margin: 0 auto;
-      padding: 8px;
+      padding: calc(8px + env(safe-area-inset-top)) calc(8px + env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left));
       background: #f5f5f5;
       color: #333;
     }
@@ -513,8 +514,8 @@
       input[readonly], .monto-input { border: none !important; background: transparent !important; }
       .aviso-card-fee-input-wrap { border: none !important; background: transparent !important; box-shadow: none !important; }
     }
-    .btn-tema { width: 32px; height: 32px; padding: 0; font-size: 18px; background: #ecf0f1; border: 1px solid #bdc3c7; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .btn-tema:hover { background: #3498db; border-color: #3498db; }
+    .btn-tema, .btn-help { width: 32px; height: 32px; padding: 0; font-size: 18px; background: #ecf0f1; border: 1px solid #bdc3c7; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .btn-tema:hover, .btn-help:hover { background: #3498db; border-color: #3498db; }
     body.tema-oscuro { background: #1a1a2e; color: #eee; }
     body.tema-oscuro .documento { background: #16213e; color: #eee; }
     body.tema-oscuro .encabezado { border-bottom-color: #3498db; }
@@ -545,7 +546,7 @@
     body.tema-oscuro .item-registro { background: #0f3460; border-color: #3498db; }
     body.tema-oscuro .item-registro .cliente { color: #ecf0f1; }
     body.tema-oscuro .item-registro .trabajo, body.tema-oscuro .item-registro .telefono, body.tema-oscuro .item-registro .fecha { color: #bdc3c7; }
-    body.tema-oscuro .btn-config, body.tema-oscuro .btn-tema { background: #0f3460; border-color: #3498db; color: #ecf0f1; }
+    body.tema-oscuro .btn-config, body.tema-oscuro .btn-tema, body.tema-oscuro .btn-help { background: #0f3460; border-color: #3498db; color: #ecf0f1; }
     body.tema-oscuro .precio-cell, body.tema-oscuro .unit-price-cell { background: #0f3460 !important; border-color: #3498db !important; }
     body.tema-oscuro .precio-cell input, body.tema-oscuro .unit-price-cell input { color: #eee; }
     body.tema-oscuro .invoice-pago, body.tema-oscuro .invoice-footer { color: #bdc3c7; }
@@ -714,7 +715,10 @@
     @media screen and (max-width: 768px) {
       body {
         font-size: 16px;
-        padding: 4px;
+        padding: calc(12px + env(safe-area-inset-top)) calc(8px + env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left));
+      }
+      .encabezado {
+        padding-top: max(8px, env(safe-area-inset-top));
       }
       
       /* Campos de entrada más grandes */
@@ -998,6 +1002,7 @@
           <option value="en">English</option>
         </select>
       </div>
+      <button type="button" class="btn-help" id="btnHelp" data-i18n-title="titleHelp" title="Guía de uso" aria-label="Guía de uso" onclick="abrirHelp()">?</button>
       <button type="button" class="btn-tema" id="btnTema" title="Cambiar tema">🌙</button>
     </div>
   </div>
@@ -1441,6 +1446,100 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="modalHelp" onclick="if(event.target.id==='modalHelp') cerrarHelp()">
+    <div class="modal modal-config" style="max-width:600px; max-height:90vh; overflow-y:auto; padding:20px;" onclick="event.stopPropagation()">
+      <h3 data-i18n="helpTitulo">Manual completo — Quote to Invoice</h3>
+      <p class="modal-desc" data-i18n="helpIntro">Esta app permite crear presupuestos (Quote) y facturas (Invoice) con cálculos automáticos de materiales, impuestos y totales. Todo se guarda localmente en tu dispositivo.</p>
+
+      <div class="config-seccion">
+        <h4 data-i18n="helpConfig">1. Configuración (⚙)</h4>
+        <p class="modal-desc" data-i18n="helpConfigTipo"><strong>Tipo de documento:</strong> Cambia entre Presupuesto (Quote) y Factura (Invoice). El documento visible se adapta automáticamente.</p>
+        <p class="modal-desc" data-i18n="helpConfigEmpresa"><strong>Datos de la empresa:</strong> Nombre, logo (imagen), dirección, teléfono, email, "Cheques a nombre de", "Atentamente", nombre del remitente. Estos datos aparecen en el encabezado del documento. El logo se puede arrastrar y redimensionar.</p>
+        <p class="modal-desc" data-i18n="helpConfigCodigoPais"><strong>Código país:</strong> Si el teléfono del cliente tiene 10 dígitos, se añade este código (ej: 52 México, 1 EE.UU.) para WhatsApp/SMS.</p>
+        <p class="modal-desc" data-i18n="helpConfigTax"><strong>% Impuestos:</strong> Se aplica por defecto al subtotal. Puedes cambiarlo en cada documento.</p>
+        <p class="modal-desc" data-i18n="helpConfigCardFee"><strong>% Cargo tarjetas:</strong> Porcentaje mostrado en facturas para pagos con tarjeta. El aviso personalizable aparece en el documento.</p>
+        <p class="modal-desc" data-i18n="helpConfigPlantillaFija"><strong>Fijar logo e info:</strong> Si lo activas, el logo y los datos de empresa no se pueden arrastrar (posición fija).</p>
+      </div>
+
+      <div class="config-seccion">
+        <h4 data-i18n="helpQuote">2. Presupuesto (Quote)</h4>
+        <p class="modal-desc" data-i18n="helpQuoteCliente"><strong>Cliente:</strong> Nombre, dirección, email, teléfono. El teléfono se formatea automáticamente (000) 000-0000. Al escribir email con @ aparecen sugerencias de dominio (gmail.com, etc.).</p>
+        <p class="modal-desc" data-i18n="helpQuoteJob"><strong>Job / Descripción:</strong> Breve descripción del trabajo.</p>
+        <p class="modal-desc" data-i18n="helpQuoteMateriales"><strong>Tabla de materiales:</strong> Material, Largo, Unidad (pulgadas/pies/yardas), Ancho, Ancho de rollo, Cantidad, Precio por unidad, Por (unidad). El <strong>subtotal</strong> se calcula automáticamente: área = largo × ancho; material lineal = área ÷ ancho del rollo; se convierte a la unidad elegida.</p>
+        <p class="modal-desc" data-i18n="helpQuoteItems"><strong>Tabla de items:</strong> Descripción, Horas, Cantidad, Precio unitario. Total = Cantidad × Precio (las horas son informativas).</p>
+        <p class="modal-desc" data-i18n="helpQuoteTotales"><strong>Totales:</strong> Subtotal de materiales + items, luego Tax % sobre subtotal, luego TOTAL final.</p>
+        <p class="modal-desc" data-i18n="helpQuoteDescripcion"><strong>Descripción del proyecto:</strong> Área de texto para colores, instrucciones, notas adicionales.</p>
+      </div>
+
+      <div class="config-seccion">
+        <h4 data-i18n="helpInvoice">3. Factura (Invoice)</h4>
+        <p class="modal-desc" data-i18n="helpInvoiceCliente"><strong>Cliente:</strong> Nombre, dirección, email, teléfono. Mismas funciones que en Quote.</p>
+        <p class="modal-desc" data-i18n="helpInvoiceMateriales"><strong>Tabla Materials:</strong> Materiales, Descripción, Yardas (cantidad), Unidad (yd/ft/in), Color, Color No. Sin cálculo automático de material lineal; se ingresan las yardas usadas.</p>
+        <p class="modal-desc" data-i18n="helpInvoiceItems"><strong>Tabla Items:</strong> Descripción, Horas, Cantidad, Precio unitario. Total = Cantidad × Precio unitario.</p>
+        <p class="modal-desc" data-i18n="helpInvoiceTotales"><strong>Totales:</strong> Subtotal Materials, Subtotal Items, Tax %, Total. Luego <strong>Descuento o Depósito</strong> (resta). <strong>Pagado o Balance</strong> (monto pagado o saldo pendiente).</p>
+        <p class="modal-desc" data-i18n="helpInvoiceNo"><strong>Invoice No.:</strong> Número de factura que tú defines.</p>
+      </div>
+
+      <div class="config-seccion">
+        <h4 data-i18n="salvar">4. Salvar</h4>
+        <p class="modal-desc" data-i18n="helpSalvar"><strong>Guarda</strong> el documento actual (Quote o Invoice) en IndexedDB (almacenamiento local del navegador). El documento pasa al <strong>Registro</strong>. Si el documento ya estaba cargado desde el registro y cambias algo, al salvar se actualiza. Los datos incluyen: cliente, materiales, items, totales, posición del logo y de la info de empresa.</p>
+      </div>
+
+      <div class="config-seccion">
+        <h4 data-i18n="plantillas">5. Plantillas</h4>
+        <p class="modal-desc" data-i18n="helpPlantillasGuardar"><strong>Guardar plantilla Presupuesto / Factura:</strong> Guarda el layout actual (logo, posición de la empresa, datos de empresa) como plantilla. No incluye clientes ni materiales.</p>
+        <p class="modal-desc" data-i18n="helpPlantillasUsar"><strong>Usar plantilla:</strong> Aplica la plantilla guardada al documento actual. Borra el contenido y deja solo logo + info de empresa + fecha actualizada. Útil para empezar un documento nuevo con el mismo diseño.</p>
+      </div>
+
+      <div class="config-seccion">
+        <h4 data-i18n="registro">6. Registro</h4>
+        <p class="modal-desc" data-i18n="helpRegistroPestanas"><strong>Pestañas:</strong> Presupuestos y Facturas. Cada una muestra la lista de documentos guardados de ese tipo.</p>
+        <p class="modal-desc" data-i18n="helpRegistroBuscar"><strong>Buscar:</strong> Por nombre del cliente o teléfono.</p>
+        <p class="modal-desc" data-i18n="helpRegistroFiltro"><strong>Filtro de fechas:</strong> Desde / Hasta. Limita la lista al rango indicado.</p>
+        <p class="modal-desc" data-i18n="helpRegistroAcciones"><strong>Acciones por documento:</strong> Selecciona uno de la lista. <strong>Cargar:</strong> Lo abre en el área de edición. <strong>Editar:</strong> Igual que Cargar pero lo marca como "editando". Si cambias algo y cierras, pregunta si guardar cambios. <strong>Compartir:</strong> Abre el modal de Compartir. <strong>Borrar:</strong> Elimina el documento del registro.</p>
+        <p class="modal-desc" data-i18n="helpRegistroExport"><strong>Exportar datos:</strong> Descarga un archivo JSON con todos los presupuestos y/o facturas (según formato elegido). Sirve como respaldo.</p>
+        <p class="modal-desc" data-i18n="helpRegistroImport"><strong>Importar datos:</strong> Sube un JSON exportado antes. Elige si importar Presupuesto y Factura, solo Presupuesto o solo Factura. Los datos se añaden al registro.</p>
+      </div>
+
+      <div class="config-seccion">
+        <h4 data-i18n="servicios">7. Servicios</h4>
+        <p class="modal-desc" data-i18n="helpServicios"><strong>Lista de servicios/trabajos</strong> que puedes reutilizar. Agrega: nombre, descripción (opcional), precio, categoría. Al crear una factura, puedes elegir un servicio y se inserta automáticamente en la tabla de items (descripción, precio). Editar y Eliminar para mantener la lista actualizada.</p>
+      </div>
+
+      <div class="config-seccion">
+        <h4 data-i18n="compartir">8. Compartir</h4>
+        <p class="modal-desc" data-i18n="helpCompartirFormato"><strong>Formato:</strong> Texto (resumen en texto) o PDF (documento listo para imprimir o enviar).</p>
+        <p class="modal-desc" data-i18n="helpCompartirCanales"><strong>Correo:</strong> Abre el cliente de email con asunto y cuerpo. <strong>WhatsApp:</strong> Abre WhatsApp (web o app) con el mensaje. Usa el código de país configurado. <strong>SMS / Tel:</strong> Abre el enlace tel: para marcar. <strong>Compartir:</strong> Usa la API nativa de compartir del dispositivo (móvil). Para Correo, WhatsApp y SMS pide el destinatario (email o número).</p>
+      </div>
+
+      <div class="config-seccion">
+        <h4 data-i18n="limpiar">9. Limpiar</h4>
+        <p class="modal-desc" data-i18n="helpLimpiar">Borra todo el contenido del documento actual: cliente, materiales, items, descripción, totales. No borra la configuración de empresa ni las plantillas. El logo y la info de empresa permanecen.</p>
+      </div>
+
+      <div class="config-seccion">
+        <h4 data-i18n="helpArrastrar">10. Logo e información de empresa (arrastrables)</h4>
+        <p class="modal-desc" data-i18n="helpArrastrarLogo"><strong>Logo:</strong> Si está activada la plantilla no fija, puedes arrastrarlo y redimensionarlo (esquinas y bordes al hacer hover).</p>
+        <p class="modal-desc" data-i18n="helpArrastrarInfo"><strong>Información de empresa:</strong> Bloque con nombre, dirección, teléfono, email. Arrastrable. Las posiciones se guardan con el documento al Salvar.</p>
+      </div>
+
+      <div class="config-seccion">
+        <h4 data-i18n="helpExtras">11. Características adicionales</h4>
+        <p class="modal-desc" data-i18n="helpIdioma"><strong>Idioma:</strong> Español / English. Cambia las etiquetas de la interfaz. Opción de <strong>traducir contenido</strong> (texto del documento) con la API MyMemory (requiere internet).</p>
+        <p class="modal-desc" data-i18n="helpTema"><strong>Tema:</strong> Botón 🌙 cambia entre tema claro y oscuro.</p>
+        <p class="modal-desc" data-i18n="helpZoom"><strong>Zoom en móvil:</strong> Botones +/− y ajustar. También gestos de pinch para ampliar/reducir el documento.</p>
+        <p class="modal-desc" data-i18n="helpFecha"><strong>Fecha:</strong> Clic en 📅 abre el selector de fecha. Se puede escribir manualmente (M/D/YY o M/D/YYYY).</p>
+        <p class="modal-desc" data-i18n="helpPWA"><strong>PWA:</strong> Instalable en móvil y escritorio. Funciona offline para editar y ver documentos guardados. La traducción requiere conexión.</p>
+      </div>
+
+      <div class="config-seccion">
+        <p class="modal-desc" data-i18n="helpFlujo"><strong>Flujo típico:</strong> Configura empresa → Crea presupuesto/factura → Salvar → (opcional) Compartir desde Registro. Usa Plantillas para documentos nuevos con el mismo diseño. Usa Servicios para rellenar items rápido en facturas.</p>
+      </div>
+
+      <button type="button" class="btn-guardar" onclick="cerrarHelp()" data-i18n="cerrar">Cerrar</button>
+    </div>
+  </div>
+
   <div class="modal-overlay" id="modalGuardarCambios" onclick="if(event.target.id==='modalGuardarCambios') cerrarModalGuardarCambios()">
     <div class="modal modal-guardar-cambios" onclick="event.stopPropagation()">
       <h3 data-i18n="guardarCambiosTitulo">¿Guardar los cambios?</h3>
@@ -1673,6 +1772,7 @@
         materialPh: 'Materiales',
         configurar: '⚙ Configurar',
         titleConfig: 'Configurar',
+        titleHelp: 'Guía de uso',
         titleSalvar: 'Guardar presupuesto o factura',
         titlePlantillas: 'Guardar o usar plantillas vacías',
         titleRegistro: 'Ver registro de presupuestos',
@@ -1708,6 +1808,51 @@
         configThankYou: 'Mensaje de agradecimiento',
         configMantenerPlantilla: 'Mantener plantilla al recargar (logo e info de empresa se aplican siempre)',
         tipoDocumento: 'Tipo de documento',
+        helpTitulo: 'Manual completo — Quote to Invoice',
+        helpIntro: 'Esta app permite crear presupuestos (Quote) y facturas (Invoice) con cálculos automáticos de materiales, impuestos y totales. Todo se guarda localmente en tu dispositivo.',
+        helpConfig: '1. Configuración (⚙)',
+        helpConfigTipo: 'Tipo de documento: Cambia entre Presupuesto (Quote) y Factura (Invoice). El documento visible se adapta automáticamente.',
+        helpConfigEmpresa: 'Datos de la empresa: Nombre, logo (imagen), dirección, teléfono, email, "Cheques a nombre de", "Atentamente", nombre del remitente. Estos datos aparecen en el encabezado. El logo se puede arrastrar y redimensionar.',
+        helpConfigCodigoPais: 'Código país: Si el teléfono del cliente tiene 10 dígitos, se añade este código (ej: 52 México, 1 EE.UU.) para WhatsApp/SMS.',
+        helpConfigTax: '% Impuestos: Se aplica por defecto al subtotal. Puedes cambiarlo en cada documento.',
+        helpConfigCardFee: '% Cargo tarjetas: Porcentaje mostrado en facturas para pagos con tarjeta. El aviso personalizable aparece en el documento.',
+        helpConfigPlantillaFija: 'Fijar logo e info: Si lo activas, el logo y los datos de empresa no se pueden arrastrar (posición fija).',
+        helpQuote: '2. Presupuesto (Quote)',
+        helpQuoteCliente: 'Cliente: Nombre, dirección, email, teléfono. El teléfono se formatea (000) 000-0000. Al escribir @ en email aparecen sugerencias de dominio.',
+        helpQuoteJob: 'Job / Descripción: Breve descripción del trabajo.',
+        helpQuoteMateriales: 'Tabla de materiales: Material, Largo, Unidad (pulgadas/pies/yardas), Ancho, Ancho de rollo, Cantidad, Precio, Por (unidad). Subtotal = área ÷ ancho rollo, convertido a unidad elegida.',
+        helpQuoteItems: 'Tabla de items: Descripción, Horas, Cantidad, Precio unitario. Total = Cantidad × Precio.',
+        helpQuoteTotales: 'Totales: Subtotal de materiales + items, Tax %, TOTAL final.',
+        helpQuoteDescripcion: 'Descripción del proyecto: Área de texto para colores, instrucciones, notas.',
+        helpInvoice: '3. Factura (Invoice)',
+        helpInvoiceCliente: 'Cliente: Igual que en Quote. Mismas funciones.',
+        helpInvoiceMateriales: 'Tabla Materials: Materiales, Descripción, Yardas, Unidad, Color, Color No. Sin cálculo automático; se ingresan las yardas usadas.',
+        helpInvoiceItems: 'Tabla Items: Descripción, Horas, Cantidad, Precio unitario. Total = Cantidad × Precio.',
+        helpInvoiceTotales: 'Totales: Subtotal Materials, Subtotal Items, Tax %, Total. Descuento/Depósito (resta). Pagado/Balance (monto pagado o saldo).',
+        helpInvoiceNo: 'Invoice No.: Número de factura que tú defines.',
+        helpSalvar: 'Guarda el documento actual en IndexedDB. El documento pasa al Registro. Incluye cliente, materiales, items, totales, posiciones de logo e info.',
+        helpPlantillasGuardar: 'Guardar plantilla: Guarda layout (logo, posición empresa, datos) sin clientes ni materiales.',
+        helpPlantillasUsar: 'Usar plantilla: Aplica plantilla, borra contenido, deja logo + info + fecha actual.',
+        helpRegistroPestanas: 'Pestañas Presupuestos y Facturas. Lista de documentos guardados.',
+        helpRegistroBuscar: 'Buscar por nombre o teléfono.',
+        helpRegistroFiltro: 'Filtro fechas Desde/Hasta.',
+        helpRegistroAcciones: 'Cargar: abre en edición. Editar: igual pero pregunta si guardar al cerrar. Compartir: abre modal. Borrar: elimina del registro.',
+        helpRegistroExport: 'Exportar: descarga JSON con todos los documentos (respaldo).',
+        helpRegistroImport: 'Importar: sube JSON. Elige Presupuesto y/o Factura.',
+        helpServicios: 'Lista de servicios reutilizables. Agregar: nombre, descripción, precio. En factura eliges uno y se inserta en items.',
+        helpCompartirFormato: 'Formato: Texto o PDF.',
+        helpCompartirCanales: 'Correo, WhatsApp, SMS: abren cliente con mensaje. Usan código país. Compartir: API nativa del dispositivo.',
+        helpLimpiar: 'Borra cliente, materiales, items, descripción, totales. No borra configuración ni plantillas.',
+        helpArrastrar: '10. Logo e información (arrastrables)',
+        helpArrastrarLogo: 'Logo: arrastrable y redimensionable (esquinas/bordes). Salvo si plantilla fija.',
+        helpArrastrarInfo: 'Info empresa: bloque arrastrable. Posiciones se guardan al Salvar.',
+        helpExtras: '11. Características adicionales',
+        helpIdioma: 'Idioma ES/EN. Traducción de contenido con MyMemory (internet).',
+        helpTema: 'Tema claro/oscuro (botón 🌙).',
+        helpZoom: 'Zoom móvil: +/−, ajustar, pinch.',
+        helpFecha: 'Fecha: 📅 abre calendario. Se puede escribir M/D/YY.',
+        helpPWA: 'PWA instalable. Funciona offline. Traducción requiere conexión.',
+        helpFlujo: 'Flujo: Configurar → Crear documento → Salvar → Compartir. Plantillas para diseño. Servicios para items rápido.',
         guardarConfig: 'Guardar datos',
         invoice: 'FACTURA',
         customer: 'Cliente',
@@ -1863,6 +2008,7 @@
         titleEliminar: 'Remove row',
         titleCerrar: 'Close window',
         titleGuardarConfig: 'Save configuration',
+        titleHelp: 'User guide',
         titleCargar: 'Load this quote',
         titleEditar: 'Edit this document',
         titleSelectDate: 'Select date',
@@ -1890,6 +2036,51 @@
         configThankYou: 'Thank you message',
         configPlantillaFija: 'Lock logo and company info (cannot be moved)',
         tipoDocumento: 'Document type',
+        helpTitulo: 'Complete Manual — Quote to Invoice',
+        helpIntro: 'This app creates quotes and invoices with automatic material, tax and total calculations. Everything is saved locally on your device.',
+        helpConfig: '1. Configuration (⚙)',
+        helpConfigTipo: 'Document type: Switch between Quote and Invoice. The visible document updates automatically.',
+        helpConfigEmpresa: 'Company data: Name, logo (image), address, phone, email, "Checks payable to", "Sincerely", sender name. These appear in the header. Logo is draggable and resizable.',
+        helpConfigCodigoPais: 'Country code: If customer phone has 10 digits, this code is prepended (e.g. 52 Mexico, 1 USA) for WhatsApp/SMS.',
+        helpConfigTax: '% Tax: Default applied to subtotal. You can change it per document.',
+        helpConfigCardFee: '% Card fee: Percentage shown on invoices for card payments. Custom notice appears on document.',
+        helpConfigPlantillaFija: 'Lock logo and info: When on, logo and company data cannot be dragged.',
+        helpQuote: '2. Quote',
+        helpQuoteCliente: 'Customer: Name, address, email, phone. Phone auto-formats (000) 000-0000. Email with @ shows domain suggestions.',
+        helpQuoteJob: 'Job / Description: Brief job description.',
+        helpQuoteMateriales: 'Materials table: Material, Length, Unit (in/ft/yd), Width, Roll width, Qty, Price, Per (unit). Subtotal = area ÷ roll width, converted to chosen unit.',
+        helpQuoteItems: 'Items table: Description, Hrs, Qty, Unit price. Total = Qty × Price.',
+        helpQuoteTotales: 'Totals: Subtotal materials + items, Tax %, final TOTAL.',
+        helpQuoteDescripcion: 'Project description: Text area for colors, instructions, notes.',
+        helpInvoice: '3. Invoice',
+        helpInvoiceCliente: 'Customer: Same as Quote. Same features.',
+        helpInvoiceMateriales: 'Materials table: Materials, Description, Yards, Unit, Color, Color No. No auto calculation; you enter yards used.',
+        helpInvoiceItems: 'Items table: Description, Hrs, Qty, Unit price. Total = Qty × Price.',
+        helpInvoiceTotales: 'Totals: Subtotal Materials, Subtotal Items, Tax %, Total. Discount/Deposit (deducts). Paid/Balance (amount paid or balance due).',
+        helpInvoiceNo: 'Invoice No.: Invoice number you define.',
+        helpSalvar: 'Saves current document to IndexedDB. Document goes to Registry. Includes customer, materials, items, totals, logo and info positions.',
+        helpPlantillasGuardar: 'Save template: Saves layout (logo, company position, data) without customers or materials.',
+        helpPlantillasUsar: 'Use template: Applies template, clears content, keeps logo + info + current date.',
+        helpRegistroPestanas: 'Quote and Invoice tabs. List of saved documents.',
+        helpRegistroBuscar: 'Search by name or phone.',
+        helpRegistroFiltro: 'Date filter From/To.',
+        helpRegistroAcciones: 'Load: opens in editor. Edit: same but asks to save when closing. Share: opens modal. Delete: removes from registry.',
+        helpRegistroExport: 'Export: downloads JSON with all documents (backup).',
+        helpRegistroImport: 'Import: uploads JSON. Choose Quote and/or Invoice.',
+        helpServicios: 'Reusable services list. Add: name, description, price. In invoice, select one to insert into items.',
+        helpCompartirFormato: 'Format: Text or PDF.',
+        helpCompartirCanales: 'Email, WhatsApp, SMS: open client with message. Use country code. Share: device native API.',
+        helpLimpiar: 'Clears customer, materials, items, description, totals. Does not clear config or templates.',
+        helpArrastrar: '10. Logo and info (draggable)',
+        helpArrastrarLogo: 'Logo: draggable and resizable (corners/edges). Unless template is locked.',
+        helpArrastrarInfo: 'Company info: draggable block. Positions saved on Save.',
+        helpExtras: '11. Extra features',
+        helpIdioma: 'Language ES/EN. Content translation via MyMemory (internet).',
+        helpTema: 'Light/dark theme (🌙 button).',
+        helpZoom: 'Mobile zoom: +/−, fit, pinch.',
+        helpFecha: 'Date: 📅 opens picker. Can type M/D/YY.',
+        helpPWA: 'Installable PWA. Works offline. Translation needs connection.',
+        helpFlujo: 'Flow: Configure → Create document → Save → Share. Templates for layout. Services for quick items.',
         guardarConfig: 'Save data',
         invoice: 'INVOICE',
         customer: 'Customer',
@@ -2293,6 +2484,13 @@
       document.getElementById('modalConfig').classList.remove('visible');
     }
 
+    function abrirHelp() {
+      document.getElementById('modalHelp').classList.add('visible');
+    }
+    function cerrarHelp() {
+      document.getElementById('modalHelp').classList.remove('visible');
+    }
+
     function cargarDatosTapiceria() {
       try {
         const raw = localStorage.getItem(TAPICERIA_KEY);
@@ -2646,8 +2844,24 @@
           div.innerHTML = '';
           const q = (filtroTexto || '').toLowerCase().trim();
           const tipoFiltro = tipoTab || tabActivo;
+          const filtroDesde = document.getElementById('filtroFechaDesde');
+          const filtroHasta = document.getElementById('filtroFechaHasta');
+          const fechaDesdeVal = filtroDesde && filtroDesde.value ? filtroDesde.value : null;
+          const fechaHastaVal = filtroHasta && filtroHasta.value ? filtroHasta.value : null;
           const filtrados = listaOrdenada.filter(item => {
             if (tipoFiltro && (item.tipoDocumento || 'quote') !== tipoFiltro) return false;
+            if (fechaDesdeVal || fechaHastaVal) {
+              const fechaItem = item.fechaGuardado || item.fecha || '';
+              let fechaItemStr = '';
+              if (fechaItem) {
+                const d = new Date(fechaItem);
+                if (!isNaN(d.getTime())) fechaItemStr = d.toISOString().slice(0, 10);
+              }
+              if (fechaItemStr) {
+                if (fechaDesdeVal && fechaItemStr < fechaDesdeVal) return false;
+                if (fechaHastaVal && fechaItemStr > fechaHastaVal) return false;
+              }
+            }
             if (q) {
               const c = (item.cliente || '').toLowerCase();
               const em = (item.emailCliente || '').toLowerCase();
@@ -2692,6 +2906,18 @@
             tabActivo = 'invoice';
             tabFact.classList.add('activo');
             if (tabPresup) tabPresup.classList.remove('activo');
+            renderizarLista(busq ? busq.value : '', tabActivo);
+          };
+        }
+        const filtroDesde = document.getElementById('filtroFechaDesde');
+        const filtroHasta = document.getElementById('filtroFechaHasta');
+        const btnLimpiarFiltro = document.getElementById('btnLimpiarFiltroFecha');
+        if (filtroDesde) filtroDesde.onchange = () => renderizarLista(busq ? busq.value : '', tabActivo);
+        if (filtroHasta) filtroHasta.onchange = () => renderizarLista(busq ? busq.value : '', tabActivo);
+        if (btnLimpiarFiltro) {
+          btnLimpiarFiltro.onclick = () => {
+            if (filtroDesde) filtroDesde.value = '';
+            if (filtroHasta) filtroHasta.value = '';
             renderizarLista(busq ? busq.value : '', tabActivo);
           };
         }
@@ -2952,7 +3178,7 @@
 
     const SERVICIOS_KEY = 'servicios_tapiceria';
     function cargarServicios() {
-      try { return JSON.parse(localStorage.getItem(SERVICIOS_KEY)) || []; } catch { return []; }
+      try { return JSON.parse(localStorage.getItem(SERVICIOS_KEY)) || []; } catch (e) { return []; }
     }
     function guardarServicios(lista) {
       localStorage.setItem(SERVICIOS_KEY, JSON.stringify(lista));
@@ -3069,8 +3295,8 @@
       if (!s) return;
       const doc = document.getElementById('documento');
       const esInvoice = doc.dataset.tipo === 'invoice';
-      const tabla = esInvoice ? document.getElementById('tablaItems') : document.getElementById('tablaItems');
-      const tbody = tabla.querySelector('tbody');
+      const tbody = esInvoice ? document.getElementById('zonasItems') : document.getElementById('zonasItemsQuote');
+      if (!tbody) return;
       const filas = tbody.querySelectorAll('tr');
       let filaVacia = null;
       filas.forEach(fila => {
@@ -3082,7 +3308,8 @@
         }
       });
       if (!filaVacia) {
-        document.getElementById('btnAgregarItemInv').click();
+        const btnAgregar = esInvoice ? document.getElementById('btnAgregarItem') : document.getElementById('btnAgregarItemQuote');
+        if (btnAgregar) btnAgregar.click();
         setTimeout(() => insertarServicioEnFila(s), 50);
       } else {
         insertarServicioEnFilaRef(s, filaVacia);
@@ -3090,8 +3317,10 @@
       cerrarServicios();
     }
     function insertarServicioEnFila(s) {
-      const tabla = document.getElementById('tablaItems');
-      const tbody = tabla.querySelector('tbody');
+      const doc = document.getElementById('documento');
+      const esInvoice = doc && doc.dataset.tipo === 'invoice';
+      const tbody = esInvoice ? document.getElementById('zonasItems') : document.getElementById('zonasItemsQuote');
+      if (!tbody) return;
       const filas = tbody.querySelectorAll('tr');
       const ultimaFila = filas[filas.length - 1];
       if (ultimaFila) insertarServicioEnFilaRef(s, ultimaFila);
@@ -3667,7 +3896,8 @@
       });
 
       document.querySelectorAll('#zonasItemsQuote .fila-item-quote').forEach(tr => {
-        const hrs = parseFloat(tr.querySelector('.input-item-hrs')?.value) || 0;
+        const hrsEl = tr.querySelector('.input-item-hrs');
+        const hrs = hrsEl ? (parseFloat(hrsEl.value) || 0) : 0;
         const qty = parseFloat(tr.querySelector('.input-item-qty').value) || 0;
         const unit = parseFloat(tr.querySelector('.input-item-unit').value) || 0;
         const total = (hrs * unit) + (qty * unit);
@@ -3878,7 +4108,8 @@
     function actualizarInvoice() {
       let subtotalItems = 0;
       document.querySelectorAll('.fila-item-inv').forEach(tr => {
-        const hrs = parseFloat(tr.querySelector('.input-item-hrs')?.value) || 0;
+        const hrsEl = tr.querySelector('.input-item-hrs');
+        const hrs = hrsEl ? (parseFloat(hrsEl.value) || 0) : 0;
         const qty = parseFloat(tr.querySelector('.input-item-qty').value) || 0;
         const unit = parseFloat(tr.querySelector('.input-item-unit').value) || 0;
         const total = (hrs * unit) + (qty * unit);
@@ -4123,7 +4354,7 @@
     });
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+      navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
     }
     for (let i = 0; i < 1; i++) crearSeccion(); // Crea secciones en Quote y materiales en Invoice
     for (let i = 0; i < 1; i++) crearFilaItemQuote(); // Esto también crea filas en Invoice
